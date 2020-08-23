@@ -19,7 +19,8 @@ class TasksAdapter(private val longClickCallback: (id: Long) -> Unit) : Recycler
             notifyDataSetChanged()
         }
 
-    fun addNew(description: String) = tasks.add(Task(tasks.lastIndex+1L, description))
+    fun addNewTask(description: String) = tasks.add(Task(tasks.lastIndex+1L, description))
+    fun removeTask(id: Long) = tasks.remove(tasks.first { it.id == id })
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) = clicks.clear()
     override fun getItemCount() = tasks.size

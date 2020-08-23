@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.google.android.material.textfield.TextInputEditText
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,19 +23,16 @@ class MainActivity : AppCompatActivity() {
     private val createTaskDialog: AlertDialog by lazy {
         val etView = (findViewById<View>(R.id.content).rootView as ViewGroup).inflate(R.layout.et_input)
         AlertDialog.Builder(this)
-            .setTitle("Add new task")
+            .setTitle(getString(R.string.add_new_task))
             .setView(etView)
             .setPositiveButton(android.R.string.ok) { dialog, _ ->
-                dialog.dismiss().also { tasksAdapter.addNew(etView.findViewById<TextInputEditText>(R.id.input).text.toString()) }
+                dialog.dismiss().also { tasksAdapter.addNewTask(etView.findViewById<TextInputEditText>(R.id.input).text.toString()) }
             }
             .setNegativeButton(android.R.string.cancel, null)
             .create()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        clicks.clear()
-    }
+    override fun onDestroy() = super.onDestroy().also { clicks.clear() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,5 +40,16 @@ class MainActivity : AppCompatActivity() {
         clicks += addTaskFab.clicks()
             .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe { createTaskDialog.show() }
+        setupViewModelSubscriptions()
+        tasksViewModel.fetchTasks()
+    }
+
+    private fun setupViewModelSubscriptions() {
+        tasksViewModel.addTaskEvent.observe(this, Observer { description ->
+            tasksAdapter.addNewTask(description)
+        })
+        tasksViewModel.removeTaskEvent.observe(this, Observer { id ->
+            tasksAdapter.removeTask(id)
+        })
     }
 }
