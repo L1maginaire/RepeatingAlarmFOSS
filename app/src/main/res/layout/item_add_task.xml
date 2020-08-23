@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listitem_add_contacts_rl_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:paddingTop="16dp"
+        android:background="#f0f0f0" />
+
+    <ImageView
+        android:id="@+id/markerIv"
+        android:layout_width="11dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_height="11dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="23dp"
+        android:background="@drawable/circle_green"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/taskDescriptionTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="31dp"
+        android:layout_toEndOf="@id/markerIv"
+        tools:text="Some task"
+        android:textSize="16sp" />
+</RelativeLayout>
