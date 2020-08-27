@@ -3,6 +3,7 @@ package com.example.repeatingalarmfoss
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.repeatingalarmfoss.db.Task
 import com.jakewharton.rxbinding3.view.longClicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -19,8 +20,8 @@ class TasksAdapter(private val longClickCallback: (id: Long) -> Unit) : Recycler
             notifyDataSetChanged()
         }
 
-    fun addNewTask(description: String) = tasks.add(Task(tasks.lastIndex+1L, description))
-    fun removeTask(id: Long) = tasks.remove(tasks.first { it.id == id })
+    fun addNewTask(task: Task) = tasks.add(task).also { notifyDataSetChanged() }
+    fun removeTask(id: Long) = tasks.remove(tasks.first { it.id == id }).also { notifyDataSetChanged() }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) = clicks.clear()
     override fun getItemCount() = tasks.size
@@ -38,5 +39,3 @@ class TasksAdapter(private val longClickCallback: (id: Long) -> Unit) : Recycler
         }
     }
 }
-
-data class Task(val id: Long, val description: String)

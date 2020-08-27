@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Repeating Alarm FOSS</string>
     <string name="add_new_task">Add new task</string>
+    <string name="db_error">Something wrong with database!</string>
 </resources>
