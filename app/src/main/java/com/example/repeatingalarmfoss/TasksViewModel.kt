@@ -31,7 +31,7 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(/*todo states*/{
-                _removeTaskEvent.call()
+                _removeTaskEvent.value = id
             }, {
                 _errorEvent.value = R.string.db_error
             })

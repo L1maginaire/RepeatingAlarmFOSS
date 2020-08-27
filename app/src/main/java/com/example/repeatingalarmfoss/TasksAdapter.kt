@@ -1,8 +1,11 @@
 package com.example.repeatingalarmfoss
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.repeatingalarmfoss.databinding.ItemAddTaskBinding
 import com.example.repeatingalarmfoss.db.Task
 import com.jakewharton.rxbinding3.view.longClicks
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -25,8 +28,9 @@ class TasksAdapter(private val longClickCallback: (id: Long) -> Unit) : Recycler
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) = clicks.clear()
     override fun getItemCount() = tasks.size
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(R.layout.item_add_task))
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(tasks[position]).also {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(ItemAddTaskBinding.inflate(LayoutInflater.from(parent.context), parent, false).root)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding?.task = tasks[position]
         clicks += holder.itemView.longClicks()
             .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .map { tasks[position].id }
@@ -34,8 +38,6 @@ class TasksAdapter(private val longClickCallback: (id: Long) -> Unit) : Recycler
     }
 
     class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
-        fun bind(task: Task) {
-            taskDescriptionTv.text = task.description
-        }
+        val binding: ItemAddTaskBinding? = DataBindingUtil.bind(containerView)
     }
 }

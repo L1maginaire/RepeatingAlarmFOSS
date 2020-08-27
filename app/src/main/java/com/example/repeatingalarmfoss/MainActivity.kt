@@ -1,7 +1,6 @@
 package com.example.repeatingalarmfoss
 
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -21,19 +20,6 @@ class MainActivity : AppCompatActivity() {
     private val tasksViewModel: TasksViewModel by viewModels()
     private val tasksAdapter = TasksAdapter(::removeTask)
 
-    private val createTaskDialog: AlertDialog by lazy {
-        val etView = (root as ViewGroup).inflate(R.layout.et_input)
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.add_new_task))
-            .setView(etView)
-            .setPositiveButton(android.R.string.ok) { dialog, _ ->
-                etView.findViewById<TextInputEditText>(R.id.input).setText("")/*fixme*/
-                dialog.dismiss().also { tasksViewModel.addTask(etView.findViewById<TextInputEditText>(R.id.input).text.toString()) }
-            }
-            .setNegativeButton(android.R.string.cancel, null)
-            .create()
-    }
-
     private fun removeTask(id: Long) = tasksViewModel.removeTask(id)
 
     override fun onDestroy() = super.onDestroy().also { clicks.clear() }
@@ -43,7 +29,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         clicks += addTaskFab.clicks()
             .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe { createTaskDialog.show() }
+            .subscribe { val etView = (root as ViewGroup).inflate(R.layout.et_input)
+                AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.add_new_task))
+                    .setView(etView)
+                    .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss().also { tasksViewModel.addTask(etView.findViewById<TextInputEditText>(R.id.input).text.toString()) } }
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create()
+                    .show()
+            }
         setupViewModelSubscriptions()
 
         tasksList.layoutManager = LinearLayoutManager(this)
