@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources tools:ignore="MissingTranslation" xmlns:tools="http://schemas.android.com/tools">
+
+    <string-array name="days_of_week">
+        <item>@string/day_of_week_monday</item>
+        <item>@string/day_of_week_tuesday</item>
+        <item>@string/day_of_week_wednesday</item>
+        <item>@string/day_of_week_thursday</item>
+        <item>@string/day_of_week_friday</item>
+        <item>@string/day_of_week_saturday</item>
+        <item>@string/day_of_week_sunday</item>
+    </string-array>
+
+    <string-array name="time_units">
+        <item>@string/time_unit_second</item>
+        <item>@string/time_unit_minute</item>
+        <item>@string/time_unit_hour</item>
+        <item>@string/time_unit_day</item>
+    </string-array>
+</resources>

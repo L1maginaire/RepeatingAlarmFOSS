@@ -3,6 +3,7 @@ package com.example.repeatingalarmfoss
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -37,12 +38,13 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
             })
     }
 
-    fun addTask(description: String) {
-        disposable += taskRepository.insert(Task(description))
+    fun addTask(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String?) {
+        val task = Task(description, repeatingClassifier, repeatingClassifierValue)
+        disposable += taskRepository.insert(task)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(/*todo states*/{
-                _addTaskEvent.value = Task(description).apply { id = it }
+                _addTaskEvent.value = task.apply { id = it }
             }, {
                 _errorEvent.value = R.string.db_error
             })

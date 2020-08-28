@@ -1,5 +1,23 @@
 <resources>
-    <string name="app_name">Repeating Alarm FOSS</string>
+    <string name="app_name">Repeating Alarm</string>
     <string name="add_new_task">Add new task</string>
     <string name="db_error">Something wrong with database!</string>
+    <string name="title_every">Every</string>
+
+    <!--day of week-->
+    <string name="day_of_week_monday">Monday</string>
+    <string name="day_of_week_tuesday">Tuesday</string>
+    <string name="day_of_week_wednesday">Wednesday</string>
+    <string name="day_of_week_thursday">Thursday</string>
+    <string name="day_of_week_friday">Friday</string>
+    <string name="day_of_week_saturday">Saturday</string>
+    <string name="day_of_week_sunday">Sunday</string>
+
+    <!--time unit-->
+    <string name="time_unit_hour">Hour</string>
+    <string name="time_unit_second">Second</string>
+    <string name="time_unit_minute">Minute</string>
+    <string name="time_unit_day">Day</string>
+    <string name="hint_task_description">Task description</string>
+
 </resources>

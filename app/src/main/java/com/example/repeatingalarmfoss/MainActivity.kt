@@ -2,12 +2,14 @@ package com.example.repeatingalarmfoss
 
 import android.os.Bundle
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.textfield.TextInputEditText
+import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -29,11 +31,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         clicks += addTaskFab.clicks()
             .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe { val etView = (root as ViewGroup).inflate(R.layout.et_input)
+            .subscribe {
+                val dialogView = (root as ViewGroup).inflate(R.layout.dialog_creating_task)
                 AlertDialog.Builder(this)
                     .setTitle(getString(R.string.add_new_task))
-                    .setView(etView)
-                    .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss().also { tasksViewModel.addTask(etView.findViewById<TextInputEditText>(R.id.input).text.toString()) } }
+                    .setView(dialogView)
+                    .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss().also {
+                        val description = dialogView.findViewById<EditText>(R.id.etTaskDescription).text.toString()
+                        val repeatingClassifier: RepeatingClassifier = RepeatingClassifier.DAY_OF_WEEK /*fixme*/
+                        val repeatingClassifierValue: String = dialogView.findViewById<Spinner>(R.id.spinnerDayOfWeek).selectedItem.toString()
+                        tasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue) } }
                     .setNegativeButton(android.R.string.cancel, null)
                     .create()
                     .show()
@@ -55,8 +62,8 @@ class MainActivity : AppCompatActivity() {
         tasksViewModel.fetchAllTasksEvent.observe(this, Observer {
             tasksAdapter.tasks = it.toMutableList()
         })
-        tasksViewModel.errorEvent.observe(this, Observer {
-            toast(getString(it))
+        tasksViewModel.errorEvent.observe(this, Observer { errorMessage ->
+            toast(getString(errorMessage))
         })
     }
 }
