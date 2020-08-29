@@ -31,6 +31,7 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
         disposable += taskRepository.delete(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnError{ it.printStackTrace() }
             .subscribe(/*todo states*/{
                 _removeTaskEvent.value = id
             }, {
@@ -43,6 +44,7 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
         disposable += taskRepository.insert(task)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnError{ it.printStackTrace() }
             .subscribe(/*todo states*/{
                 _addTaskEvent.value = task.apply { id = it }
             }, {
@@ -54,6 +56,7 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
         disposable += taskRepository.getAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnError{ it.printStackTrace() }
             .subscribe(/*todo states*/{
                 _fetchAllTasksEvent.value = it
             }, {
