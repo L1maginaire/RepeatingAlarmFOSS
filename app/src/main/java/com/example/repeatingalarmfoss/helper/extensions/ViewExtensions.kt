@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss
+package com.example.repeatingalarmfoss.helper.extensions
 
 import android.app.Activity
 import android.content.Context

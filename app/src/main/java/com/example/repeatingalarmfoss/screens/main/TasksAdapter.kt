@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss
+package com.example.repeatingalarmfoss.screens.main
 
 import android.view.LayoutInflater
 import android.view.View

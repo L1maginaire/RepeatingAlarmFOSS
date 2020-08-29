@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss
+package com.example.repeatingalarmfoss.screens.main
 
 import android.os.Bundle
 import android.view.ViewGroup
@@ -9,13 +9,16 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
+import com.example.repeatingalarmfoss.helper.extensions.inflate
+import com.example.repeatingalarmfoss.helper.extensions.toLowerCase
+import com.example.repeatingalarmfoss.helper.extensions.toast
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {

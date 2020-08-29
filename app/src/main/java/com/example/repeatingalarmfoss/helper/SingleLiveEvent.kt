@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss
+package com.example.repeatingalarmfoss.helper
 
 import android.util.Log
 import androidx.annotation.MainThread
