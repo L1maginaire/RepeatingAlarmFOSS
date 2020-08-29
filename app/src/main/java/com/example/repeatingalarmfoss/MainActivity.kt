@@ -15,6 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                     .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss().also {
                         val description = dialogView.findViewById<EditText>(R.id.etTaskDescription).text.toString()
                         val repeatingClassifier: RepeatingClassifier = RepeatingClassifier.DAY_OF_WEEK /*fixme*/
-                        val repeatingClassifierValue: String = dialogView.findViewById<Spinner>(R.id.spinnerDayOfWeek).selectedItem.toString()
+                        val repeatingClassifierValue: String = dialogView.findViewById<Spinner>(R.id.spinnerDayOfWeek).selectedItem.toString().toLowerCase()
                         tasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue) } }
                     .setNegativeButton(android.R.string.cancel, null)
                     .create()
