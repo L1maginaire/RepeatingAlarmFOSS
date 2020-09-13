@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewModelSubscriptions() {
         tasksViewModel.addTaskEvent.observe(this, Observer { task ->
-            runAlarmManager(task.repeatingClassifierValue!!.toLong())
+            runAlarmManager(task.repeatingClassifierValue!!.toLong()) /*fixme*/
             tasksAdapter.addNewTask(task)
         })
         tasksViewModel.removeTaskEvent.observe(this, Observer { id ->
