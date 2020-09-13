@@ -5,9 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
-import com.example.repeatingalarmfoss.helper.SingleLiveEvent
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
+import com.example.repeatingalarmfoss.helper.SingleLiveEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -30,11 +30,11 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
     private val _errorEvent = SingleLiveEvent<Int>()
     val errorEvent: LiveData<Int> get() = _errorEvent
 
-    fun removeTask(id: Long){
+    fun removeTask(id: Long) {
         disposable += taskRepository.delete(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnError{ it.printStackTrace() }
+            .doOnError { it.printStackTrace() }
             .subscribe(/*todo states*/{
                 _removeTaskEvent.value = id
             }, {
@@ -47,7 +47,7 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
         disposable += taskRepository.insert(task)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnError{ it.printStackTrace() }
+            .doOnError { it.printStackTrace() }
             .subscribe(/*todo states*/{
                 _addTaskEvent.value = task.apply { id = it }
             }, {
@@ -59,7 +59,7 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
         disposable += taskRepository.getAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnError{ it.printStackTrace() }
+            .doOnError { it.printStackTrace() }
             .subscribe(/*todo states*/{
                 _fetchAllTasksEvent.value = it
             }, {

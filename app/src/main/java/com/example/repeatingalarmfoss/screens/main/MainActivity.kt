@@ -41,6 +41,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setupClicks()
+        setupViewModelSubscriptions()
+        setupTaskList()
+    }
+
+    private fun setupTaskList() {
+        tasksList.layoutManager = LinearLayoutManager(this)
+        tasksList.adapter = tasksAdapter
+        tasksViewModel.fetchTasks()
+    }
+
+    private fun setupClicks() {
         clicks += addTaskFab.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe {
@@ -60,11 +72,6 @@ class MainActivity : AppCompatActivity() {
                     .create()
                     .show()
             }
-        setupViewModelSubscriptions()
-
-        tasksList.layoutManager = LinearLayoutManager(this)
-        tasksList.adapter = tasksAdapter
-        tasksViewModel.fetchTasks()
     }
 
     private fun setupViewModelSubscriptions() {
