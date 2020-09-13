@@ -6,6 +6,10 @@ enum class RepeatingClassifier {
     DAY_OF_WEEK, DAY_OF_MONTH, EVERY_X_TIME_UNIT
 }
 
+enum class DayOfWeek {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+}
+
 class RepeatingClassifierConverter {
     @TypeConverter
     fun toRepeatingClassifier(value: String): RepeatingClassifier = enumValueOf(value)
