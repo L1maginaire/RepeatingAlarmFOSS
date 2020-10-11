@@ -12,21 +12,26 @@ import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.repeatingalarmfoss.ACTION_RING
 import com.example.repeatingalarmfoss.AlarmReceiver
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.db.DayOfWeek
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.extensions.inflate
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.helper.extensions.toast
+import com.example.repeatingalarmfoss.screens.NotifierService
+import com.example.repeatingalarmfoss.screens.NotifierService.Companion.ARG_TASK_TITLE
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -53,6 +58,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupClicks() {
+        clicks += addTaskFab2.clicks()
+            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .subscribe { ContextCompat.startForegroundService(this, Intent(this, NotifierService::class.java).apply { putExtra(ARG_TASK_TITLE, "some title") }) }
+
         clicks += addTaskFab.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe {
@@ -96,5 +105,17 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AlarmReceiver::class.java).apply { action = ACTION_RING }
             (getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(SystemClock.elapsedRealtime() + interval, PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
         } else throw IllegalStateException()
+    }
+
+    private fun runAlarmManager(dayOfWeek: DayOfWeek, hours: Int, minutes: Int, amPm: Int) {
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.DAY_OF_WEEK, dayOfWeek.ordinal)
+            set(Calendar.HOUR, hours)
+            set(Calendar.AM_PM, amPm)
+            set(Calendar.MINUTE, minutes)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+//        (getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,AlarmManager.INTERVAL_DAY * 7, PendingIntent.getActivity(this, 101, ))
     }
 }

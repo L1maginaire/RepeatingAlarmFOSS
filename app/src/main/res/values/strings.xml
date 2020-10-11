@@ -19,5 +19,7 @@
     <string name="time_unit_minute">Minute</string>
     <string name="time_unit_day">Day</string>
     <string name="hint_task_description">Task description</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
+    <string name="dismiss">Dismiss</string>
 
 </resources>
