@@ -1,13 +1,18 @@
 package com.example.repeatingalarmfoss
 
 import android.app.Application
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.repeatingalarmfoss.db.TaskRepository
 import com.example.repeatingalarmfoss.db.TasksDb
 
-class RepeatingAlarmApp: Application() {
+class RepeatingAlarmApp: Application(), LifecycleObserver {
+    var isAppInForeground = false
     lateinit var taskRepository: TaskRepository
 
     companion object { lateinit var INSTANCE: RepeatingAlarmApp }
@@ -21,6 +26,17 @@ class RepeatingAlarmApp: Application() {
 
     override fun onCreate() {
         super.onCreate()
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         taskRepository = Room.databaseBuilder(applicationContext, TasksDb::class.java, "database-name").addMigrations(migration1to2).build().taskRepository()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onAppBackgrounded() {
+        isAppInForeground = false
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onAppForegrounded() {
+        isAppInForeground = true
     }
 }
