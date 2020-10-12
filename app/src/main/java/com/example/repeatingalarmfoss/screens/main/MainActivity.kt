@@ -6,13 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.repeatingalarmfoss.ACTION_RING
@@ -25,17 +26,18 @@ import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.extensions.inflate
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.helper.extensions.toast
-import com.example.repeatingalarmfoss.screens.NotifierService
-import com.example.repeatingalarmfoss.screens.NotifierService.Companion.ARG_TASK_TITLE
+import com.example.repeatingalarmfoss.screens.DatePickerFragment
+import com.example.repeatingalarmfoss.screens.TimePickerFragment
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DatePickerFragment.OnDateSetCallback, TimePickerFragment.OnTimeSetCallback {
     private val clicks = CompositeDisposable()
     private val tasksViewModel: TasksViewModel by viewModels()
     private val tasksAdapter = TasksAdapter(::removeTask)
@@ -59,29 +61,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupClicks() {
-        clicks += addTaskFab2.clicks()
-            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe {  }
-
         clicks += addTaskFab.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe {
-                val dialogView = (root as ViewGroup).inflate(R.layout.dialog_creating_task)
-                AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.add_new_task))
-                    .setView(dialogView)
-                    .setPositiveButton(android.R.string.ok) { dialog, _ ->
-                        dialog.dismiss().also {
-                            val description = dialogView.findViewById<EditText>(R.id.etTaskDescription).text.toString()
-                            val repeatingClassifier: RepeatingClassifier = RepeatingClassifier.DAY_OF_WEEK /*fixme*/
-                            val repeatingClassifierValue: String = dialogView.findViewById<Spinner>(R.id.spinnerDayOfWeek).selectedItem.toString()
-                            tasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue)
-                        }
-                    }
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .create()
-                    .show()
-            }
+            .subscribe { showAddTaskDialog() }
     }
 
     private fun setupViewModelSubscriptions() {
@@ -122,4 +104,32 @@ class MainActivity : AppCompatActivity() {
         }
 //        (getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,AlarmManager.INTERVAL_DAY * 7, PendingIntent.getActivity(this, 101, ))
     }
+
+    private fun showAddTaskDialog(){
+        val dialogView = (root as ViewGroup).inflate(R.layout.dialog_creating_task)
+        clicks += dialogView.findViewById<Button>(R.id.initialDatePickerButton).clicks().throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).subscribe {
+            DatePickerFragment(this).show(supportFragmentManager, "datepicker")
+        }
+        clicks += dialogView.findViewById<Button>(R.id.notificationTimeSetButton).clicks().throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).subscribe {
+            TimePickerFragment(this).show(supportFragmentManager, "timepicker")
+        }
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.add_new_task))
+            .setView(dialogView)
+            .setPositiveButton(android.R.string.ok) { dialog, _ ->
+                dialog.dismiss().also {
+                    val description = dialogView.findViewById<EditText>(R.id.etTaskDescription).text.toString()
+                    val repeatingClassifier: RepeatingClassifier = RepeatingClassifier.DAY_OF_WEEK /*fixme*/
+                    val repeatingClassifierValue: String = dialogView.findViewById<Spinner>(R.id.spinnerDayOfWeek).selectedItem.toString()
+                    Log.d("ABC", "abc ${SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.UK).format(tasksViewModel.initialTimeForNewAddingTask)}")
+//                    tasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue, tasksViewModel.initialTimeForNewAddingTask)
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .create()
+            .show()
+    }
+
+    override fun onDateSet(year: Int, month: Int, day: Int) = tasksViewModel.persistAddingTasksInitialDate(year, month, day)
+    override fun onTimeSet(hourOfDay: Int, minute: Int) = tasksViewModel.persistAddingTasksTime(hourOfDay, minute)
 }

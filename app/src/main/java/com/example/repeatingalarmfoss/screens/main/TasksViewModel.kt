@@ -12,11 +12,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 class TasksViewModel(app: Application) : AndroidViewModel(app) {
     private val taskRepository = (app as RepeatingAlarmApp).taskRepository
     private val disposable = CompositeDisposable()
     override fun onCleared() = disposable.clear()
+
+    /*fixme move to repo?*/var initialTimeForNewAddingTask: Long = 0L
 
     private val _addTaskEvent = SingleLiveEvent<Task>()
     val addTaskEvent: LiveData<Task> get() = _addTaskEvent
@@ -42,7 +45,7 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
             })
     }
 
-    fun addTask(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String?) {
+    fun addTask(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String?, runSince: Long) {
         val task = Task(description, repeatingClassifier, repeatingClassifierValue)
         disposable += taskRepository.insert(task)
             .subscribeOn(Schedulers.io())
@@ -65,5 +68,23 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
             }, {
                 _errorEvent.value = R.string.db_error
             })
+    }
+
+    /*fixme to usecase?*/
+    fun persistAddingTasksInitialDate(year: Int, month: Int, day: Int) {
+        initialTimeForNewAddingTask = Calendar.getInstance().apply {
+            set(Calendar.YEAR, year)
+            set(Calendar.MONTH, month)
+            set(Calendar.DAY_OF_MONTH, day)
+        }.timeInMillis
+    }
+
+    /*fixme to usecase?*/
+    fun persistAddingTasksTime(hourOfDay: Int, minute: Int) {
+        initialTimeForNewAddingTask = Calendar.getInstance().apply {
+            timeInMillis = initialTimeForNewAddingTask
+            set(Calendar.HOUR_OF_DAY, hourOfDay)
+            set(Calendar.MINUTE, minute)
+        }.timeInMillis
     }
 }
