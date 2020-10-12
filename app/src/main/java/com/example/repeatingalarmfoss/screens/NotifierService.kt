@@ -9,7 +9,6 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.Build
-import android.os.CountDownTimer
 import android.os.IBinder
 import android.os.Vibrator
 import android.provider.Settings
@@ -32,6 +31,7 @@ class NotifierService : Service() {
 
     private var player: MediaPlayer? = null
     private var vibrator: Vibrator? = null
+    private val vibrationPattern = longArrayOf(0, 300, 300, 300)
 
     private fun ring() {
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
@@ -55,7 +55,7 @@ class NotifierService : Service() {
                     }
                 }
                 if ((getSystemService(AUDIO_SERVICE) as? AudioManager)?.ringerMode != AudioManager.RINGER_MODE_SILENT) {
-                    vibrator?.vibrate(longArrayOf(0, 300, 300, 300), 0)
+                    vibrator?.vibrate(vibrationPattern, 0)
                 }
             }
         }

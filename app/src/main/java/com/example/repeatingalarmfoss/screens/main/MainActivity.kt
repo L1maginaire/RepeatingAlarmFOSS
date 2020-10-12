@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.repeatingalarmfoss.ACTION_RING
+import com.example.repeatingalarmfoss.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.AlarmReceiver
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.db.DayOfWeek
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupClicks() {
         clicks += addTaskFab2.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe { ContextCompat.startForegroundService(this, Intent(this, NotifierService::class.java).apply { putExtra(ARG_TASK_TITLE, "some title") }) }
+            .subscribe {  }
 
         clicks += addTaskFab.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewModelSubscriptions() {
         tasksViewModel.addTaskEvent.observe(this, Observer { task ->
-            runAlarmManager(task.repeatingClassifierValue!!.toLong()) /*fixme*/
+            runAlarmManager(task.repeatingClassifierValue!!.toLong(), task.description) /*fixme*/
             tasksAdapter.addNewTask(task)
         })
         tasksViewModel.removeTaskEvent.observe(this, Observer { id ->
@@ -99,10 +100,13 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun runAlarmManager(interval: Long) {
+    private fun runAlarmManager(interval: Long, title: String) {
         val startTime = SystemClock.elapsedRealtime() + interval
         if (System.currentTimeMillis() < startTime) {
-            val intent = Intent(this, AlarmReceiver::class.java).apply { action = ACTION_RING }
+            val intent = Intent(this, AlarmReceiver::class.java).apply {
+                action = ACTION_RING
+                putExtra(ALARM_ARG_TITLE, title)
+            }
             (getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(SystemClock.elapsedRealtime() + interval, PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
         } else throw IllegalStateException()
     }
