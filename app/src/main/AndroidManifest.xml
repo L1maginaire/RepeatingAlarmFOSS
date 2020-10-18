@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".RepeatingAlarmApp"
@@ -21,6 +22,7 @@
 
         <activity
             android:name=".screens.AlarmActivity"
+            android:showOnLockScreen="true"
             android:label="@string/title_activity_alarm" />
 
         <activity android:name=".screens.main.MainActivity">
