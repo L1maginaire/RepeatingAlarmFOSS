@@ -134,20 +134,8 @@ class MainActivity : AppCompatActivity(), DatePickerFragment.OnDateSetCallback, 
             PendingIntent.getActivity(this, 0, Intent(this, AlarmActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP) }, 0))
     }
 
-
-    private fun runAlarmManager(dayOfWeek: DayOfWeek, hours: Int, minutes: Int, amPm: Int) {
-        val calendar = Calendar.getInstance().apply {
-            set(Calendar.DAY_OF_WEEK, dayOfWeek.ordinal)
-            set(Calendar.HOUR, hours)
-            set(Calendar.AM_PM, amPm)
-            set(Calendar.MINUTE, minutes)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-//        (getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,AlarmManager.INTERVAL_DAY * 7, PendingIntent.getActivity(this, 101, ))
-    }
-
     private fun showAddTaskDialog() {
+        var weekBitSet = BitSet(7)
         val dialogView = (root as ViewGroup).inflate(R.layout.dialog_creating_task)
         clicks += dialogView.findViewById<Button>(R.id.initialDatePickerButton).clicks()
             .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())

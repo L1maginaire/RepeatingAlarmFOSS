@@ -65,46 +65,10 @@
         android:textOff="SAT"
         />
 
-   <!-- <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_every"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp" />
-
-        <EditText
-            android:id="@+id/etTimeUnitValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="1"
-            tools:ignore="HardcodedText,LabelFor"
-            android:importantForAutofill="no"
-            android:inputType="number" />
-
-        <Spinner
-            android:id="@+id/spinnerTimeUnit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/time_units"
-            />
-    </LinearLayout>-->
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <Button
-            android:id="@+id/initialDatePickerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Initial Date" />
 
         <TextView
             android:id="@+id/timeSetValueTextView"
