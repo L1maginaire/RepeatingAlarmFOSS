@@ -14,6 +14,57 @@
         tools:text="Some description">
     </EditText>
 
+    <ToggleButton
+        android:id="@+id/toggleSun"
+        android:textOn="SUN"
+        android:textOff="SUN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <ToggleButton
+        android:id="@+id/toggleMon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="MON"
+        android:textOff="MON"
+        />
+    <ToggleButton
+        android:id="@+id/toggleTue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="TUE"
+        android:textOff="TUE"
+
+        />
+    <ToggleButton
+        android:id="@+id/toggleWed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="WED"
+        android:textOff="WED"
+        />
+    <ToggleButton
+        android:id="@+id/toggleThu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="THU"
+        android:textOff="THU"
+        />
+    <ToggleButton
+        android:id="@+id/toggleFri"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="FRI"
+        android:textOff="FRI"
+        />
+    <ToggleButton
+        android:id="@+id/toggleSat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="SAT"
+        android:textOff="SAT"
+        />
+
    <!-- <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,23 +94,6 @@
             />
     </LinearLayout>-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_every"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp" />
-
-        <Spinner
-            android:id="@+id/spinnerDayOfWeek"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/days_of_week"
-            />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -72,6 +106,12 @@
             android:layout_height="wrap_content"
             android:text="Initial Date" />
 
+        <TextView
+            android:id="@+id/timeSetValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="11:11"
+            />
         <Button
             android:id="@+id/notificationTimeSetButton"
             android:layout_width="wrap_content"

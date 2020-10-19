@@ -21,8 +21,8 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
 
     /*fixme move to repo?*/var initialTimeForNewAddingTask: Long = 0L
 
-    private val _addTaskEvent = SingleLiveEvent<Task>()
-    val addTaskEvent: LiveData<Task> get() = _addTaskEvent
+    private val _addTaskEvent = SingleLiveEvent<Pair<Task, Long>>()
+    val addTaskEvent: LiveData<Pair<Task, Long>> get() = _addTaskEvent
 
     private val _removeTaskEvent = SingleLiveEvent<Long>()
     val removeTaskEvent: LiveData<Long> get() = _removeTaskEvent
@@ -45,14 +45,15 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
             })
     }
 
-    fun addTask(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String?, runSince: Long) {
+    fun addTask(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String?) {
         val task = Task(description, repeatingClassifier, repeatingClassifierValue)
         disposable += taskRepository.insert(task)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError { it.printStackTrace() }
             .subscribe(/*todo states*/{
-                _addTaskEvent.value = task.apply { id = it }
+                _addTaskEvent.value = task.apply { id = it } to initialTimeForNewAddingTask
+                initialTimeForNewAddingTask = 0L
             }, {
                 _errorEvent.value = R.string.db_error
             })

@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import java.util.*
@@ -16,9 +17,9 @@ class TimePickerFragment(private val onTimeSetCallback: OnTimeSetCallback) : Dia
         return TimePickerDialog(activity, this, hour, minute, DateFormat.is24HourFormat(activity))
     }
 
-    override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) = onTimeSetCallback.onTimeSet(hourOfDay, minute)
+    override fun onTimeSet(view: TimePicker, hourOfDay: Int, minutes: Int) = onTimeSetCallback.onTimeSet(hourOfDay, minutes)
 
     interface OnTimeSetCallback{
-        fun onTimeSet(hourOfDay: Int, minute: Int)
+        fun onTimeSet(hourOfDay: Int, minutes: Int)
     }
 }

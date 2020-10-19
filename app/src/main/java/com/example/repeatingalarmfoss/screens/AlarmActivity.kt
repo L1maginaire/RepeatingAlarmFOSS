@@ -40,34 +40,34 @@ class AlarmActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     private fun turnOnScreen() {
         wakeLock.acquire(10 * 60 * 1000L)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setTurnScreenOn(true)
-            setShowWhenLocked(true)
-            (getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager).requestDismissKeyguard(this, null)
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+//            setTurnScreenOn(true)
+//            setShowWhenLocked(true)
+//            (getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager).requestDismissKeyguard(this, null)
+//        } else {
             window.apply {
                 addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
                 addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
                 addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
                 addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
+//            }
         }
     }
 
     @Suppress("DEPRECATION")
     private fun dimScreen() {
         wakeLock.release()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setTurnScreenOn(false)
-            setShowWhenLocked(false)
-            /*todo how to properly lock?!*/
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+//            setTurnScreenOn(false)
+//            setShowWhenLocked(false)
+//            /*todo how to properly lock?!*/
+//        } else {
             window.apply {
                 clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
                 clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
                 clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
                 clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
+//            }
         }
     }
 }

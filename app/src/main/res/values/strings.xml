@@ -21,5 +21,6 @@
     <string name="hint_task_description">Task description</string>
     <string name="title_activity_alarm">AlarmActivity</string>
     <string name="dismiss">Dismiss</string>
+    <string name="toast_set_proper_time">Time of first launch is already left. Please, specify correct one.</string>
 
 </resources>
