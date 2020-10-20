@@ -81,25 +81,12 @@
             android:textOff="@string/short_day_of_week_sunday" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="15dp">
-
         <Button
             android:id="@+id/notificationTimeSetButton"
+            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
             android:text="@string/title_time" />
-
-        <TextView
-            android:id="@+id/timeSetValueTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="11:11" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

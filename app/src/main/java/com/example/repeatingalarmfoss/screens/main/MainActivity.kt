@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -24,7 +23,6 @@ import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
 import com.example.repeatingalarmfoss.helper.extensions.inflate
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.helper.extensions.toast
-import com.example.repeatingalarmfoss.screens.AlarmActivity
 import com.example.repeatingalarmfoss.screens.TimePickerFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.jakewharton.rxbinding3.view.clicks
@@ -39,13 +37,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import java.util.stream.IntStream
 
 class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
     private val clicks = CompositeDisposable()
     private val tasksViewModel: TasksViewModel by viewModels()
     private val tasksAdapter = TasksAdapter(::removeTask)
-    private lateinit var timeSetInDialogTextView: TextView
+    private lateinit var settingTimeButton: Button
 
     override fun onDestroy() = super.onDestroy().also { clicks.clear() }
 
@@ -104,9 +101,9 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
         val chosenWeekDays = FixedSizeBitSet(7)
         val dialogView = (root as ViewGroup).inflate(R.layout.dialog_creating_task)
         val descriptionEditText = dialogView.findViewById<TextInputEditText>(R.id.etTaskDescription)
-        timeSetInDialogTextView = dialogView.findViewById(R.id.timeSetValueTextView)
+        settingTimeButton = dialogView.findViewById(R.id.notificationTimeSetButton)
 
-        clicks += dialogView.findViewById<Button>(R.id.notificationTimeSetButton).clicks()
+        clicks += settingTimeButton.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe { TimePickerFragment(this).show(supportFragmentManager, TimePickerFragment::class.java.simpleName) } /*todo check isTimeLeft on time set?*/
 
@@ -119,7 +116,7 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
             dialogView.findViewById<ToggleButton>(R.id.toggleSat).checkedChanges(),
             dialogView.findViewById<ToggleButton>(R.id.toggleSun).checkedChanges(),
             Function7<Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Unit> { mon, tue, wed, thu, fri, sat, sun ->
-                chosenWeekDays.apply {/*todo to viewmodel\usecase, test*/
+                chosenWeekDays.apply {
                     if (mon) set(0) else clear(0)
                     if (tue) set(1) else clear(1)
                     if (wed) set(2) else clear(2)
@@ -137,13 +134,15 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
                 dialog.dismiss().also {
                     val description = descriptionEditText.text.toString()
                     val repeatingClassifier: RepeatingClassifier = RepeatingClassifier.DAY_OF_WEEK /*fixme*/
-                    val time = timeSetInDialogTextView.text.toString()
+                    val time = settingTimeButton.text.toString()
                     tasksViewModel.addTask(description, repeatingClassifier, chosenWeekDays.toString(), time)
                 }
             }
             .setNegativeButton(android.R.string.cancel, null)
             .create()
             .apply { show() }
+
+        settingTimeButton.text = SimpleDateFormat("HH:mm").format(Date())
 
         clicks += descriptionEditText.textChanges()
             .map { it.isBlank().not() }
@@ -152,6 +151,6 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
 
     @SuppressLint("SetTextI18n")
     override fun onTimeSet(hourOfDay: Int, minutes: Int) {
-        timeSetInDialogTextView.text = "$hourOfDay:$minutes"
+        settingTimeButton.text = "$hourOfDay:$minutes"
     }
 }
