@@ -7,7 +7,7 @@ class NextLaunchTimeCalculationUseCase {
     /** @param time - Timestamp, implies hours (in 24-hour format) and minutes divided with separator ":". For example, 21:12
 
      *  @param chosenWeekDaysBinaryString - String, denoting weekdays "chosen" or not in binary format, first index is Sunday, second is Monday, etc.
-        For example, input is: 0100001. This means, "chosen" days are Monday and Saturday
+        For example, argument value is: 0100001. This means, "chosen" days are Monday and Saturday
 
      *  @return - Timestamp in format of milliseconds, denoting time in future.
      * */
