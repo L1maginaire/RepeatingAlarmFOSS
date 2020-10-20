@@ -4,45 +4,48 @@ import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.DialogInterface.BUTTON_POSITIVE
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.repeatingalarmfoss.*
-import com.example.repeatingalarmfoss.db.DayOfWeek
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
+import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
 import com.example.repeatingalarmfoss.helper.extensions.inflate
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.helper.extensions.toast
 import com.example.repeatingalarmfoss.screens.AlarmActivity
-import com.example.repeatingalarmfoss.screens.DatePickerFragment
 import com.example.repeatingalarmfoss.screens.TimePickerFragment
+import com.google.android.material.textfield.TextInputEditText
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.checkedChanges
+import com.jakewharton.rxbinding3.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function7
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_creating_task.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.stream.IntStream
 
-class MainActivity : AppCompatActivity(), DatePickerFragment.OnDateSetCallback, TimePickerFragment.OnTimeSetCallback {
+class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
     private val clicks = CompositeDisposable()
     private val tasksViewModel: TasksViewModel by viewModels()
     private val tasksAdapter = TasksAdapter(::removeTask)
-
-    private lateinit var dialogsTimeSetTextView: TextView
+    private lateinit var timeSetInDialogTextView: TextView
 
     override fun onDestroy() = super.onDestroy().also { clicks.clear() }
 
@@ -69,9 +72,9 @@ class MainActivity : AppCompatActivity(), DatePickerFragment.OnDateSetCallback, 
     }
 
     private fun setupViewModelSubscriptions() {
-        tasksViewModel.addTaskEvent.observe(this, Observer { pair ->
-            runAlarmManager(pair.second, pair.first.description, pair.first.repeatingClassifierValue!!) /*fixme*/
-            tasksAdapter.addNewTask(pair.first)
+        tasksViewModel.addTaskEvent.observe(this, Observer { task ->
+            scheduleAlarmManager(task.description, task.repeatingClassifierValue, task.time)
+            tasksAdapter.addNewTask(task)
         })
         tasksViewModel.removeTaskEvent.observe(this, Observer { id ->
             tasksAdapter.removeTask(id)
@@ -84,101 +87,83 @@ class MainActivity : AppCompatActivity(), DatePickerFragment.OnDateSetCallback, 
         })
     }
 
-    private fun runAlarmManager(firstRun: Long, title: String, repeatingClassifierValue: String) {
-        val interval = repeatingClassifierValue.split("").filter { it.isEmpty().not() }.map { it.toInt() }
-        val nextDay: Int = interval.firstOrNull { it >= Calendar.getInstance().get(Calendar.DAY_OF_WEEK) } ?: interval.min()!!
-        val hours = SimpleDateFormat("HH:mm", Locale.UK).format(firstRun).split(":")[0].toInt()
-        val minutes = SimpleDateFormat("HH:mm", Locale.UK).format(firstRun).split(":")[1].toInt()
-        var nextLaunchTime = Calendar.getInstance().apply {
-            set(Calendar.DAY_OF_WEEK, nextDay)
-            set(Calendar.HOUR_OF_DAY, hours)
-            set(Calendar.MINUTE, minutes)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.timeInMillis
-
-        if (nextLaunchTime <= System.currentTimeMillis()) {
-            nextLaunchTime = Calendar.getInstance().apply {
-                set(Calendar.DAY_OF_WEEK, interval.firstOrNull { it > Calendar.getInstance().get(Calendar.DAY_OF_WEEK) }!!)
+    private fun scheduleAlarmManager(title: String, repeatingClassifierValue: String, time: String) {
+        val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+        val chosenWeekDays = FixedSizeBitSet.fromBinaryString(repeatingClassifierValue)
+        val hours = time.split(":")[0].toInt()
+        val minutes = time.split(":")[1].toInt()
+        val timeIsLeft = hours <= Calendar.getInstance().get(Calendar.HOUR_OF_DAY) && minutes <= Calendar.getInstance().get(Calendar.MINUTE)
+        val nextLaunchTime = Calendar.getInstance().apply {
+                set(Calendar.DAY_OF_WEEK, if(chosenWeekDays.get(today) && timeIsLeft) today+1 else today)
                 set(Calendar.HOUR_OF_DAY, hours)
                 set(Calendar.MINUTE, minutes)
                 set(Calendar.SECOND, 0)
                 set(Calendar.MILLISECOND, 0)
             }.timeInMillis
-        }
 
         val intent = Intent(this, AlarmReceiver::class.java).apply {
             action = ACTION_RING
             putExtra(ALARM_ARG_TITLE, title)
             putExtra(ALARM_ARG_INTERVAL, repeatingClassifierValue)
-            putExtra(ALARM_ARG_TIME, SimpleDateFormat("HH:mm", Locale.UK).format(firstRun))
+            putExtra(ALARM_ARG_TIME, time)
         }
         Log.d("ABC", "abc first launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}")
 
-//        val startTime = SystemClock.elapsedRealtime() + interval
-//        if (System.currentTimeMillis() < startTime) {
-//            (getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(SystemClock.elapsedRealtime() + interval, PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
         (getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(nextLaunchTime, PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
 
-    private fun scheduleAlarmForWeekDay(weekDay: Int, hours: Int, minutes: Int) {
-        Log.d("asb", "abcc $weekDay, $hours, $minutes")
-        val calendar = Calendar.getInstance().apply {/*todo to ViewModel*/
-            set(Calendar.DAY_OF_WEEK, weekDay)
-            set(Calendar.HOUR_OF_DAY, hours)
-            set(Calendar.MINUTE, minutes)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-        (getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY * 7,
-            PendingIntent.getActivity(this, 0, Intent(this, AlarmActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP) }, 0))
-    }
-
     private fun showAddTaskDialog() {
-        var weekBitSet = BitSet(7)
+        val chosenWeekDays = FixedSizeBitSet(7)
         val dialogView = (root as ViewGroup).inflate(R.layout.dialog_creating_task)
-        clicks += dialogView.findViewById<Button>(R.id.initialDatePickerButton).clicks()
-            .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe {
-                DatePickerFragment(this).show(supportFragmentManager, "datepicker")
-            }
+        val descriptionEditText = dialogView.findViewById<TextInputEditText>(R.id.etTaskDescription)
+        timeSetInDialogTextView = dialogView.findViewById(R.id.timeSetValueTextView)
+
         clicks += dialogView.findViewById<Button>(R.id.notificationTimeSetButton).clicks()
-            .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe {
-                TimePickerFragment(this).show(supportFragmentManager, "timepicker")
-            }
-        dialogsTimeSetTextView = dialogView.findViewById(R.id.timeSetValueTextView)
-        AlertDialog.Builder(this)
+            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .subscribe { TimePickerFragment(this).show(supportFragmentManager, TimePickerFragment::class.java.simpleName) }
+
+        clicks += Observable.combineLatest(
+            dialogView.findViewById<ToggleButton>(R.id.toggleMon).checkedChanges(),
+            dialogView.findViewById<ToggleButton>(R.id.toggleTue).checkedChanges(),
+            dialogView.findViewById<ToggleButton>(R.id.toggleWed).checkedChanges(),
+            dialogView.findViewById<ToggleButton>(R.id.toggleThu).checkedChanges(),
+            dialogView.findViewById<ToggleButton>(R.id.toggleFri).checkedChanges(),
+            dialogView.findViewById<ToggleButton>(R.id.toggleSat).checkedChanges(),
+            dialogView.findViewById<ToggleButton>(R.id.toggleSun).checkedChanges(),
+            Function7<Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Unit> { mon, tue, wed, thu, fri, sat, sun ->
+                chosenWeekDays.apply {/*todo to viewmodel\usecase, test*/
+                    if (mon) set(0) else clear(0)
+                    if (tue) set(1) else clear(1)
+                    if (wed) set(2) else clear(2)
+                    if (thu) set(3) else clear(3)
+                    if (fri) set(4) else clear(4)
+                    if (sat) set(5) else clear(5)
+                    if (sun) set(6) else clear(6)
+                }
+            }).subscribe()
+
+        val dialog: AlertDialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.add_new_task))
             .setView(dialogView)
             .setPositiveButton(android.R.string.ok) { dialog, _ ->
-//                if (tasksViewModel.initialTimeForNewAddingTask <= System.currentTimeMillis()) {
-//                    toast(getString(R.string.toast_set_proper_time))
-//                } else {
-                    dialog.dismiss().also {
-                        val description = dialogView.findViewById<EditText>(R.id.etTaskDescription).text.toString()
-                        val repeatingClassifier: RepeatingClassifier = RepeatingClassifier.DAY_OF_WEEK /*fixme*/
-                        val hoursAndMinutes = dialogsTimeSetTextView.text.split(":")
-                        var repeaingClassifierValue = ""
-                            /*todo RX-way*/
-                            if(dialogView.findViewById<ToggleButton>(R.id.toggleMon).isChecked) repeaingClassifierValue += "2"
-                            if(dialogView.findViewById<ToggleButton>(R.id.toggleTue).isChecked) repeaingClassifierValue += "3"
-                            if(dialogView.findViewById<ToggleButton>(R.id.toggleWed).isChecked) repeaingClassifierValue += "4"
-                            if(dialogView.findViewById<ToggleButton>(R.id.toggleThu).isChecked) repeaingClassifierValue += "5"
-                            if(dialogView.findViewById<ToggleButton>(R.id.toggleFri).isChecked) repeaingClassifierValue += "6"
-                            if(dialogView.findViewById<ToggleButton>(R.id.toggleSat).isChecked) repeaingClassifierValue += "7"
-                            if(dialogView.findViewById<ToggleButton>(R.id.toggleSun).isChecked) repeaingClassifierValue += "1"
-                        Log.d("y", "yay $repeaingClassifierValue")
-                        tasksViewModel.addTask(description, repeatingClassifier, repeaingClassifierValue)
-//                    }
+                dialog.dismiss().also {
+                    val description = descriptionEditText.text.toString()
+                    val repeatingClassifier: RepeatingClassifier = RepeatingClassifier.DAY_OF_WEEK /*fixme*/
+                    val time = timeSetInDialogTextView.text.toString()
+                    tasksViewModel.addTask(description, repeatingClassifier, chosenWeekDays.toString(), time)
                 }
             }
             .setNegativeButton(android.R.string.cancel, null)
             .create()
-            .show()
+            .apply { show() }
+
+        clicks += descriptionEditText.textChanges()
+            .map { it.isBlank().not() }
+            .subscribe { dialog.getButton(BUTTON_POSITIVE).isEnabled = it }
     }
 
-    override fun onDateSet(year: Int, month: Int, day: Int) = tasksViewModel.persistAddingTasksInitialDate(year, month, day)
     @SuppressLint("SetTextI18n")
-    override fun onTimeSet(hourOfDay: Int, minutes: Int) = tasksViewModel.persistAddingTasksTime(hourOfDay, minutes).also { dialogsTimeSetTextView.text = "$hourOfDay:$minutes" }
+    override fun onTimeSet(hourOfDay: Int, minutes: Int) {
+        timeSetInDialogTextView.text = "$hourOfDay:$minutes"
+    }
 }

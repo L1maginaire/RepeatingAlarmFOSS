@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
 import com.example.repeatingalarmfoss.screens.AlarmActivity
 import com.example.repeatingalarmfoss.screens.NotifierService
 import java.util.*
@@ -36,25 +37,19 @@ class AlarmReceiver : BroadcastReceiver() {
         }
 
         if (intent.action == ACTION_RING) {
-            val interval = intent.getStringExtra(ALARM_ARG_INTERVAL)?.split("")?.filter { it.isEmpty().not() }?.map { it.toInt() }
-            val nextDay: Int = interval!!.firstOrNull { it >= Calendar.getInstance().get(Calendar.DAY_OF_WEEK) } ?: interval.min()!!
-            var nextLaunchTime = Calendar.getInstance().apply {
-                set(Calendar.DAY_OF_WEEK, nextDay)
-                set(Calendar.HOUR_OF_DAY, intent.getStringExtra(ALARM_ARG_TIME).split(":")[0].toInt())
-                set(Calendar.MINUTE, intent.getStringExtra(ALARM_ARG_TIME).split(":")[1].toInt())
+            val time = intent.getStringExtra(ALARM_ARG_TIME)
+            val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+            val chosenWeekDays = FixedSizeBitSet.fromBinaryString(intent.getStringExtra(ALARM_ARG_INTERVAL))
+            val hours = time.split(":")[0].toInt()
+            val minutes = time.split(":")[1].toInt()
+            val timeIsLeft = hours <= Calendar.getInstance().get(Calendar.HOUR_OF_DAY) && minutes <= Calendar.getInstance().get(Calendar.MINUTE)
+            val nextLaunchTime = Calendar.getInstance().apply {
+                set(Calendar.DAY_OF_WEEK, if(chosenWeekDays.get(today) && timeIsLeft) today+1 else today)
+                set(Calendar.HOUR_OF_DAY, hours)
+                set(Calendar.MINUTE, minutes)
                 set(Calendar.SECOND, 0)
                 set(Calendar.MILLISECOND, 0)
             }.timeInMillis
-
-            if (nextLaunchTime <= System.currentTimeMillis()) {
-                nextLaunchTime = Calendar.getInstance().apply {
-                    set(Calendar.DAY_OF_WEEK, interval.firstOrNull { it > Calendar.getInstance().get(Calendar.DAY_OF_WEEK) }!!)
-                    set(Calendar.HOUR_OF_DAY, intent.getStringExtra(ALARM_ARG_TIME).split(":")[0].toInt())
-                    set(Calendar.MINUTE, intent.getStringExtra(ALARM_ARG_TIME).split(":")[1].toInt())
-                    set(Calendar.SECOND, 0)
-                    set(Calendar.MILLISECOND, 0)
-                }.timeInMillis
-            }
 
             val newIntent = Intent(context, AlarmReceiver::class.java).apply {
                 action = ACTION_RING
