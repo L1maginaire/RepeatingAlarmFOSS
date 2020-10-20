@@ -24,6 +24,5 @@ class NextLaunchTimeCalculationUseCase {
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
-
     }
 }
