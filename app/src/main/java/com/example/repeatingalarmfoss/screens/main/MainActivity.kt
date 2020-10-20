@@ -88,19 +88,7 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
     }
 
     private fun scheduleAlarmManager(title: String, repeatingClassifierValue: String, time: String) {
-        val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-        val chosenWeekDays = FixedSizeBitSet.fromBinaryString(repeatingClassifierValue)
-        val hours = time.split(":")[0].toInt()
-        val minutes = time.split(":")[1].toInt()
-        val timeIsLeft = hours <= Calendar.getInstance().get(Calendar.HOUR_OF_DAY) && minutes <= Calendar.getInstance().get(Calendar.MINUTE)
-        val nextLaunchTime = Calendar.getInstance().apply {
-                set(Calendar.DAY_OF_WEEK, if(chosenWeekDays.get(today) && timeIsLeft) today+1 else today)
-                set(Calendar.HOUR_OF_DAY, hours)
-                set(Calendar.MINUTE, minutes)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-            }.timeInMillis
-
+        val nextLaunchTime = tasksViewModel.getNextLaunchTime(time, repeatingClassifierValue)
         val intent = Intent(this, AlarmReceiver::class.java).apply {
             action = ACTION_RING
             putExtra(ALARM_ARG_TITLE, title)

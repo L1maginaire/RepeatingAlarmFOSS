@@ -17,6 +17,7 @@ import com.example.repeatingalarmfoss.screens.AlarmActivity
 import com.example.repeatingalarmfoss.screens.NotifierService
 import java.util.*
 import com.example.repeatingalarmfoss.helper.extensions.set
+import com.example.repeatingalarmfoss.screens.main.NextLaunchTimeCalculationUseCase
 import java.text.SimpleDateFormat
 
 const val ACTION_RING = "action_ring"
@@ -25,6 +26,7 @@ const val ALARM_ARG_TIME = "arg_time"
 const val ALARM_ARG_TITLE = "arg_title"
 
 class AlarmReceiver : BroadcastReceiver() {
+    private val nextLaunchTimeCalculationUseCase = NextLaunchTimeCalculationUseCase()
     override fun onReceive(context: Context, intent: Intent) {
         val title = intent.getStringExtra(ALARM_ARG_TITLE)
         if (Build.VERSION.SDK_INT >= 29 && RepeatingAlarmApp.INSTANCE.isAppInForeground.not()) {
@@ -37,20 +39,9 @@ class AlarmReceiver : BroadcastReceiver() {
         }
 
         if (intent.action == ACTION_RING) {
-            val time = intent.getStringExtra(ALARM_ARG_TIME)
-            val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-            val chosenWeekDays = FixedSizeBitSet.fromBinaryString(intent.getStringExtra(ALARM_ARG_INTERVAL))
-            val hours = time.split(":")[0].toInt()
-            val minutes = time.split(":")[1].toInt()
-            val timeIsLeft = hours <= Calendar.getInstance().get(Calendar.HOUR_OF_DAY) && minutes <= Calendar.getInstance().get(Calendar.MINUTE)
-            val nextLaunchTime = Calendar.getInstance().apply {
-                set(Calendar.DAY_OF_WEEK, if(chosenWeekDays.get(today) && timeIsLeft) today+1 else today)
-                set(Calendar.HOUR_OF_DAY, hours)
-                set(Calendar.MINUTE, minutes)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-            }.timeInMillis
-
+            val time = intent.getStringExtra(ALARM_ARG_TIME)!!
+            val repeatingClassifierValue = intent.getStringExtra(ALARM_ARG_INTERVAL)!!
+            val nextLaunchTime = nextLaunchTimeCalculationUseCase.getNexLaunchTime(time, repeatingClassifierValue)
             val newIntent = Intent(context, AlarmReceiver::class.java).apply {
                 action = ACTION_RING
                 putExtra(ALARM_ARG_INTERVAL, intent.getStringExtra(ALARM_ARG_INTERVAL))

@@ -15,6 +15,7 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 class TasksViewModel(app: Application) : AndroidViewModel(app) {
+    private val nextLaunchTimeCalculationUseCase = NextLaunchTimeCalculationUseCase()
     private val taskRepository = (app as RepeatingAlarmApp).taskRepository
     private val disposable = CompositeDisposable()
     override fun onCleared() = disposable.clear()
@@ -67,4 +68,6 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
                 _errorEvent.value = R.string.db_error
             })
     }
+
+    fun getNextLaunchTime(time: String, chosenWeekDaysBinaryString: String): Long = nextLaunchTimeCalculationUseCase.getNexLaunchTime(time, chosenWeekDaysBinaryString)
 }
