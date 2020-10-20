@@ -143,6 +143,8 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
             .apply { show() }
 
         settingTimeButton.text = SimpleDateFormat("HH:mm").format(Date())
+        dialogView.findViewById<Button>(R.id.buttonTimePicker).text = SimpleDateFormat("HH:mm").format(Date())
+        dialogView.findViewById<Button>(R.id.buttonDatePicker).text = SimpleDateFormat("dd MMM yyyy").format(Date())
 
         clicks += descriptionEditText.textChanges()
             .map { it.isBlank().not() }
