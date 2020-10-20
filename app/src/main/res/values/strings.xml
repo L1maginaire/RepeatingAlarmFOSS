@@ -3,6 +3,12 @@
     <string name="add_new_task">Add new task</string>
     <string name="db_error">Something wrong with database!</string>
     <string name="title_every">Every</string>
+    <string name="hint_task_description">Task description</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="toast_set_proper_time">Time of first launch is already left. Please, specify correct one.</string>
+    <string name="title_time">Time</string>
+    <string name="title_start_from">Start from</string>
 
     <!--day of week-->
     <string name="day_of_week_monday">Monday</string>
@@ -23,14 +29,8 @@
     <string name="short_day_of_week_sunday">SUN</string>
 
     <!--time unit-->
-    <string name="time_unit_hour">Hour</string>
-    <string name="time_unit_second">Second</string>
-    <string name="time_unit_minute">Minute</string>
-    <string name="time_unit_day">Day</string>
-    <string name="hint_task_description">Task description</string>
-    <string name="title_activity_alarm">AlarmActivity</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="toast_set_proper_time">Time of first launch is already left. Please, specify correct one.</string>
-    <string name="title_time">Time</string>
-
+    <string name="time_unit_hour">Hours</string>
+    <string name="time_unit_second">Seconds</string>
+    <string name="time_unit_minute">Minutes</string>
+    <string name="time_unit_day">Days</string>
 </resources>

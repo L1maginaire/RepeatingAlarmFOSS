@@ -100,4 +100,50 @@
             android:layout_height="wrap_content"
             tools:text="11:11" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_every" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/etEveryXValue"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:inputType="number"
+                tools:ignore="HardcodedText" />
+
+            <Spinner
+                android:id="@+id/spinnerTimeUnits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/time_units" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_start_from" />
+
+        <Button
+            android:id="@+id/buttonTimePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="09:12"
+            />
+        <Button
+            android:id="@+id/buttonDatePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="07 June 2020"
+            />
+    </LinearLayout>
 </LinearLayout>
