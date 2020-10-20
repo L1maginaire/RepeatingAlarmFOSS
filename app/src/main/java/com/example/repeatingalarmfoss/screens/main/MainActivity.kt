@@ -34,6 +34,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Function7
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_creating_task.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
     private val clicks = CompositeDisposable()
     private val tasksViewModel: TasksViewModel by viewModels()
     private val tasksAdapter = TasksAdapter(::removeTask)
-    private lateinit var settingTimeButton: Button
+    private lateinit var timePickerButton: Button
 
     override fun onDestroy() = super.onDestroy().also { clicks.clear() }
 
@@ -101,9 +102,9 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
         val chosenWeekDays = FixedSizeBitSet(7)
         val dialogView = (root as ViewGroup).inflate(R.layout.dialog_creating_task)
         val descriptionEditText = dialogView.findViewById<TextInputEditText>(R.id.etTaskDescription)
-        settingTimeButton = dialogView.findViewById(R.id.notificationTimeSetButton)
+        timePickerButton = dialogView.findViewById(R.id.notificationTimeSetButton)
 
-        clicks += settingTimeButton.clicks()
+        clicks += timePickerButton.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe { TimePickerFragment(this).show(supportFragmentManager, TimePickerFragment::class.java.simpleName) } /*todo check isTimeLeft on time set?*/
 
@@ -134,15 +135,17 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
                 dialog.dismiss().also {
                     val description = descriptionEditText.text.toString()
                     val repeatingClassifier: RepeatingClassifier = RepeatingClassifier.DAY_OF_WEEK /*fixme*/
-                    val time = settingTimeButton.text.toString()
+                    val time = timePickerButton.text.toString()
                     tasksViewModel.addTask(description, repeatingClassifier, chosenWeekDays.toString(), time)
                 }
+
+                Log.d("yay", "yayy ${SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse(dialogView.findViewById<Button>(R.id.buttonDatePicker).text.toString() + " " + timePickerButton.text.toString()).time}")
             }
             .setNegativeButton(android.R.string.cancel, null)
             .create()
             .apply { show() }
 
-        settingTimeButton.text = SimpleDateFormat("HH:mm").format(Date())
+        timePickerButton.text = SimpleDateFormat("HH:mm").format(Date())
         dialogView.findViewById<Button>(R.id.buttonTimePicker).text = SimpleDateFormat("HH:mm").format(Date())
         dialogView.findViewById<Button>(R.id.buttonDatePicker).text = SimpleDateFormat("dd MMM yyyy").format(Date())
 
@@ -153,6 +156,6 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
 
     @SuppressLint("SetTextI18n")
     override fun onTimeSet(hourOfDay: Int, minutes: Int) {
-        settingTimeButton.text = "$hourOfDay:$minutes"
+        timePickerButton.text = "$hourOfDay:$minutes"
     }
 }
