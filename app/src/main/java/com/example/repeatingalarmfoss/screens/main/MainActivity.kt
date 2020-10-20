@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
 
         clicks += dialogView.findViewById<Button>(R.id.notificationTimeSetButton).clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe { TimePickerFragment(this).show(supportFragmentManager, TimePickerFragment::class.java.simpleName) }
+            .subscribe { TimePickerFragment(this).show(supportFragmentManager, TimePickerFragment::class.java.simpleName) } /*todo check isTimeLeft on time set?*/
 
         clicks += Observable.combineLatest(
             dialogView.findViewById<ToggleButton>(R.id.toggleMon).checkedChanges(),
