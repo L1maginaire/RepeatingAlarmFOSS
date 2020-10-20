@@ -13,6 +13,15 @@
     <string name="day_of_week_saturday">Saturday</string>
     <string name="day_of_week_sunday">Sunday</string>
 
+    <!--day of week (short)-->
+    <string name="short_day_of_week_monday">MON</string>
+    <string name="short_day_of_week_tuesday">TUE</string>
+    <string name="short_day_of_week_wednesday">WED</string>
+    <string name="short_day_of_week_thursday">THU</string>
+    <string name="short_day_of_week_friday">FRI</string>
+    <string name="short_day_of_week_saturday">SAT</string>
+    <string name="short_day_of_week_sunday">SUN</string>
+
     <!--time unit-->
     <string name="time_unit_hour">Hour</string>
     <string name="time_unit_second">Second</string>
@@ -22,5 +31,6 @@
     <string name="title_activity_alarm">AlarmActivity</string>
     <string name="dismiss">Dismiss</string>
     <string name="toast_set_proper_time">Time of first launch is already left. Please, specify correct one.</string>
+    <string name="title_time">Time</string>
 
 </resources>
