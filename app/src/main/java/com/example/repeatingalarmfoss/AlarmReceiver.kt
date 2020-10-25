@@ -13,6 +13,7 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
+import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.screens.AlarmActivity
 import com.example.repeatingalarmfoss.screens.NotifierService
 import java.util.*
@@ -26,6 +27,7 @@ const val ALARM_ARG_TIME = "arg_time"
 const val ALARM_ARG_TITLE = "arg_title"
 
 class AlarmReceiver : BroadcastReceiver() {
+    private val logger = FlightRecorder.getInstance()
     private val nextLaunchTimeCalculationUseCase = NextLaunchTimeCalculationUseCase()
     override fun onReceive(context: Context, intent: Intent) {
         val title = intent.getStringExtra(ALARM_ARG_TITLE)
@@ -48,7 +50,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 putExtra(ALARM_ARG_TITLE, title)
                 putExtra(ALARM_ARG_TIME, intent.getStringExtra(ALARM_ARG_TIME))
             }
-            Log.d("ABC", "abc next launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}")
+            logger.d(true) {"next launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}"}
             (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(nextLaunchTime, PendingIntent.getBroadcast(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT))
         }
     }

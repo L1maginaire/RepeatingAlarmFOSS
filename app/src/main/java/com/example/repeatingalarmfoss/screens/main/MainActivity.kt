@@ -2,6 +2,7 @@ package com.example.repeatingalarmfoss.screens.main
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.DatePickerDialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.DialogInterface.BUTTON_POSITIVE
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.DatePicker
 import android.widget.ToggleButton
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -20,9 +22,11 @@ import com.example.repeatingalarmfoss.*
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
+import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.inflate
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.helper.extensions.toast
+import com.example.repeatingalarmfoss.screens.DatePickerFragment
 import com.example.repeatingalarmfoss.screens.TimePickerFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.jakewharton.rxbinding3.view.clicks
@@ -31,6 +35,8 @@ import com.jakewharton.rxbinding3.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import io.reactivex.functions.Function7
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*
@@ -39,11 +45,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
+class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
+    private val logger = FlightRecorder.getInstance()
     private val clicks = CompositeDisposable()
     private val tasksViewModel: TasksViewModel by viewModels()
     private val tasksAdapter = TasksAdapter(::removeTask)
     private lateinit var timePickerButton: Button
+    private lateinit var datePickerButton: Button
 
     override fun onDestroy() = super.onDestroy().also { clicks.clear() }
 
@@ -93,7 +101,7 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
             putExtra(ALARM_ARG_INTERVAL, repeatingClassifierValue)
             putExtra(ALARM_ARG_TIME, time)
         }
-        Log.d("ABC", "abc first launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}")
+        logger.d(true) { "first launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}" }
 
         (getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(nextLaunchTime, PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
@@ -102,11 +110,16 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
         val chosenWeekDays = FixedSizeBitSet(7)
         val dialogView = (root as ViewGroup).inflate(R.layout.dialog_creating_task)
         val descriptionEditText = dialogView.findViewById<TextInputEditText>(R.id.etTaskDescription)
-        timePickerButton = dialogView.findViewById(R.id.notificationTimeSetButton)
+        timePickerButton = dialogView.findViewById(R.id.buttonTimePicker)
+        datePickerButton = dialogView.findViewById(R.id.buttonDatePicker)
 
         clicks += timePickerButton.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe { TimePickerFragment(this).show(supportFragmentManager, TimePickerFragment::class.java.simpleName) } /*todo check isTimeLeft on time set?*/
+
+        clicks += datePickerButton.clicks()
+            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .subscribe { DatePickerFragment(this).show(supportFragmentManager, TimePickerFragment::class.java.simpleName) } /*todo check isTimeLeft on time set?*/
 
         clicks += Observable.combineLatest(
             dialogView.findViewById<ToggleButton>(R.id.toggleMon).checkedChanges(),
@@ -138,24 +151,30 @@ class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback {
                     val time = timePickerButton.text.toString()
                     tasksViewModel.addTask(description, repeatingClassifier, chosenWeekDays.toString(), time)
                 }
-
-                Log.d("yay", "yayy ${SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse(dialogView.findViewById<Button>(R.id.buttonDatePicker).text.toString() + " " + timePickerButton.text.toString()).time}")
+                logger.d(true) { "chosen date in dialog: ${SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse(dialogView.findViewById<Button>(R.id.buttonDatePicker).text.toString() + " " + timePickerButton.text.toString())}" }
             }
             .setNegativeButton(android.R.string.cancel, null)
             .create()
             .apply { show() }
 
         timePickerButton.text = SimpleDateFormat("HH:mm").format(Date())
-        dialogView.findViewById<Button>(R.id.buttonTimePicker).text = SimpleDateFormat("HH:mm").format(Date())
-        dialogView.findViewById<Button>(R.id.buttonDatePicker).text = SimpleDateFormat("dd MMM yyyy").format(Date())
+        datePickerButton.text = SimpleDateFormat("dd MMM yyyy").format(Date())
 
-        clicks += descriptionEditText.textChanges()
-            .map { it.isBlank().not() }
+        clicks += Observable.combineLatest(datePickerButton.textChanges(),
+            timePickerButton.textChanges(),
+            descriptionEditText.textChanges().map { it.isBlank().not() },
+            Function3 <CharSequence, CharSequence, Boolean, Boolean> { date, time, descriptionIsNotEmpty ->
+                SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse("$date $time")!!.time > System.currentTimeMillis()+60000L && descriptionIsNotEmpty
+            })
             .subscribe { dialog.getButton(BUTTON_POSITIVE).isEnabled = it }
     }
 
     @SuppressLint("SetTextI18n")
     override fun onTimeSet(hourOfDay: Int, minutes: Int) {
         timePickerButton.text = "$hourOfDay:$minutes"
+    }
+
+    override fun onDateSet(year: Int, month: Int, day: Int) {
+        datePickerButton.text = SimpleDateFormat("dd MMM yyyy").format(Date(year, month, day)) /*fixme: here's the problem with year 3920?*/
     }
 }
