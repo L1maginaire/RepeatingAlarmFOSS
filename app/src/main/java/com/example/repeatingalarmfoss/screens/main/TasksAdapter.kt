@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repeatingalarmfoss.databinding.ItemTaskBinding
 import com.example.repeatingalarmfoss.db.Task
+import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
 import com.jakewharton.rxbinding3.view.longClicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -28,10 +29,11 @@ class TasksAdapter(private val longClickCallback: (id: Long) -> Unit) : Recycler
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) = clicks.clear()
     override fun getItemCount() = tasks.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(ItemTaskBinding.inflate(LayoutInflater.from(parent.context), parent, false).root)
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding?.task = tasks[position]
         clicks += holder.itemView.longClicks()
-            .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .map { tasks[position].id }
             .subscribe { longClickCallback.invoke(it) }
     }

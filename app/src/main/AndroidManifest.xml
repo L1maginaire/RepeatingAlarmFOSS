@@ -25,7 +25,7 @@
             android:showOnLockScreen="true"
             android:label="@string/title_activity_alarm" />
 
-        <activity android:name=".screens.main.MainActivity">
+        <activity android:name=".screens.main.TaskListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

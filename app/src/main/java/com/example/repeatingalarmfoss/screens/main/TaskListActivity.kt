@@ -45,7 +45,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
+class TaskListActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
     private val logger = FlightRecorder.getInstance()
     private val clicks = CompositeDisposable()
     private val tasksViewModel: TasksViewModel by viewModels()
