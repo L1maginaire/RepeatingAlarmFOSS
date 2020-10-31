@@ -38,7 +38,7 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = customView
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        customView = LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_creating_task, null)
+        customView = LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_creating_task, null as ViewGroup?)
         return AlertDialog.Builder(requireActivity())
             .setTitle(getString(R.string.add_new_task))
             .setView(customView)
@@ -56,7 +56,7 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
                         repeatingClassifier = RepeatingClassifier.EVERY_X_TIME_UNIT
                         val repeatingClassifierValue = etEveryXValue.text
 
-                        logger.d(true) { "chosen date in dialog: ${SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())}" }
+                        logger.d(true) { "chosen date in dialog: ${SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())}" }
 
                         timeSettingCallback.onTimeSet(description, repeatingClassifier, repeatingClassifierValue.toString()+currentSpinnerValue,
                             SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString()).time.toString())
@@ -66,8 +66,8 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
             .setNegativeButton(android.R.string.cancel, null)
             .create().apply {
                 setOnShowListener {
-                    buttonTimePicker.text = SimpleDateFormat("HH:mm").format(Date())
-                    buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy").format(Date())
+                    buttonTimePicker.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                    buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
                     setupClicks(chosenWeekDays)
                 }
             }
@@ -117,7 +117,7 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
     }
 
     override fun onDateSet(year: Int, month: Int, day: Int) {
-        buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy").format(Date(year, month, day)) /*fixme: here's the problem with year 3920?*/
+        buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(year, month, day)) /*fixme: here's the problem with year 3920?*/
     }
 
     interface TimeSettingCallback {

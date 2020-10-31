@@ -1,13 +1,16 @@
 package com.example.repeatingalarmfoss.screens.main
 
+import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
 import com.example.repeatingalarmfoss.helper.extensions.LongExt.daysToMilliseconds
 import com.example.repeatingalarmfoss.helper.extensions.LongExt.hoursToMilliseconds
 import com.example.repeatingalarmfoss.helper.extensions.LongExt.minutesToMilliseconds
-import com.example.repeatingalarmfoss.helper.extensions.LongExt.secondsToMilliseconds
 import java.util.*
 
 class NextLaunchTimeCalculationUseCase {
+    private val appContext = RepeatingAlarmApp.INSTANCE.applicationContext
+
     /** @param time - Timestamp, implies hours (in 24-hour format) and minutes divided with separator ":". For example, 21:12
 
      *  @param chosenWeekDaysBinaryString - String, denoting weekdays "chosen" or not in binary format, first index is Sunday, second is Monday, etc.
@@ -31,10 +34,9 @@ class NextLaunchTimeCalculationUseCase {
     }
 
     fun getNextLaunchTime(currentTime: Long, interval: Int, classifier: String): Long = when (classifier) {
-        "Seconds" -> currentTime + secondsToMilliseconds(interval.toLong())
-        "Minutes" -> currentTime + minutesToMilliseconds(interval.toLong())
-        "Hours" -> currentTime + hoursToMilliseconds(interval.toLong())
-        "Days" -> currentTime + daysToMilliseconds(interval.toLong())
+        appContext.resources.getString(R.string.time_unit_minute) -> currentTime + minutesToMilliseconds(interval.toLong())
+        appContext.resources.getString(R.string.time_unit_hour) -> currentTime + hoursToMilliseconds(interval.toLong())
+        appContext.resources.getString(R.string.time_unit_day) -> currentTime + daysToMilliseconds(interval.toLong())
         else -> throw IllegalArgumentException()
     }
 }

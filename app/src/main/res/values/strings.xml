@@ -32,7 +32,6 @@
 
     <!--time unit-->
     <string name="time_unit_hour">Hours</string>
-    <string name="time_unit_second">Seconds</string>
     <string name="time_unit_minute">Minutes</string>
     <string name="time_unit_day">Days</string>
 </resources>
