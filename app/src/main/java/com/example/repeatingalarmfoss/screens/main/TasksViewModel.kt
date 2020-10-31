@@ -69,5 +69,4 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun getNextLaunchTime(time: String, chosenWeekDaysBinaryString: String): Long = nextLaunchTimeCalculationUseCase.getNextLaunchTime(time, chosenWeekDaysBinaryString)
-    fun getNextLaunchTime(currentTime: Long, interval: Int, classifier: String): Long = nextLaunchTimeCalculationUseCase.getNextLaunchTime(currentTime, interval, classifier)
 }

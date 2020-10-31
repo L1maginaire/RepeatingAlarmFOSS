@@ -85,8 +85,7 @@ class TaskListActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingC
     }
 
     override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) {
-        val nextLaunchTime = if(repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) tasksViewModel.getNextLaunchTime(time, repeatingClassifierValue).toString() else
-            tasksViewModel.getNextLaunchTime(time.toLong(), Integer.parseInt(repeatingClassifierValue.replace("[^0-9]".toRegex(), "")), repeatingClassifierValue.replace("\\d+".toRegex(), "")).toString()
+        val nextLaunchTime = if(repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) tasksViewModel.getNextLaunchTime(time, repeatingClassifierValue).toString() else time.toLong().toString()
         tasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue, nextLaunchTime)
     }
 }

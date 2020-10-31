@@ -59,7 +59,7 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
                         logger.d(true) { "chosen date in dialog: ${SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())}" }
 
                         timeSettingCallback.onTimeSet(description, repeatingClassifier, repeatingClassifierValue.toString()+currentSpinnerValue,
-                            SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString()).time.toString())
+                            SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())?.time.toString())
                     }
                 }
             }
