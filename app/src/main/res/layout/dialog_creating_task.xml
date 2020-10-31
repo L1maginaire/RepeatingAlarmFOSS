@@ -22,6 +22,7 @@
 
         <RadioButton
             android:id="@+id/rbDayOfWeek"
+            android:checked="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_day_of_week" />
@@ -94,12 +95,6 @@
         </LinearLayout>
 
     </LinearLayout>
-        <Button
-            android:id="@+id/notificationTimeSetButton"
-            android:layout_marginTop="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_time" />
 
     <LinearLayout
         android:id="@+id/containerEveryXTimeunit"
