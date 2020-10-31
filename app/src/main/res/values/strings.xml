@@ -9,6 +9,8 @@
     <string name="toast_set_proper_time">Time of first launch is already left. Please, specify correct one.</string>
     <string name="title_time">Time</string>
     <string name="title_start_from">Start from</string>
+    <string name="title_day_of_week">Day of week</string>
+    <string name="title_each_x_time_unit">Each _ %time unit%</string>
 
     <!--day of week-->
     <string name="day_of_week_monday">Monday</string>

@@ -15,7 +15,7 @@ class NextLaunchTimeCalculationUseCase {
 
      *  @return - Timestamp in format of milliseconds, denoting time in future.
      * */
-    fun getNexLaunchTime(time: String, chosenWeekDaysBinaryString: String): Long {
+    fun getNextLaunchTime(time: String, chosenWeekDaysBinaryString: String): Long {
         val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
         val chosenWeekDays = FixedSizeBitSet.fromBinaryString(chosenWeekDaysBinaryString)
         val hours = time.split(":")[0].toInt()
@@ -31,10 +31,10 @@ class NextLaunchTimeCalculationUseCase {
     }
 
     fun getNextLaunchTime(currentTime: Long, interval: Int, classifier: String): Long = when (classifier) {
-        "second" -> currentTime + secondsToMilliseconds(interval.toLong())
-        "minute" -> currentTime + minutesToMilliseconds(interval.toLong())
-        "hour" -> currentTime + hoursToMilliseconds(interval.toLong())
-        "day" -> currentTime + daysToMilliseconds(interval.toLong())
+        "Seconds" -> currentTime + secondsToMilliseconds(interval.toLong())
+        "Minutes" -> currentTime + minutesToMilliseconds(interval.toLong())
+        "Hours" -> currentTime + hoursToMilliseconds(interval.toLong())
+        "Days" -> currentTime + daysToMilliseconds(interval.toLong())
         else -> throw IllegalArgumentException()
     }
 }

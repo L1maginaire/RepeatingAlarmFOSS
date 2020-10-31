@@ -15,72 +15,85 @@
         android:inputType="textPersonName" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ToggleButton
-            android:id="@+id/toggleMon"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/toggle_weekday"
-            android:textOn="@string/short_day_of_week_monday"
-            android:textOff="@string/short_day_of_week_monday" />
-
-        <ToggleButton
-            android:id="@+id/toggleTue"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/toggle_weekday"
-            android:textOn="@string/short_day_of_week_tuesday"
-            android:textOff="@string/short_day_of_week_tuesday" />
-
-        <ToggleButton
-            android:id="@+id/toggleWed"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/toggle_weekday"
-            android:textOn="@string/short_day_of_week_wednesday"
-            android:textOff="@string/short_day_of_week_wednesday" />
-
-        <ToggleButton
-            android:id="@+id/toggleThu"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/toggle_weekday"
-            android:textOn="@string/short_day_of_week_thursday"
-            android:textOff="@string/short_day_of_week_thursday" />
-
-        <ToggleButton
-            android:id="@+id/toggleFri"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/toggle_weekday"
-            android:textOn="@string/short_day_of_week_friday"
-            android:textOff="@string/short_day_of_week_friday" />
-
-    </LinearLayout>
-
-    <LinearLayout
+        android:id="@+id/containerDayOfWeek"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <ToggleButton
-            android:id="@+id/toggleSat"
-            android:layout_width="60dp"
+        <RadioButton
+            android:id="@+id/rbDayOfWeek"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/toggle_weekday"
-            android:textOn="@string/short_day_of_week_saturday"
-            android:textOff="@string/short_day_of_week_saturday" />
-        <ToggleButton
-            android:id="@+id/toggleSun"
-            android:layout_width="60dp"
+            android:text="@string/title_day_of_week" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/toggle_weekday"
-            android:textOn="@string/short_day_of_week_sunday"
-            android:textOff="@string/short_day_of_week_sunday" />
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:id="@+id/toggleMon"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/toggle_weekday"
+                android:textOn="@string/short_day_of_week_monday"
+                android:textOff="@string/short_day_of_week_monday" />
+
+            <ToggleButton
+                android:id="@+id/toggleTue"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/toggle_weekday"
+                android:textOn="@string/short_day_of_week_tuesday"
+                android:textOff="@string/short_day_of_week_tuesday" />
+
+            <ToggleButton
+                android:id="@+id/toggleWed"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/toggle_weekday"
+                android:textOn="@string/short_day_of_week_wednesday"
+                android:textOff="@string/short_day_of_week_wednesday" />
+
+            <ToggleButton
+                android:id="@+id/toggleThu"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/toggle_weekday"
+                android:textOn="@string/short_day_of_week_thursday"
+                android:textOff="@string/short_day_of_week_thursday" />
+
+            <ToggleButton
+                android:id="@+id/toggleFri"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/toggle_weekday"
+                android:textOn="@string/short_day_of_week_friday"
+                android:textOff="@string/short_day_of_week_friday" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ToggleButton
+                android:id="@+id/toggleSat"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/toggle_weekday"
+                android:textOn="@string/short_day_of_week_saturday"
+                android:textOff="@string/short_day_of_week_saturday" />
+            <ToggleButton
+                android:id="@+id/toggleSun"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/toggle_weekday"
+                android:textOn="@string/short_day_of_week_sunday"
+                android:textOff="@string/short_day_of_week_sunday" />
+        </LinearLayout>
+
     </LinearLayout>
-
         <Button
             android:id="@+id/notificationTimeSetButton"
             android:layout_marginTop="15dp"
@@ -89,17 +102,22 @@
             android:text="@string/title_time" />
 
     <LinearLayout
+        android:id="@+id/containerEveryXTimeunit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_every" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <RadioButton
+                android:id="@+id/rbXTimeUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="10dp"
+                android:text="@string/title_every"
+                tools:ignore="RtlSymmetry" />
+
             <EditText
                 android:id="@+id/etEveryXValue"
                 android:layout_width="50dp"
@@ -114,23 +132,23 @@
                 android:layout_height="wrap_content"
                 android:entries="@array/time_units" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_start_from" />
-
-        <Button
-            android:id="@+id/buttonTimePicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="09:12"
-            />
-        <Button
-            android:id="@+id/buttonDatePicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="07 June 2020"
-            />
     </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_start_from" />
+
+    <Button
+        android:id="@+id/buttonTimePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="09:12"
+        />
+    <Button
+        android:id="@+id/buttonDatePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="07 June 2020"
+        />
+
 </LinearLayout>

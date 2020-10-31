@@ -7,12 +7,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.DialogInterface.BUTTON_POSITIVE
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.DatePicker
-import android.widget.ToggleButton
+import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -79,7 +78,7 @@ class TaskListActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallba
 
     private fun setupViewModelSubscriptions() {
         tasksViewModel.addTaskEvent.observe(this, Observer { task ->
-            scheduleAlarmManager(task.description, task.repeatingClassifierValue, task.time)
+            scheduleAlarmManager(task.description, task.repeatingClassifier, task.repeatingClassifierValue, task.time)
             tasksAdapter.addNewTask(task)
         })
         tasksViewModel.removeTaskEvent.observe(this, Observer { id ->
@@ -93,17 +92,17 @@ class TaskListActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallba
         })
     }
 
-    private fun scheduleAlarmManager(title: String, repeatingClassifierValue: String, time: String) {
-        val nextLaunchTime = tasksViewModel.getNextLaunchTime(time, repeatingClassifierValue)
+    private fun scheduleAlarmManager(title: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) {
         val intent = Intent(this, AlarmReceiver::class.java).apply {
             action = ACTION_RING
             putExtra(ALARM_ARG_TITLE, title)
             putExtra(ALARM_ARG_INTERVAL, repeatingClassifierValue)
+            putExtra(ALARM_ARG_CLASSIFIER, repeatingClassifier.name)
             putExtra(ALARM_ARG_TIME, time)
         }
-        logger.d(true) { "first launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}" }
+        logger.d(true) { "first launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(time.toLong())}" }
 
-        (getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(nextLaunchTime, PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
+        (getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(time.toLong(), PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
 
     private fun showAddTaskDialog() {
@@ -147,11 +146,24 @@ class TaskListActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallba
             .setPositiveButton(android.R.string.ok) { dialog, _ ->
                 dialog.dismiss().also {
                     val description = descriptionEditText.text.toString()
-                    val repeatingClassifier: RepeatingClassifier = RepeatingClassifier.DAY_OF_WEEK /*fixme*/
                     val time = timePickerButton.text.toString()
-                    tasksViewModel.addTask(description, repeatingClassifier, chosenWeekDays.toString(), time)
+                    val repeatingClassifier: RepeatingClassifier
+
+                    if(dialogView.findViewById<RadioButton>(R.id.rbDayOfWeek).isChecked){
+                        repeatingClassifier = RepeatingClassifier.DAY_OF_WEEK
+                        tasksViewModel.addTask(description, repeatingClassifier, chosenWeekDays.toString(), tasksViewModel.getNextLaunchTime(time, chosenWeekDays.toString()).toString())
+                        logger.d(true) { "chosen week days in dialog: $chosenWeekDays" }
+                    } else {
+                        val currentSpinnerValue =  dialogView.findViewById<Spinner>(R.id.spinnerTimeUnits).selectedItem.toString()
+                        repeatingClassifier = RepeatingClassifier.EVERY_X_TIME_UNIT
+                        val repeatingClassifierValue = dialogView.findViewById<EditText>(R.id.etEveryXValue).text
+
+                        logger.d(true) { "chosen date in dialog: ${SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse(dialogView.findViewById<Button>(R.id.buttonDatePicker).text.toString() + " " + timePickerButton.text.toString())}" }
+
+                        tasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue.toString()+currentSpinnerValue,
+                            SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse(dialogView.findViewById<Button>(R.id.buttonDatePicker).text.toString() + " " + timePickerButton.text.toString()).time.toString())
+                    }
                 }
-                logger.d(true) { "chosen date in dialog: ${SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse(dialogView.findViewById<Button>(R.id.buttonDatePicker).text.toString() + " " + timePickerButton.text.toString())}" }
             }
             .setNegativeButton(android.R.string.cancel, null)
             .create()
@@ -160,6 +172,7 @@ class TaskListActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallba
         timePickerButton.text = SimpleDateFormat("HH:mm").format(Date())
         datePickerButton.text = SimpleDateFormat("dd MMM yyyy").format(Date())
 
+        /*todo to setupDialogClicks() function*/
         clicks += Observable.combineLatest(datePickerButton.textChanges(),
             timePickerButton.textChanges(),
             descriptionEditText.textChanges().map { it.isBlank().not() },
@@ -167,6 +180,22 @@ class TaskListActivity : AppCompatActivity(), TimePickerFragment.OnTimeSetCallba
                 SimpleDateFormat("dd MMM yyyy HH:mm").apply { isLenient = false }.parse("$date $time")!!.time > System.currentTimeMillis()+60000L && descriptionIsNotEmpty
             })
             .subscribe { dialog.getButton(BUTTON_POSITIVE).isEnabled = it }
+
+        dialogView.findViewById<RadioButton>(R.id.rbDayOfWeek).isChecked = true
+        clicks += dialogView.findViewById<RadioButton>(R.id.rbDayOfWeek).checkedChanges()
+            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .subscribe {
+                dialogView.findViewById<RadioButton>(R.id.rbXTimeUnit).isChecked = false
+                dialogView.findViewById<LinearLayout>(R.id.containerDayOfWeek).setBackgroundColor(Color.GREEN)
+                dialogView.findViewById<LinearLayout>(R.id.containerEveryXTimeunit).setBackgroundColor(Color.WHITE)
+            }
+        clicks += dialogView.findViewById<RadioButton>(R.id.rbXTimeUnit).checkedChanges()
+            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .subscribe {
+                dialogView.findViewById<RadioButton>(R.id.rbDayOfWeek).isChecked = false
+                dialogView.findViewById<LinearLayout>(R.id.containerEveryXTimeunit).setBackgroundColor(Color.GREEN)
+                dialogView.findViewById<LinearLayout>(R.id.containerDayOfWeek).setBackgroundColor(Color.WHITE)
+            }
     }
 
     @SuppressLint("SetTextI18n")

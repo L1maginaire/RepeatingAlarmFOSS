@@ -12,7 +12,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 
 class TasksViewModel(app: Application) : AndroidViewModel(app) {
     private val nextLaunchTimeCalculationUseCase = NextLaunchTimeCalculationUseCase()
@@ -69,5 +68,6 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
             })
     }
 
-    fun getNextLaunchTime(time: String, chosenWeekDaysBinaryString: String): Long = nextLaunchTimeCalculationUseCase.getNexLaunchTime(time, chosenWeekDaysBinaryString)
+    fun getNextLaunchTime(time: String, chosenWeekDaysBinaryString: String): Long = nextLaunchTimeCalculationUseCase.getNextLaunchTime(time, chosenWeekDaysBinaryString)
+    fun getNextLaunchTime(time: Long, interval: Int, classifier: String): Long = nextLaunchTimeCalculationUseCase.getNextLaunchTime(time, interval, classifier)
 }
