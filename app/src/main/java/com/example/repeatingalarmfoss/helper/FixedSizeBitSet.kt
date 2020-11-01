@@ -13,5 +13,5 @@ class FixedSizeBitSet(private val bitsAmount: Int) : BitSet(bitsAmount) {
             }
         }
     }
-    override fun toString(): String = IntRange(0, bitsAmount).map { if(get(it)) '1' else '0' }.joinToString(separator = "")
+    override fun toString(): String = IntRange(0, bitsAmount-1).map { if(get(it)) '1' else '0' }.joinToString(separator = "")
 }
