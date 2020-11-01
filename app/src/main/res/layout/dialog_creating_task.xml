@@ -114,7 +114,7 @@
                 tools:ignore="RtlSymmetry" />
 
             <EditText
-                android:id="@+id/etEveryXValue"
+                android:id="@+id/etTimeUnitValue"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:text="1"

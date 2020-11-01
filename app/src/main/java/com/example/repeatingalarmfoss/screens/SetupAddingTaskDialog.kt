@@ -30,10 +30,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+private const val AMOUNT_DAYS_IN_WEEK = 7
+
 class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback) : DialogFragment(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
     private val clicks = CompositeDisposable()
     private val logger = FlightRecorder.getInstance()
-    private val chosenWeekDays = FixedSizeBitSet(7)
+    private val chosenWeekDays = FixedSizeBitSet(AMOUNT_DAYS_IN_WEEK)
     private lateinit var customView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = customView
@@ -47,20 +49,18 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
                 dialog.dismiss().also {
                     val description = etTaskDescription.text.toString()
                     val time = buttonTimePicker.text.toString()
-                    val repeatingClassifier: RepeatingClassifier
-                    if (rbDayOfWeek.isChecked) {
-                        repeatingClassifier = RepeatingClassifier.DAY_OF_WEEK
-                        timeSettingCallback.onTimeSet(description, repeatingClassifier, chosenWeekDays.toString(), time)
-                        logger.d(true) { "chosen week days in dialog: $chosenWeekDays" }
-                    } else if(rbXTimeUnit.isChecked){
-                        val currentSpinnerValue = spinnerTimeUnits.selectedItem.toString()
-                        repeatingClassifier = RepeatingClassifier.EVERY_X_TIME_UNIT
-                        val repeatingClassifierValue = etEveryXValue.text
-
-                        logger.d(true) { "chosen date in dialog: ${SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())}" }
-
-                        timeSettingCallback.onTimeSet(description, repeatingClassifier, repeatingClassifierValue.toString()+currentSpinnerValue,
-                            SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())?.time.toString())
+                    val chosenInitialDateAndTime: Date? = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())
+                    when {
+                        rbDayOfWeek.isChecked -> {
+                            timeSettingCallback.onTimeSet(description, RepeatingClassifier.DAY_OF_WEEK, chosenWeekDays.toString(), time)
+                            logger.d(true) { "chosen week days in dialog: $chosenWeekDays" }
+                        }
+                        rbXTimeUnit.isChecked -> {
+                            val currentSpinnerValue = spinnerTimeUnits.selectedItem.toString()
+                            val repeatingClassifierValue = etTimeUnitValue.text
+                            logger.d(true) { "chosen date in dialog: $chosenInitialDateAndTime" }
+                            timeSettingCallback.onTimeSet(description, RepeatingClassifier.EVERY_X_TIME_UNIT, repeatingClassifierValue.toString() + currentSpinnerValue, chosenInitialDateAndTime?.time.toString())
+                        }
                     }
                 }
             }
@@ -86,13 +86,13 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
         clicks += Observable.combineLatest(toggleMon.checkedChanges(), toggleTue.checkedChanges(), toggleWed.checkedChanges(), toggleThu.checkedChanges(), toggleFri.checkedChanges(), toggleSat.checkedChanges(), toggleSun.checkedChanges(),
             Function7<Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Unit> { mon, tue, wed, thu, fri, sat, sun ->
                 chosenWeekDays.apply {
-                    if (mon) set(2) else clear(2)
-                    if (tue) set(3) else clear(3)
-                    if (wed) set(4) else clear(4)
-                    if (thu) set(5) else clear(5)
-                    if (fri) set(6) else clear(6)
-                    if (sat) set(7) else clear(7)
-                    if (sun) set(1) else clear(1)
+                    if (mon) set(Calendar.MONDAY) else clear(Calendar.MONDAY)
+                    if (tue) set(Calendar.TUESDAY) else clear(Calendar.TUESDAY)
+                    if (wed) set(Calendar.WEDNESDAY) else clear(Calendar.WEDNESDAY)
+                    if (thu) set(Calendar.THURSDAY) else clear(Calendar.THURSDAY)
+                    if (fri) set(Calendar.FRIDAY) else clear(Calendar.FRIDAY)
+                    if (sat) set(Calendar.SATURDAY) else clear(Calendar.SATURDAY)
+                    if (sun) set(Calendar.SUNDAY) else clear(Calendar.SUNDAY)
                 }
             }).subscribe()
 
@@ -107,8 +107,8 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
         clicks += Observable.combineLatest(rbDayOfWeek.checkedChanges(), rbXTimeUnit.checkedChanges(), BiFunction<Boolean, Boolean, Unit> { dayOfWeek, xTimeUnit ->
             rbXTimeUnit.isChecked = xTimeUnit && dayOfWeek.not()
             rbDayOfWeek.isChecked = xTimeUnit.not() && dayOfWeek
-            containerDayOfWeek.setBackgroundColor(if(xTimeUnit.not() && dayOfWeek) Color.GREEN else Color.WHITE)
-            containerEveryXTimeunit.setBackgroundColor(if(xTimeUnit && dayOfWeek.not()) Color.GREEN else Color.WHITE)
+            containerDayOfWeek.setBackgroundColor(if (xTimeUnit.not() && dayOfWeek) Color.GREEN else Color.WHITE)
+            containerEveryXTimeunit.setBackgroundColor(if (xTimeUnit && dayOfWeek.not()) Color.GREEN else Color.WHITE)
         }).subscribe()
     }
 
@@ -118,7 +118,7 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
     }
 
     override fun onDateSet(year: Int, month: Int, day: Int) {
-        buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(year, month, day)) /*fixme: here's the problem with year 3920?*/
+        buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(year, month, day)) /*fixme: is here the problem with year 3920?*/
     }
 
     interface TimeSettingCallback {
