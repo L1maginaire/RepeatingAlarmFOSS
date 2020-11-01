@@ -9,11 +9,11 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.helper.FlightRecorder
-import com.example.repeatingalarmfoss.screens.AlarmActivity
+import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
 import com.example.repeatingalarmfoss.screens.NotifierService
 import java.util.*
 import com.example.repeatingalarmfoss.helper.extensions.set
-import com.example.repeatingalarmfoss.screens.main.NextLaunchTimeCalculationUseCase
+import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
 import java.text.SimpleDateFormat
 
 const val ACTION_RING = "action_ring"

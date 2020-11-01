@@ -5,21 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.media.AudioManager
-import android.media.MediaPlayer
-import android.media.RingtoneManager
 import android.os.Build
 import android.os.IBinder
-import android.os.Vibrator
-import android.provider.Settings
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
-import java.io.IOException
+import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
 
 class NotifierService : Service() {
     companion object {

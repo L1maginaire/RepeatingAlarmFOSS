@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss.screens.main
+package com.example.repeatingalarmfoss.screens.added_tasks
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +15,7 @@ import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.extensions.LayoutContainer
 import java.util.concurrent.TimeUnit
 
-class TasksAdapter(private val longClickCallback: (id: Long) -> Unit) : RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
+class AddedTasksAdapter(private val longClickCallback: (id: Long) -> Unit) : RecyclerView.Adapter<AddedTasksAdapter.ViewHolder>() {
     private val clicks = CompositeDisposable()
     var tasks: MutableList<Task> = mutableListOf()
         set(value) {

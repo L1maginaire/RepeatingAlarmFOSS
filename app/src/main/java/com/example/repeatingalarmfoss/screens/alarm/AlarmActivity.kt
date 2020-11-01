@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss.screens
+package com.example.repeatingalarmfoss.screens.alarm
 
 import android.content.Context
 import android.content.Intent
@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.screens.NotifierService
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

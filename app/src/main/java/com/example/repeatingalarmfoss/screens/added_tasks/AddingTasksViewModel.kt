@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss.screens.main
+package com.example.repeatingalarmfoss.screens.added_tasks
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -8,12 +8,13 @@ import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.SingleLiveEvent
+import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 
-class TasksViewModel(app: Application) : AndroidViewModel(app) {
+class AddingTasksViewModel(app: Application) : AndroidViewModel(app) {
     private val nextLaunchTimeCalculationUseCase = NextLaunchTimeCalculationUseCase()
     private val taskRepository = (app as RepeatingAlarmApp).taskRepository
     private val disposable = CompositeDisposable()

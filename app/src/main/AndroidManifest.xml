@@ -21,11 +21,11 @@
             android:exported="false" />
 
         <activity
-            android:name=".screens.AlarmActivity"
+            android:name=".screens.alarm.AlarmActivity"
             android:showOnLockScreen="true"
             android:label="@string/title_activity_alarm" />
 
-        <activity android:name=".screens.main.TaskListActivity">
+        <activity android:name=".screens.added_tasks.TaskListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
