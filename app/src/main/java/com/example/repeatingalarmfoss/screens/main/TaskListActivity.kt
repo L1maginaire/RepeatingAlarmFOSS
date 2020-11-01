@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -79,13 +80,12 @@ class TaskListActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingC
             putExtra(ALARM_ARG_CLASSIFIER, repeatingClassifier.name)
             putExtra(ALARM_ARG_TIME, time)
         }
-        logger.d(true) { "first launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(time.toLong())}" }
+        val nextLaunchTime: Long = if(repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) tasksViewModel.getNextLaunchTime(time, repeatingClassifierValue) else time.toLong()
 
-        (getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(time.toLong(), PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
+        logger.d(true) { "first launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}" }
+
+        (getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(nextLaunchTime, PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
 
-    override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) {
-        val nextLaunchTime = if(repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) tasksViewModel.getNextLaunchTime(time, repeatingClassifierValue).toString() else time.toLong().toString()
-        tasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue, nextLaunchTime)
-    }
+    override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = tasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue, time)
 }

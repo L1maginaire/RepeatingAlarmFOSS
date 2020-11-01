@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
+import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.checkedChanges
@@ -32,7 +33,7 @@ import java.util.concurrent.TimeUnit
 class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback) : DialogFragment(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
     private val clicks = CompositeDisposable()
     private val logger = FlightRecorder.getInstance()
-    private val chosenWeekDays = BitSet(7)
+    private val chosenWeekDays = FixedSizeBitSet(7)
     private lateinit var customView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = customView
@@ -68,12 +69,12 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
                 setOnShowListener {
                     buttonTimePicker.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
                     buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
-                    setupClicks(chosenWeekDays)
+                    setupClicks()
                 }
             }
     }
 
-    private fun setupClicks(chosenWeekDays: BitSet) {
+    private fun setupClicks() {
         clicks += buttonTimePicker.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe { TimePickerFragment(this).show(requireActivity().supportFragmentManager, TimePickerFragment::class.java.simpleName) }
@@ -85,13 +86,13 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
         clicks += Observable.combineLatest(toggleMon.checkedChanges(), toggleTue.checkedChanges(), toggleWed.checkedChanges(), toggleThu.checkedChanges(), toggleFri.checkedChanges(), toggleSat.checkedChanges(), toggleSun.checkedChanges(),
             Function7<Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Unit> { mon, tue, wed, thu, fri, sat, sun ->
                 chosenWeekDays.apply {
-                    if (mon) set(0) else clear(0)
-                    if (tue) set(1) else clear(1)
-                    if (wed) set(2) else clear(2)
-                    if (thu) set(3) else clear(3)
-                    if (fri) set(4) else clear(4)
-                    if (sat) set(5) else clear(5)
-                    if (sun) set(6) else clear(6)
+                    if (mon) set(2) else clear(2)
+                    if (tue) set(3) else clear(3)
+                    if (wed) set(4) else clear(4)
+                    if (thu) set(5) else clear(5)
+                    if (fri) set(6) else clear(6)
+                    if (sat) set(7) else clear(7)
+                    if (sun) set(1) else clear(1)
                 }
             }).subscribe()
 
