@@ -12,15 +12,22 @@ import android.provider.Settings
 import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.screens.NotifierService
 import com.jakewharton.rxbinding3.view.clicks
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_alarm.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+
+private const val MISSED_ALARM_NOTIFICATION_ID: Int = 101
 
 class AlarmActivity : AppCompatActivity() {
     private val clicks = CompositeDisposable()
@@ -47,7 +54,22 @@ class AlarmActivity : AppCompatActivity() {
                 stopService(Intent(this, NotifierService::class.java))
                 finish()
             }
+        clicks += Observable.timer(10, TimeUnit.MINUTES)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                showMissedAlarmNotification()
+                finish()
+            }
         ring()
+    }
+
+    private fun showMissedAlarmNotification() {
+        val builder = NotificationCompat.Builder(this, NotificationsManager.CHANNEL_MISSED_ALARM)
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentTitle(getString(R.string.title_you_have_missed_alarm))
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+        NotificationManagerCompat.from(this).notify(NotificationsManager.MISSED_ALARM_NOTIFICATION_ID, builder.build())
     }
 
     private fun createPlayer(): MediaPlayer? = try {
@@ -98,11 +120,11 @@ class AlarmActivity : AppCompatActivity() {
 //            setShowWhenLocked(true)
 //            (getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager).requestDismissKeyguard(this, null)
 //        } else {
-            window.apply {
-                addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-                addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
-                addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
-                addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.apply {
+            addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+            addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+            addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+            addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 //            }
         }
     }
@@ -115,11 +137,11 @@ class AlarmActivity : AppCompatActivity() {
 //            setShowWhenLocked(false)
 //            /*todo how to properly lock?!*/
 //        } else {
-            window.apply {
-                clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-                clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
-                clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
-                clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.apply {
+            clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+            clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+            clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+            clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 //            }
         }
     }
