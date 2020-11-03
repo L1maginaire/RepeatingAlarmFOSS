@@ -34,10 +34,15 @@ class NextLaunchTimeCalculationUseCase {
         }.timeInMillis
     }
 
-    fun getNextLaunchTime(currentTime: Long, interval: Int, classifier: String): Long = when (classifier) {
-        appContext.resources.getString(R.string.time_unit_minute) -> currentTime + minutesToMilliseconds(interval.toLong())
-        appContext.resources.getString(R.string.time_unit_hour) -> currentTime + hoursToMilliseconds(interval.toLong())
-        appContext.resources.getString(R.string.time_unit_day) -> currentTime + daysToMilliseconds(interval.toLong())
-        else -> throw IllegalArgumentException()
+    @Suppress("MoveVariableDeclarationIntoWhen")
+    fun getNextLaunchTime(currentTime: Long, repeatingClassifierValue: String): Long {
+        val interval = Integer.parseInt(repeatingClassifierValue.replace("[^0-9]".toRegex(), ""))
+        val classifier = repeatingClassifierValue.replace("\\d+".toRegex(), "")
+        return when (classifier) {
+            appContext.resources.getString(R.string.time_unit_minute) -> currentTime + minutesToMilliseconds(interval.toLong())
+            appContext.resources.getString(R.string.time_unit_hour) -> currentTime + hoursToMilliseconds(interval.toLong())
+            appContext.resources.getString(R.string.time_unit_day) -> currentTime + daysToMilliseconds(interval.toLong())
+            else -> throw IllegalArgumentException()
+        }
     }
 }

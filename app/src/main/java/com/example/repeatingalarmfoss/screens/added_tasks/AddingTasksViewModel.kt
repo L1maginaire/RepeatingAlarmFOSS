@@ -37,7 +37,7 @@ class AddingTasksViewModel(app: Application) : AndroidViewModel(app) {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError { it.printStackTrace() }
-            .subscribe(/*todo states*/{
+            .subscribe({
                 _removeTaskEvent.value = id
             }, {
                 _errorEvent.value = R.string.db_error
@@ -50,7 +50,7 @@ class AddingTasksViewModel(app: Application) : AndroidViewModel(app) {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError { it.printStackTrace() }
-            .subscribe(/*todo states*/{
+            .subscribe({
                 _addTaskEvent.value = task.apply { id = it }
             }, {
                 _errorEvent.value = R.string.db_error
@@ -62,7 +62,7 @@ class AddingTasksViewModel(app: Application) : AndroidViewModel(app) {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError { it.printStackTrace() }
-            .subscribe(/*todo states*/{
+            .subscribe({
                 _fetchAllTasksEvent.value = it
             }, {
                 _errorEvent.value = R.string.db_error

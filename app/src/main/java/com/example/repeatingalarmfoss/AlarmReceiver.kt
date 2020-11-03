@@ -42,7 +42,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val repeatingClassifier = intent.getStringExtra(ALARM_ARG_CLASSIFIER)!!
             val repeatingClassifierValue = intent.getStringExtra(ALARM_ARG_INTERVAL)!!
             val nextLaunchTime: Long = if(repeatingClassifier == RepeatingClassifier.EVERY_X_TIME_UNIT.name) {
-                nextLaunchTimeCalculationUseCase.getNextLaunchTime(time.toLong(), Integer.parseInt(repeatingClassifierValue.replace("[^0-9]".toRegex(), "")), repeatingClassifierValue.replace("\\d+".toRegex(), ""))
+                nextLaunchTimeCalculationUseCase.getNextLaunchTime(time.toLong(), repeatingClassifierValue)
             } else {
                 nextLaunchTimeCalculationUseCase.getNextLaunchTime(time, repeatingClassifierValue)
             }
@@ -53,7 +53,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 putExtra(ALARM_ARG_CLASSIFIER, repeatingClassifier)
                 putExtra(ALARM_ARG_TIME, nextLaunchTime.toString())
             }
-            logger.d(true) {"next launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}"}
+            logger.d(true) {"Next launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}"}
             (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(nextLaunchTime, PendingIntent.getBroadcast(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT))
         }
     }
