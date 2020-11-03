@@ -43,8 +43,10 @@ class TaskListActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingC
     }
 
     private fun setupTaskList() {
-        tasksList.layoutManager = LinearLayoutManager(this)
-        tasksList.adapter = tasksAdapter
+        tasksList.apply {
+            layoutManager = LinearLayoutManager(this@TaskListActivity)
+            adapter = tasksAdapter
+        }
         addingTasksViewModel.fetchTasks()
     }
 
@@ -60,6 +62,7 @@ class TaskListActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingC
             tasksAdapter.addNewTask(task)
         })
         addingTasksViewModel.removeTaskEvent.observe(this, Observer { id ->
+            cancelAlarmManagerFor(id)
             tasksAdapter.removeTask(id)
         })
         addingTasksViewModel.fetchAllTasksEvent.observe(this, Observer {
@@ -68,6 +71,10 @@ class TaskListActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingC
         addingTasksViewModel.errorEvent.observe(this, Observer { errorMessage ->
             toast(getString(errorMessage))
         })
+    }
+
+    private fun cancelAlarmManagerFor(id: Long) {
+        //TODO
     }
 
     private fun scheduleAlarmManager(title: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) {
@@ -80,7 +87,7 @@ class TaskListActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingC
         }
         val nextLaunchTime: Long = if(repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) addingTasksViewModel.getNextLaunchTime(time, repeatingClassifierValue) else time.toLong()
 
-        logger.d(true) { "first launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}" }
+        logger.d(true) { "First launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}" }
 
         (getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(nextLaunchTime, PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
