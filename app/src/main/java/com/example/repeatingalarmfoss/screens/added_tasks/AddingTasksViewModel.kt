@@ -1,23 +1,23 @@
 package com.example.repeatingalarmfoss.screens.added_tasks
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import com.example.repeatingalarmfoss.R
-import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
+import com.example.repeatingalarmfoss.db.TaskRepository
 import com.example.repeatingalarmfoss.helper.SingleLiveEvent
 import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class AddingTasksViewModel(app: Application) : AndroidViewModel(app) {
+class AddingTasksViewModel @Inject constructor(private val taskRepository: TaskRepository) : ViewModel() {
     private val nextLaunchTimeCalculationUseCase = NextLaunchTimeCalculationUseCase()
-    private val taskRepository = (app as RepeatingAlarmApp).taskRepository
     private val disposable = CompositeDisposable()
+
     override fun onCleared() = disposable.clear()
 
     private val _addTaskEvent = SingleLiveEvent<Task>()

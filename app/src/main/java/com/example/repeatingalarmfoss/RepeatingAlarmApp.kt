@@ -14,33 +14,29 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.repeatingalarmfoss.db.TaskRepository
 import com.example.repeatingalarmfoss.db.TasksDb
+import com.example.repeatingalarmfoss.di.components.AppComponent
+import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
 
 class RepeatingAlarmApp: Application(), LifecycleObserver {
+    lateinit var appComponent: AppComponent
+
     var isAppInForeground = false
-    lateinit var taskRepository: TaskRepository
 
     companion object { lateinit var INSTANCE: RepeatingAlarmApp }
 
     init { INSTANCE = this }
 
-    private val migration1to2 = object : Migration(1, 2) {
-        override fun migrate(database: SupportSQLiteDatabase) = database.execSQL("ALTER TABLE Task ADD COLUMN repeatingClassifier TEXT DEFAULT \"DAY_OF_WEEK\" NOT NULL")
-            .also { database.execSQL("ALTER TABLE Task ADD COLUMN repeatingClassifierValue TEXT NOT NULL") }
-    }
-
-    private val migration2to3 = object : Migration(2, 3) {
-        override fun migrate(database: SupportSQLiteDatabase) = database.execSQL("ALTER TABLE Task ADD COLUMN time TEXT NOT NULL")
-    }
-
     override fun onCreate() {
+        setupDagger()
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-        taskRepository = Room.databaseBuilder(applicationContext, TasksDb::class.java, "database-name")
-            .addMigrations(migration1to2)
-            .addMigrations(migration2to3)
-            .build().taskRepository()
-
         createMissedAlarmNotificationChannel()
+    }
+
+    private fun setupDagger() {
+        appComponent = DaggerAppComponent.builder()
+            .application(this)
+            .build()
     }
 
     private fun createMissedAlarmNotificationChannel() {

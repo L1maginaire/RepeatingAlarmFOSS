@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.repeatingalarmfoss.*
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
@@ -23,11 +24,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class TaskListActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingCallback {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val addingTasksViewModel by viewModels<AddingTasksViewModel> { viewModelFactory }
+
     private val logger = FlightRecorder.getInstance()
     private val clicks = CompositeDisposable()
-    private val addingTasksViewModel: AddingTasksViewModel by viewModels()
     private val tasksAdapter = AddedTasksAdapter(::removeTask)
 
     override fun onDestroy() = super.onDestroy().also { clicks.clear() }
@@ -35,6 +41,8 @@ class TaskListActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingC
     private fun removeTask(id: Long) = addingTasksViewModel.removeTask(id)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as RepeatingAlarmApp).appComponent.addEditTaskComponent().create().inject(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupClicks()
