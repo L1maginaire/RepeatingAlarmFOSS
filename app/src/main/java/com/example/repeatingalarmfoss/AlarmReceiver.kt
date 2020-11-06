@@ -15,6 +15,7 @@ import java.util.*
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
 import java.text.SimpleDateFormat
+import javax.inject.Inject
 
 const val ACTION_RING = "action_ring"
 const val ALARM_ARG_INTERVAL = "arg_interval"
@@ -23,10 +24,13 @@ const val ALARM_ARG_TITLE = "arg_title"
 const val ALARM_ARG_CLASSIFIER = "arg_classifier"
 
 class AlarmReceiver : BroadcastReceiver() {
-    private val logger = FlightRecorder.getInstance()
+    @Inject
+    lateinit var logger: FlightRecorder
     private val nextLaunchTimeCalculationUseCase = NextLaunchTimeCalculationUseCase()
 
     override fun onReceive(context: Context, intent: Intent) {
+        (context.applicationContext as RepeatingAlarmApp).appComponent.inject(this)
+
         val title = intent.getStringExtra(ALARM_ARG_TITLE)
         if (Build.VERSION.SDK_INT >= 29 && RepeatingAlarmApp.INSTANCE.isAppInForeground.not()) {
             ContextCompat.startForegroundService(context, Intent(context, NotifierService::class.java).apply { putExtra(NotifierService.ARG_TASK_TITLE, title) })
@@ -41,7 +45,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val time = intent.getStringExtra(ALARM_ARG_TIME)!!
             val repeatingClassifier = intent.getStringExtra(ALARM_ARG_CLASSIFIER)!!
             val repeatingClassifierValue = intent.getStringExtra(ALARM_ARG_INTERVAL)!!
-            val nextLaunchTime: Long = if(repeatingClassifier == RepeatingClassifier.EVERY_X_TIME_UNIT.name) {
+            val nextLaunchTime: Long = if (repeatingClassifier == RepeatingClassifier.EVERY_X_TIME_UNIT.name) {
                 nextLaunchTimeCalculationUseCase.getNextLaunchTime(time.toLong(), repeatingClassifierValue)
             } else {
                 nextLaunchTimeCalculationUseCase.getNextLaunchTime(time, repeatingClassifierValue)
@@ -53,7 +57,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 putExtra(ALARM_ARG_CLASSIFIER, repeatingClassifier)
                 putExtra(ALARM_ARG_TIME, nextLaunchTime.toString())
             }
-            logger.d(true) {"Next launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}"}
+            logger.d(true) { "Next launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}" }
             (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(nextLaunchTime, PendingIntent.getBroadcast(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT))
         }
     }

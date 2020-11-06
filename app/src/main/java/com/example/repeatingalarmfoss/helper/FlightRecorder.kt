@@ -2,35 +2,15 @@
 
 package com.example.repeatingalarmfoss.helper
 
-import android.content.Context
 import android.util.Log
-import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import java.io.File
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /*TODO: current thread mark, encryption*/
-class FlightRecorder private constructor() {
+@Singleton
+class FlightRecorder constructor(private val logStorage: File) {
     var TAPE_VOLUME = 10 * 1024 * 1024 /** 10 MB **/
-
-    private constructor(context: Context, logStorage: File) : this() {
-        this.context = context
-        this.logStorage = logStorage
-    }
-
-    companion object {
-        @Volatile private var INSTANCE: FlightRecorder? = null
-
-        fun getInstance(context: Context = RepeatingAlarmApp.INSTANCE.applicationContext, logStorage: File = FileUtils.getFlightRecorderTape(context)): FlightRecorder =
-            INSTANCE ?: synchronized(this) {
-                createInstance(context, logStorage).also {
-                    INSTANCE = it
-                }
-            }
-
-        private fun createInstance(context: Context, logStorage: File) = FlightRecorder(context, logStorage)
-    }
-
-    private lateinit var context: Context
-    private lateinit var logStorage: File
 
     fun i(toPrintInLogcat: Boolean = false, what: () -> String) = clearBeginningIfNeeded("} I {", what).also { logStorage.appendText("} I { ${what.invoke()}\n") }.also { if(toPrintInLogcat) { Log.i(this::class.java.simpleName, what.invoke())} }
     fun d(toPrintInLogcat: Boolean = false, what: () -> String) = clearBeginningIfNeeded("} D {", what).also { logStorage.appendText("} D { ${what.invoke()}\n") }.also { if(toPrintInLogcat) { Log.i(this::class.java.simpleName, what.invoke())} }

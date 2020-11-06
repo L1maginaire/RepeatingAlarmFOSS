@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
@@ -29,18 +30,22 @@ import kotlinx.android.synthetic.main.dialog_creating_task.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 private const val AMOUNT_DAYS_IN_WEEK = 7
 
 class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback) : DialogFragment(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
+    @Inject
+    lateinit var logger: FlightRecorder
     private val clicks = CompositeDisposable()
-    private val logger = FlightRecorder.getInstance()
     private val chosenWeekDays = FixedSizeBitSet(AMOUNT_DAYS_IN_WEEK)
     private lateinit var customView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = customView
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        (requireActivity().application as RepeatingAlarmApp).appComponent.inject(this)
+
         customView = LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_creating_task, null as ViewGroup?)
         return AlertDialog.Builder(requireActivity())
             .setTitle(getString(R.string.add_new_task))

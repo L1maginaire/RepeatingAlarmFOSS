@@ -29,10 +29,10 @@ import javax.inject.Inject
 class TaskListActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingCallback {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
+    @Inject
+    lateinit var logger: FlightRecorder
     private val addingTasksViewModel by viewModels<AddingTasksViewModel> { viewModelFactory }
 
-    private val logger = FlightRecorder.getInstance()
     private val clicks = CompositeDisposable()
     private val tasksAdapter = AddedTasksAdapter(::removeTask)
 
@@ -41,7 +41,7 @@ class TaskListActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingC
     private fun removeTask(id: Long) = addingTasksViewModel.removeTask(id)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (application as RepeatingAlarmApp).appComponent.addEditTaskComponent().create().inject(this)
+        (application as RepeatingAlarmApp).appComponent.addTaskComponent().create().inject(this)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

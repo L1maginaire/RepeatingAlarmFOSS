@@ -1,8 +1,6 @@
 package com.example.repeatingalarmfoss
 
-import android.content.Context
 import android.os.Build
-import androidx.test.platform.app.InstrumentationRegistry
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.yellow
 import junit.framework.Assert.assertEquals
@@ -14,9 +12,8 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.O_MR1])
 @RunWith(RobolectricTestRunner::class)
 class DebugLogWritingTest {
-    private val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private val logFile = createTempFile()
-    private val flightRecorder = FlightRecorder.getInstance(context, logFile)
+    private val flightRecorder = FlightRecorder(logFile)
 
     /** Pay attention to meta wrappers' pattern of
      * @see FlightRecorder,
