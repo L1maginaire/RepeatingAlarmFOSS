@@ -48,6 +48,11 @@ class AlarmActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         turnOnScreen()
         setContentView(R.layout.activity_alarm)
+        setupClicks()
+        ring()
+    }
+
+    private fun setupClicks() {
         clicks += cancelButton.clicks()
             .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe {
@@ -61,7 +66,6 @@ class AlarmActivity : AppCompatActivity() {
                 showMissedAlarmNotification()
                 finish()
             }
-        ring()
     }
 
     private fun showMissedAlarmNotification() {
