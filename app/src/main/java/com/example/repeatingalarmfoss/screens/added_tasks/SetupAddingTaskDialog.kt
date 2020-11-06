@@ -123,7 +123,7 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
     }
 
     override fun onDateSet(year: Int, month: Int, day: Int) {
-        buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(year, month, day)) /*fixme: is here the problem with year 3920?*/
+        buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(year-1900, month, day))
     }
 
     interface TimeSettingCallback {
