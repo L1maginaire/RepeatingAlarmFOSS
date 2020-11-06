@@ -33,11 +33,11 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val title = intent.getStringExtra(ALARM_ARG_TITLE)
         if (Build.VERSION.SDK_INT >= 29 && RepeatingAlarmApp.INSTANCE.isAppInForeground.not()) {
-            ContextCompat.startForegroundService(context, Intent(context, NotifierService::class.java).apply { putExtra(NotifierService.ARG_TASK_TITLE, title) })
+            ContextCompat.startForegroundService(context, Intent(context, NotifierService::class.java))
         } else {
             context.startActivity(Intent(context, AlarmActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                putExtra(NotifierService.ARG_TASK_TITLE, title)
+                putExtra(ALARM_ARG_TITLE, title)
             })
         }
 

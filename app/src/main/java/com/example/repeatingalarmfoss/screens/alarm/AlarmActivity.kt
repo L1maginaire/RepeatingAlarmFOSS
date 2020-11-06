@@ -14,6 +14,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.repeatingalarmfoss.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.screens.NotifierService
@@ -26,8 +27,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_alarm.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-
-private const val MISSED_ALARM_NOTIFICATION_ID: Int = 101
 
 class AlarmActivity : AppCompatActivity() {
     private val clicks = CompositeDisposable()
@@ -49,6 +48,7 @@ class AlarmActivity : AppCompatActivity() {
         turnOnScreen()
         setContentView(R.layout.activity_alarm)
         setupClicks()
+        supportActionBar?.title = intent.extras!!.getString(ALARM_ARG_TITLE)
         ring()
     }
 
@@ -71,7 +71,7 @@ class AlarmActivity : AppCompatActivity() {
     private fun showMissedAlarmNotification() {
         val builder = NotificationCompat.Builder(this, NotificationsManager.CHANNEL_MISSED_ALARM)
             .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentTitle(getString(R.string.title_you_have_missed_alarm))
+            .setContentTitle(String.format(getString(R.string.title_you_have_missed_alarm), intent.getStringExtra(ALARM_ARG_TITLE)))
             .setPriority(NotificationCompat.PRIORITY_MAX)
         NotificationManagerCompat.from(this).notify(NotificationsManager.MISSED_ALARM_NOTIFICATION_ID, builder.build())
     }
