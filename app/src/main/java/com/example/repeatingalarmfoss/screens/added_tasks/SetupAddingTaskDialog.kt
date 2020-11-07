@@ -119,7 +119,8 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
 
     @SuppressLint("SetTextI18n")
     override fun onTimeSet(hourOfDay: Int, minutes: Int) {
-        buttonTimePicker.text = "$hourOfDay:$minutes"
+        val minutesWithLeadingZeroIfNecessary = if(minutes<10) "0$minutes" else minutes.toString()
+        buttonTimePicker.text = "$hourOfDay:$minutesWithLeadingZeroIfNecessary"
     }
 
     override fun onDateSet(year: Int, month: Int, day: Int) {
