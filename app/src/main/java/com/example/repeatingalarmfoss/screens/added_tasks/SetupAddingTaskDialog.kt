@@ -2,13 +2,16 @@ package com.example.repeatingalarmfoss.screens.added_tasks
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
@@ -34,49 +37,75 @@ import javax.inject.Inject
 
 private const val AMOUNT_DAYS_IN_WEEK = 7
 
-class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback) : DialogFragment(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
+class SetupAddingTaskDialog : DialogFragment(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
     @Inject
     lateinit var logger: FlightRecorder
     private val clicks = CompositeDisposable()
     private val chosenWeekDays = FixedSizeBitSet(AMOUNT_DAYS_IN_WEEK)
     private lateinit var customView: View
+    private lateinit var timeSettingCallback: TimeSettingCallback
+
+    companion object {
+        fun newInstance(timeSettingCallback: TimeSettingCallback) = SetupAddingTaskDialog().apply {
+            this.timeSettingCallback = timeSettingCallback
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = customView
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        (requireActivity().application as RepeatingAlarmApp).appComponent.inject(this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        buttonOk.isVisible = dialog == null
+        if (dialog == null) {
+            view.findViewById<Button>(R.id.buttonTimePicker)?.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+            view.findViewById<Button>(R.id.buttonDatePicker)?.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+            setupClicks()
+            clicks += buttonOk.clicks()
+                .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .subscribe {
+                    /* todo: redraw, clear*/
+                    view.findViewById<Button>(R.id.buttonTimePicker)?.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                    view.findViewById<Button>(R.id.buttonDatePicker)?.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+                    onOkButtonClicked()
+                }
+        }
+    }
 
-        customView = LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_creating_task, null as ViewGroup?)
-        return AlertDialog.Builder(requireActivity())
-            .setTitle(getString(R.string.add_new_task))
-            .setView(customView)
-            .setPositiveButton(android.R.string.ok) { dialog, _ ->
-                dialog.dismiss().also {
-                    val description = etTaskDescription.text.toString()
-                    val time = buttonTimePicker.text.toString()
-                    val chosenInitialDateAndTime: Date? = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())
-                    when {
-                        rbDayOfWeek.isChecked -> {
-                            timeSettingCallback.onTimeSet(description, RepeatingClassifier.DAY_OF_WEEK, chosenWeekDays.toString(), time)
-                            logger.d(true) { "chosen week days in dialog: $chosenWeekDays" }
-                        }
-                        rbXTimeUnit.isChecked -> {
-                            val currentSpinnerValue = spinnerTimeUnits.selectedItem.toString()
-                            val repeatingClassifierValue = etTimeUnitValue.text
-                            logger.d(true) { "chosen date in dialog: $chosenInitialDateAndTime" }
-                            timeSettingCallback.onTimeSet(description, RepeatingClassifier.EVERY_X_TIME_UNIT, repeatingClassifierValue.toString() + currentSpinnerValue, chosenInitialDateAndTime?.time.toString())
-                        }
-                    }
-                }
+    override fun onAttach(context: Context) = (requireActivity().application as RepeatingAlarmApp).appComponent.inject(this)
+        .apply { super.onAttach(context) }
+        .also { customView = LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_creating_task, null as ViewGroup?) }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireActivity())
+        .setTitle(getString(R.string.add_new_task))
+        .setView(customView)
+        .setPositiveButton(android.R.string.ok) { dialog, _ ->
+            dialog.dismiss()
+            onOkButtonClicked()
+        }
+        .setNegativeButton(android.R.string.cancel, null)
+        .create().apply {
+            setOnShowListener {
+                view?.findViewById<Button>(R.id.buttonTimePicker)?.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                view?.findViewById<Button>(R.id.buttonDatePicker)?.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+                setupClicks()
             }
-            .setNegativeButton(android.R.string.cancel, null)
-            .create().apply {
-                setOnShowListener {
-                    buttonTimePicker.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-                    buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
-                    setupClicks()
-                }
+        }
+
+    private fun onOkButtonClicked() {
+        val description = etTaskDescription.text.toString()
+        val time = buttonTimePicker.text.toString()
+        val chosenInitialDateAndTime: Date? = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())
+        when {
+            rbDayOfWeek.isChecked -> {
+                timeSettingCallback.onTimeSet(description, RepeatingClassifier.DAY_OF_WEEK, chosenWeekDays.toString(), time)
+                logger.d(true) { "chosen week days in dialog: $chosenWeekDays" }
             }
+            rbXTimeUnit.isChecked -> {
+                val currentSpinnerValue = spinnerTimeUnits.selectedItem.toString()
+                val repeatingClassifierValue = etTimeUnitValue.text
+                logger.d(true) { "chosen date in dialog: $chosenInitialDateAndTime" }
+                timeSettingCallback.onTimeSet(description, RepeatingClassifier.EVERY_X_TIME_UNIT, repeatingClassifierValue.toString() + currentSpinnerValue, chosenInitialDateAndTime?.time.toString())
+            }
+        }
     }
 
     private fun setupClicks() {
@@ -107,7 +136,13 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
             Function3<CharSequence, CharSequence, Boolean, Boolean> { date, time, descriptionIsNotEmpty ->
                 SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse("$date $time")!!.time > System.currentTimeMillis() + 60000L && descriptionIsNotEmpty
             })
-            .subscribe { (dialog as AlertDialog).getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = it }
+            .subscribe {
+                if (dialog != null) {
+                    (dialog as AlertDialog).getButton(DialogInterface.BUTTON_POSITIVE)?.isEnabled = it
+                } else {
+                    buttonOk.isEnabled = it
+                }
+            }
 
         clicks += Observable.combineLatest(rbDayOfWeek.checkedChanges(), rbXTimeUnit.checkedChanges(), BiFunction<Boolean, Boolean, Unit> { dayOfWeek, xTimeUnit ->
             rbXTimeUnit.isChecked = xTimeUnit && dayOfWeek.not()
@@ -119,12 +154,12 @@ class SetupAddingTaskDialog(private val timeSettingCallback: TimeSettingCallback
 
     @SuppressLint("SetTextI18n")
     override fun onTimeSet(hourOfDay: Int, minutes: Int) {
-        val minutesWithLeadingZeroIfNecessary = if(minutes<10) "0$minutes" else minutes.toString()
+        val minutesWithLeadingZeroIfNecessary = if (minutes < 10) "0$minutes" else minutes.toString()
         buttonTimePicker.text = "$hourOfDay:$minutesWithLeadingZeroIfNecessary"
     }
 
     override fun onDateSet(year: Int, month: Int, day: Int) {
-        buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(year-1900, month, day))
+        buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(year - 1900, month, day))
     }
 
     interface TimeSettingCallback {
