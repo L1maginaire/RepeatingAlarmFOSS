@@ -37,7 +37,7 @@ import javax.inject.Inject
 
 private const val AMOUNT_DAYS_IN_WEEK = 7
 
-class SetupAddingTaskDialog : DialogFragment(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
+class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
     @Inject
     lateinit var logger: FlightRecorder
     private val clicks = CompositeDisposable()
@@ -46,7 +46,7 @@ class SetupAddingTaskDialog : DialogFragment(), TimePickerFragment.OnTimeSetCall
     private lateinit var timeSettingCallback: TimeSettingCallback
 
     companion object {
-        fun newInstance(timeSettingCallback: TimeSettingCallback) = SetupAddingTaskDialog().apply {
+        fun newInstance(timeSettingCallback: TimeSettingCallback) = SetupAddingTaskFragment().apply {
             this.timeSettingCallback = timeSettingCallback
         }
     }

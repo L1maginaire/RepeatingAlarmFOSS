@@ -1,7 +1,6 @@
 package com.example.repeatingalarmfoss.screens.added_tasks
 
 import android.app.AlarmManager
-import android.app.Dialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -9,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -33,7 +31,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TaskListFragment : Fragment(), SetupAddingTaskDialog.TimeSettingCallback {
+class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -70,7 +68,7 @@ class TaskListFragment : Fragment(), SetupAddingTaskDialog.TimeSettingCallback {
     private fun setupClicks() {
         clicks += addTaskFab.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe { SetupAddingTaskDialog.newInstance(this).show(childFragmentManager, SetupAddingTaskDialog::class.java.simpleName) }
+            .subscribe { SetupAddingTaskFragment.newInstance(this).show(childFragmentManager, SetupAddingTaskFragment::class.java.simpleName) }
     }
 
     private fun setupViewModelSubscriptions() {

@@ -7,7 +7,7 @@ import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingCallback {
+class MainActivity : AppCompatActivity(), SetupAddingTaskFragment.TimeSettingCallback {
     private lateinit var taskListFragment: TaskListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity(), SetupAddingTaskDialog.TimeSettingCallb
         if(root == null) {
             supportFragmentManager.commit {
                 replace(R.id.detailFragmentContainer, taskListFragment)
-                replace(R.id.fragmentContainer, SetupAddingTaskDialog.newInstance(this@MainActivity))
+                replace(R.id.fragmentContainer, SetupAddingTaskFragment.newInstance(this@MainActivity))
             }
         } else {
             supportFragmentManager.commit {
