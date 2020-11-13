@@ -84,8 +84,8 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
         .setNegativeButton(android.R.string.cancel, null)
         .create().apply {
             setOnShowListener {
-                view?.findViewById<Button>(R.id.buttonTimePicker)?.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-                view?.findViewById<Button>(R.id.buttonDatePicker)?.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+                view?.findViewById<Button>(R.id.buttonTimePicker)?.text = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
+                view?.findViewById<Button>(R.id.buttonDatePicker)?.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
                 setupClicks()
             }
         }
@@ -93,7 +93,7 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
     private fun onOkButtonClicked() {
         val description = etTaskDescription.text.toString()
         val time = buttonTimePicker.text.toString()
-        val chosenInitialDateAndTime: Date? = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())
+        val chosenInitialDateAndTime: Date? = SimpleDateFormat(DATE_PATTERN_FOR_LOGGING, Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())
         when {
             rbDayOfWeek.isChecked -> {
                 timeSettingCallback.onTimeSet(description, RepeatingClassifier.DAY_OF_WEEK, chosenWeekDays.toString(), time)
@@ -134,7 +134,7 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
             buttonTimePicker.textChanges(),
             etTaskDescription.textChanges().map { it.isBlank().not() },
             Function3<CharSequence, CharSequence, Boolean, Boolean> { date, time, descriptionIsNotEmpty ->
-                SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).apply { isLenient = false }.parse("$date $time")!!.time > System.currentTimeMillis() + 60000L && descriptionIsNotEmpty
+                SimpleDateFormat(DATE_PATTERN_FOR_LOGGING, Locale.getDefault()).apply { isLenient = false }.parse("$date $time")!!.time > System.currentTimeMillis() + 60000L && descriptionIsNotEmpty
             })
             .subscribe {
                 if (dialog != null) {
@@ -159,7 +159,7 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
     }
 
     override fun onDateSet(year: Int, month: Int, day: Int) {
-        buttonDatePicker.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(year - 1900, month, day))
+        buttonDatePicker.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date(year - 1900, month, day))
     }
 
     interface TimeSettingCallback {

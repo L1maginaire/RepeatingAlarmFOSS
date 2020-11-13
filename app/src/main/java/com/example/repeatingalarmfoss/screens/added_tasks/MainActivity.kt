@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity(), SetupAddingTaskFragment.TimeSettingCal
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         taskListFragment = TaskListFragment()
-        if(root == null) {
+        if (root == null) {
             supportFragmentManager.commit {
                 replace(R.id.detailFragmentContainer, taskListFragment)
                 replace(R.id.fragmentContainer, SetupAddingTaskFragment.newInstance(this@MainActivity))
