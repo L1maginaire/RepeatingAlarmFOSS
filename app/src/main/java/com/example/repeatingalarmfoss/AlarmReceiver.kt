@@ -9,12 +9,10 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.helper.FlightRecorder
-import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
-import com.example.repeatingalarmfoss.screens.NotifierService
-import java.util.*
 import com.example.repeatingalarmfoss.helper.extensions.set
+import com.example.repeatingalarmfoss.screens.NotifierService
+import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
 import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
-import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 const val ACTION_RING = "action_ring"
@@ -45,10 +43,10 @@ class AlarmReceiver : BroadcastReceiver() {
             val time = intent.getStringExtra(ALARM_ARG_TIME)!!
             val repeatingClassifier = intent.getStringExtra(ALARM_ARG_CLASSIFIER)!!
             val repeatingClassifierValue = intent.getStringExtra(ALARM_ARG_INTERVAL)!!
-            val nextLaunchTime: Long = if (repeatingClassifier == RepeatingClassifier.EVERY_X_TIME_UNIT.name) {
-                nextLaunchTimeCalculationUseCase.getNextLaunchTime(time.toLong(), repeatingClassifierValue)
-            } else {
-                nextLaunchTimeCalculationUseCase.getNextLaunchTime(time, repeatingClassifierValue)
+            val nextLaunchTime: Long = when(repeatingClassifier) {
+                RepeatingClassifier.EVERY_X_TIME_UNIT.name -> nextLaunchTimeCalculationUseCase.getNextLaunchTime(time.toLong(), repeatingClassifierValue)
+                RepeatingClassifier.DAY_OF_WEEK.name -> nextLaunchTimeCalculationUseCase.getNextLaunchTime(time, repeatingClassifierValue)
+                else -> throw IllegalStateException()
             }
             val newIntent = Intent(context, AlarmReceiver::class.java).apply {
                 action = ACTION_RING
@@ -57,7 +55,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 putExtra(ALARM_ARG_CLASSIFIER, repeatingClassifier)
                 putExtra(ALARM_ARG_TIME, nextLaunchTime.toString())
             }
-            logger.d(true) { "Next launch: ${SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.UK).format(nextLaunchTime)}" }
+            logger.logScheduledEvent(true, { "Next launch:" }, nextLaunchTime)
             (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(nextLaunchTime, PendingIntent.getBroadcast(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT))
         }
     }

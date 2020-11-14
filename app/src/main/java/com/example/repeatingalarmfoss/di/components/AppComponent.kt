@@ -6,13 +6,9 @@ import com.example.repeatingalarmfoss.di.ViewModelBuilderModule
 import com.example.repeatingalarmfoss.di.modules.ContextModule
 import com.example.repeatingalarmfoss.di.modules.DatabaseModule
 import com.example.repeatingalarmfoss.di.modules.LoggerModule
-import com.example.repeatingalarmfoss.helper.FlightRecorder
-import com.example.repeatingalarmfoss.screens.added_tasks.DatePickerFragment
-import com.example.repeatingalarmfoss.screens.added_tasks.SetupAddingTaskDialog
-import com.example.repeatingalarmfoss.screens.added_tasks.TaskListActivity
+import com.example.repeatingalarmfoss.screens.added_tasks.SetupAddingTaskFragment
 import dagger.BindsInstance
 import dagger.Component
-import java.io.File
 import javax.inject.Singleton
 
 @Singleton
@@ -28,5 +24,5 @@ interface AppComponent {
     fun addTaskComponent(): AddTaskComponent.Factory
 
     fun inject(receiver: AlarmReceiver)
-    fun inject(fragment: SetupAddingTaskDialog)
+    fun inject(fragment: SetupAddingTaskFragment)
 }
