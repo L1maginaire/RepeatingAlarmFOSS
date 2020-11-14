@@ -7,17 +7,20 @@ import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), SetupAddingTaskFragment.TimeSettingCallback {
+class MainActivity : AppCompatActivity(), SetupAddingTaskFragment.TimeSettingCallback, TaskAddedCallback {
     private lateinit var taskListFragment: TaskListFragment
+    private lateinit var setupAddingTaskFragment: SetupAddingTaskFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        taskListFragment = TaskListFragment()
+        taskListFragment = TaskListFragment.newInstance(this@MainActivity)
+        setupAddingTaskFragment = SetupAddingTaskFragment.newInstance(this@MainActivity)
+
         if (root == null) {
             supportFragmentManager.commit {
                 replace(R.id.detailFragmentContainer, taskListFragment)
-                replace(R.id.fragmentContainer, SetupAddingTaskFragment.newInstance(this@MainActivity))
+                replace(R.id.fragmentContainer, setupAddingTaskFragment)
             }
         } else {
             supportFragmentManager.commit {
@@ -27,4 +30,5 @@ class MainActivity : AppCompatActivity(), SetupAddingTaskFragment.TimeSettingCal
     }
 
     override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = taskListFragment.onTimeSet(description, repeatingClassifier, repeatingClassifierValue, time)
+    override fun onSuccessfulScheduling() = if(root == null) setupAddingTaskFragment.setFieldsDefault() else Unit
 }

@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
@@ -65,13 +64,13 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
             clicks += buttonOk.clicks()
                 .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .subscribe {
+                    buttonOk.isEnabled = false
                     onOkButtonClicked()
-                    setFieldsDefault()
                 }
         }
     }
 
-    private fun setFieldsDefault() {
+    fun setFieldsDefault() {
         buttonTimePicker.text = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
         buttonDatePicker.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
         toggleMon.isChecked = false

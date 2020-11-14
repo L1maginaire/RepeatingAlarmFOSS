@@ -29,13 +29,20 @@ import kotlinx.android.synthetic.main.fragment_task_list.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback {
+class TaskListFragment: Fragment(), SetupAddingTaskFragment.TimeSettingCallback {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var logger: FlightRecorder
     private val addingTasksViewModel by viewModels<AddingTasksViewModel> { viewModelFactory }
+    private lateinit var onTaskAddedCallback: TaskAddedCallback
+
+    companion object {
+        fun newInstance(onTaskAddedCallback: TaskAddedCallback) = TaskListFragment().apply {
+            this.onTaskAddedCallback = onTaskAddedCallback
+        }
+    }
 
     private val clicks = CompositeDisposable()
     private val tasksAdapter = AddedTasksAdapter(::removeTask)
@@ -73,6 +80,7 @@ class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback
         addingTasksViewModel.addTaskEvent.observe(viewLifecycleOwner, Observer { task ->
             scheduleAlarmManager(task.description, task.repeatingClassifier, task.repeatingClassifierValue, task.time)
             tasksAdapter.addNewTask(task)
+            onTaskAddedCallback.onSuccessfulScheduling()
         })
         addingTasksViewModel.removeTaskEvent.observe(viewLifecycleOwner, Observer { id ->
             cancelAlarmManagerFor(id)
@@ -106,4 +114,8 @@ class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback
     }
 
     override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = addingTasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue, time)
+}
+
+interface TaskAddedCallback {
+    fun onSuccessfulScheduling()
 }
