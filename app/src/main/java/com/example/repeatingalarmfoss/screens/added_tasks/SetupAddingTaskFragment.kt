@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,10 +66,10 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
             clicks += buttonOk.clicks()
                 .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .subscribe {
+                    onOkButtonClicked()
                     /* todo: redraw, clear*/
                     view.findViewById<Button>(R.id.buttonTimePicker)?.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
                     view.findViewById<Button>(R.id.buttonDatePicker)?.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
-                    onOkButtonClicked()
                 }
         }
     }

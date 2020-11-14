@@ -143,7 +143,7 @@
         android:id="@+id/buttonDatePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="07 June 2020"
+        tools:text="07 Jun 2020"
         />
 
        <Button
