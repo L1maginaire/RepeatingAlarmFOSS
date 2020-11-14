@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,18 +59,30 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         buttonOk.isVisible = dialog == null
         if (dialog == null) {
-            view.findViewById<Button>(R.id.buttonTimePicker)?.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-            view.findViewById<Button>(R.id.buttonDatePicker)?.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+            buttonTimePicker.text = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
+            buttonDatePicker.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
             setupClicks()
             clicks += buttonOk.clicks()
                 .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .subscribe {
                     onOkButtonClicked()
-                    /* todo: redraw, clear*/
-                    view.findViewById<Button>(R.id.buttonTimePicker)?.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-                    view.findViewById<Button>(R.id.buttonDatePicker)?.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+                    setFieldsDefault()
                 }
         }
+    }
+
+    private fun setFieldsDefault() {
+        buttonTimePicker.text = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
+        buttonDatePicker.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
+        toggleMon.isChecked = false
+        toggleTue.isChecked = false
+        toggleWed.isChecked = false
+        toggleThu.isChecked = false
+        toggleFri.isChecked = false
+        toggleSat.isChecked = false
+        toggleSun.isChecked = false
+        etTaskDescription.setText("")
+        etTimeUnitValue.setText("1")
     }
 
     override fun onAttach(context: Context) = (requireActivity().application as RepeatingAlarmApp).appComponent.inject(this)
@@ -88,8 +99,8 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
         .setNegativeButton(android.R.string.cancel, null)
         .create().apply {
             setOnShowListener {
-                view?.findViewById<Button>(R.id.buttonTimePicker)?.text = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
-                view?.findViewById<Button>(R.id.buttonDatePicker)?.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
+                buttonTimePicker.text = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
+                buttonDatePicker.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
                 setupClicks()
             }
         }
