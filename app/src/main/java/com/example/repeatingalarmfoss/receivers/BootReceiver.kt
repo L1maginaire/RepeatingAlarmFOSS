@@ -14,6 +14,7 @@ import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.set
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -33,9 +34,9 @@ class BootReceiver : BroadcastReceiver() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError { logger.e { it.stackTrace.joinToString(separator = "\n") { e -> e.toString() } } }
-                .subscribe({
-                    it.forEachIndexed { index, task ->
-                        logger.logScheduledEvent(true, { "rescheduling ($index) of ${it.size}: " }, task.time.toLong())
+                .subscribe({ list ->
+                    list.forEachIndexed { index, task ->
+                        logger.logScheduledEvent(true, { "rescheduling ($index) of ${list.size}: " }, task.time.toLong())
                         (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(task.time.toLong(), PendingIntent.getBroadcast(context, task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
                     }
                 }, { it.printStackTrace() })
