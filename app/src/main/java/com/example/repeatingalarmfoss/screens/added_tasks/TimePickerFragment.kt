@@ -18,7 +18,7 @@ class TimePickerFragment(private val onTimeSetCallback: OnTimeSetCallback) : Dia
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minutes: Int) = onTimeSetCallback.onTimeSet(hourOfDay, minutes)
 
-    interface OnTimeSetCallback{
+    interface OnTimeSetCallback {
         fun onTimeSet(hourOfDay: Int, minutes: Int)
     }
 }

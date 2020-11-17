@@ -18,7 +18,7 @@ class DatePickerFragment(private val onDateSetCallback: OnDateSetCallback) : Dia
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) = onDateSetCallback.onDateSet(year, month, day)
 
-    interface OnDateSetCallback{
+    interface OnDateSetCallback {
         fun onDateSet(year: Int, month: Int, day: Int)
     }
 }

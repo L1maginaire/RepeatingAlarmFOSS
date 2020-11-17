@@ -25,6 +25,7 @@ const val ALARM_ARG_CLASSIFIER = "arg_classifier"
 class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var logger: FlightRecorder
+
     @Inject
     lateinit var nextLaunchTimeCalculationUseCase: NextLaunchTimeCalculationUseCase
 
@@ -46,7 +47,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val time = intent.getStringExtra(ALARM_ARG_TIME)!!
             val repeatingClassifier = intent.getStringExtra(ALARM_ARG_CLASSIFIER)!!
             val repeatingClassifierValue = intent.getStringExtra(ALARM_ARG_INTERVAL)!!
-            val nextLaunchTime: Long = when(repeatingClassifier) {
+            val nextLaunchTime: Long = when (repeatingClassifier) {
                 RepeatingClassifier.EVERY_X_TIME_UNIT.name -> nextLaunchTimeCalculationUseCase.getNextLaunchTime(time.toLong(), repeatingClassifierValue)
                 RepeatingClassifier.DAY_OF_WEEK.name -> nextLaunchTimeCalculationUseCase.getNextLaunchTime(time, repeatingClassifierValue)
                 else -> throw IllegalStateException()
@@ -58,7 +59,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 putExtra(ALARM_ARG_CLASSIFIER, repeatingClassifier)
                 putExtra(ALARM_ARG_TIME, nextLaunchTime.toString())
             }
-            logger.logScheduledEvent(what = { "Next launch:" },`when` = nextLaunchTime)
+            logger.logScheduledEvent(what = { "Next launch:" }, `when` = nextLaunchTime)
             (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(nextLaunchTime, PendingIntent.getBroadcast(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT))
         }
     }

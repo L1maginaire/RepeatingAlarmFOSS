@@ -14,9 +14,9 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.repeatingalarmfoss.receivers.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.receivers.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.screens.NotifierService
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.Observable
@@ -69,11 +69,11 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     private fun showMissedAlarmNotification() {
-            val builder = NotificationCompat.Builder(this, NotificationsManager.CHANNEL_MISSED_ALARM)
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle(String.format(getString(R.string.title_you_have_missed_alarm), intent.getStringExtra(ALARM_ARG_TITLE)))
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-            NotificationManagerCompat.from(this).notify(NotificationsManager.MISSED_ALARM_NOTIFICATION_ID, builder.build())
+        val builder = NotificationCompat.Builder(this, NotificationsManager.CHANNEL_MISSED_ALARM)
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentTitle(String.format(getString(R.string.title_you_have_missed_alarm), intent.getStringExtra(ALARM_ARG_TITLE)))
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+        NotificationManagerCompat.from(this).notify(NotificationsManager.MISSED_ALARM_NOTIFICATION_ID, builder.build())
     }
 
     private fun createPlayer(): MediaPlayer? = try {

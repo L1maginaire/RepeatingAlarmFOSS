@@ -14,14 +14,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.repeatingalarmfoss.*
+import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.helper.extensions.toast
 import com.example.repeatingalarmfoss.receivers.*
-import com.example.repeatingalarmfoss.receivers.AlarmReceiver
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_task_list.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TaskListFragment: Fragment(), SetupAddingTaskFragment.TimeSettingCallback {
+class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -110,7 +110,7 @@ class TaskListFragment: Fragment(), SetupAddingTaskFragment.TimeSettingCallback 
         }
         val nextLaunchTime: Long = if (repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) addingTasksViewModel.getNextLaunchTime(time, repeatingClassifierValue) else time.toLong()
 
-        logger.logScheduledEvent(what = { "First launch:" } , `when` = nextLaunchTime)
+        logger.logScheduledEvent(what = { "First launch:" }, `when` = nextLaunchTime)
 
         (requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(nextLaunchTime, PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }

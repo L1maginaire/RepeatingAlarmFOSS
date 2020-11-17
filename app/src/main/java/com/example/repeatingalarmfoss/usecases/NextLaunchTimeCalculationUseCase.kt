@@ -2,7 +2,6 @@ package com.example.repeatingalarmfoss.usecases
 
 import android.content.Context
 import com.example.repeatingalarmfoss.R
-import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
 import com.example.repeatingalarmfoss.helper.extensions.LongExt.daysToMilliseconds
 import com.example.repeatingalarmfoss.helper.extensions.LongExt.hoursToMilliseconds
@@ -13,7 +12,7 @@ import javax.inject.Inject
 class NextLaunchTimeCalculationUseCase @Inject constructor(private val appContext: Context) {
     /** @param time - Timestamp, implies hours (in 24-hour format) and minutes divided with separator ":". For example, 21:12
 
-     FIXME string consist of 8 bits!
+    FIXME string consist of 8 bits!
      *  @param chosenWeekDaysBinaryString - String, denoting weekdays "chosen" or not in binary format, first index is Sunday, second is Monday, etc.
     For example, argument value is: 0100001. This means, "chosen" days are Monday and Saturday
 
