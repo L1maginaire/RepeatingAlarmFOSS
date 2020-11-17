@@ -110,7 +110,7 @@ class TaskListFragment: Fragment(), SetupAddingTaskFragment.TimeSettingCallback 
         }
         val nextLaunchTime: Long = if (repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) addingTasksViewModel.getNextLaunchTime(time, repeatingClassifierValue) else time.toLong()
 
-        logger.logScheduledEvent(true, { "First launch:" } , nextLaunchTime)
+        logger.logScheduledEvent(what = { "First launch:" } , `when` = nextLaunchTime)
 
         (requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(nextLaunchTime, PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }

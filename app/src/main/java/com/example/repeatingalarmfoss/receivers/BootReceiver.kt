@@ -33,13 +33,13 @@ class BootReceiver : BroadcastReceiver() {
                 .timeout(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError { logger.e { it.stackTrace.joinToString(separator = "\n") { e -> e.toString() } } }
+                .doOnError { logger.e(stackTrace = it.stackTrace) }
                 .subscribe({ list ->
                     list.forEachIndexed { index, task ->
-                        logger.logScheduledEvent(true, { "rescheduling ($index) of ${list.size}: " }, task.time.toLong())
+                        logger.logScheduledEvent(what = { "Rescheduling ($index) of ${list.size}: " }, `when` = task.time.toLong())
                         (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(task.time.toLong(), PendingIntent.getBroadcast(context, task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
                     }
-                }, { it.printStackTrace() })
+                }, { logger.e(stackTrace = it.stackTrace) })
         }
     }
 }

@@ -56,7 +56,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 putExtra(ALARM_ARG_CLASSIFIER, repeatingClassifier)
                 putExtra(ALARM_ARG_TIME, nextLaunchTime.toString())
             }
-            logger.logScheduledEvent(true, { "Next launch:" }, nextLaunchTime)
+            logger.logScheduledEvent(what = { "Next launch:" },`when` = nextLaunchTime)
             (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(nextLaunchTime, PendingIntent.getBroadcast(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT))
         }
     }

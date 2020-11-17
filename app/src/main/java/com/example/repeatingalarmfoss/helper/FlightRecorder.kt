@@ -19,26 +19,35 @@ class FlightRecorder constructor(private val logStorage: File) {
     /**
      * @param when - time in milliseconds
      * */
-    fun logScheduledEvent(toPrintInLogcat: Boolean = false, what: () -> String, `when`: Long) {
+    fun logScheduledEvent(toPrintInLogcat: Boolean = true, what: () -> String, `when`: Long) {
         val message = { what.invoke() + " " + SimpleDateFormat(DATE_PATTERN_FOR_LOGGING, Locale.UK).format(`when`) }
         clearBeginningIfNeeded("} I {", message)
-            .also { logStorage.appendText("} I { ${message.invoke()}\n") }.also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, message.invoke())} }
+            .also { logStorage.appendText("} I { ${message.invoke()}\n") }
+            .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, message.invoke())} }
     }
 
-    fun i(toPrintInLogcat: Boolean = false, what: () -> String) = clearBeginningIfNeeded("} I {", what)
-        .also { logStorage.appendText("} I { ${what.invoke()}\n") }.also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
+    fun i(toPrintInLogcat: Boolean = true, what: () -> String) = clearBeginningIfNeeded("} I {", what)
+        .also { logStorage.appendText("} I { ${what.invoke()}\n") }
+        .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
-    fun d(toPrintInLogcat: Boolean = false, what: () -> String) = clearBeginningIfNeeded("} D {", what)
-        .also { logStorage.appendText("} D { ${what.invoke()}\n") }.also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
+    fun d(toPrintInLogcat: Boolean = true, what: () -> String) = clearBeginningIfNeeded("} D {", what)
+        .also { logStorage.appendText("} D { ${what.invoke()}\n") }
+        .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
-    fun w(toPrintInLogcat: Boolean = false, what: () -> String) = clearBeginningIfNeeded("} W {", what)
-        .also { logStorage.appendText("} W { ${what.invoke()}\n") }.also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
+    fun w(toPrintInLogcat: Boolean = true, what: () -> String) = clearBeginningIfNeeded("} W {", what)
+        .also { logStorage.appendText("} W { ${what.invoke()}\n") }
+        .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
-    fun e(toPrintInLogcat: Boolean = false, what: () -> String) = clearBeginningIfNeeded("} E {", what)
-        .also { logStorage.appendText("} E { ${what.invoke()}\n") }.also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
+    fun e(toPrintInLogcat: Boolean = true, stackTrace: Array<StackTraceElement>) {
+        val readableStackTrace = stackTrace.joinToString(separator = "\n") { it.toString() }
+        clearBeginningIfNeeded("} E {") { readableStackTrace }
+            .also { logStorage.appendText("} E { $readableStackTrace\n") }
+            .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, readableStackTrace)} }
+    }
 
-    fun wtf(toPrintInLogcat: Boolean = false, what: () -> String) = clearBeginningIfNeeded("} X {", what)
-        .also { logStorage.appendText("} X { ${what.invoke()}\n") }.also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
+    fun wtf(toPrintInLogcat: Boolean = true, what: () -> String) = clearBeginningIfNeeded("} X {", what)
+        .also { logStorage.appendText("} X { ${what.invoke()}\n") }
+        .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
     private fun clearBeginningIfNeeded(meta: String, what: () -> String) {
         val newDataSize = "$meta ${what.invoke()}\n".toByteArray().size
