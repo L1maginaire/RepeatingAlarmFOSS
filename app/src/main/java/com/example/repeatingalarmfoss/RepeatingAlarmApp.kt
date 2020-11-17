@@ -22,10 +22,6 @@ class RepeatingAlarmApp: Application(), LifecycleObserver {
 
     var isAppInForeground = false
 
-    companion object { lateinit var INSTANCE: RepeatingAlarmApp }
-
-    init { INSTANCE = this }
-
     override fun onCreate() {
         setupDagger()
         super.onCreate()

@@ -15,9 +15,10 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class AddingTasksViewModel @Inject constructor(private val taskRepository: TaskRepository) : ViewModel() {
-    private val nextLaunchTimeCalculationUseCase = NextLaunchTimeCalculationUseCase()
-    private val disposable = CompositeDisposable()
+    @Inject
+    lateinit var nextLaunchTimeCalculationUseCase: NextLaunchTimeCalculationUseCase
 
+    private val disposable = CompositeDisposable()
     override fun onCleared() = disposable.clear()
 
     private val _addTaskEvent = SingleLiveEvent<Task>()

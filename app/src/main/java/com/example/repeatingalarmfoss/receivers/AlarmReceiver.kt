@@ -25,13 +25,15 @@ const val ALARM_ARG_CLASSIFIER = "arg_classifier"
 class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var logger: FlightRecorder
-    private val nextLaunchTimeCalculationUseCase = NextLaunchTimeCalculationUseCase()
+    @Inject
+    lateinit var nextLaunchTimeCalculationUseCase: NextLaunchTimeCalculationUseCase
 
     override fun onReceive(context: Context, intent: Intent) {
-        (context.applicationContext as RepeatingAlarmApp).appComponent.inject(this)
+        val app = context.applicationContext as RepeatingAlarmApp
+        (app).appComponent.inject(this)
 
         val title = intent.getStringExtra(ALARM_ARG_TITLE)
-        if (Build.VERSION.SDK_INT >= 29 && RepeatingAlarmApp.INSTANCE.isAppInForeground.not()) {
+        if (Build.VERSION.SDK_INT >= 29 && app.isAppInForeground.not()) {
             ContextCompat.startForegroundService(context, Intent(context, NotifierService::class.java))
         } else {
             context.startActivity(Intent(context, AlarmActivity::class.java).apply {

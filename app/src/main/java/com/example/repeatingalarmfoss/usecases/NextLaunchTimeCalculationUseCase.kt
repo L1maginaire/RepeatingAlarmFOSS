@@ -1,5 +1,6 @@
 package com.example.repeatingalarmfoss.usecases
 
+import android.content.Context
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
@@ -7,10 +8,9 @@ import com.example.repeatingalarmfoss.helper.extensions.LongExt.daysToMillisecon
 import com.example.repeatingalarmfoss.helper.extensions.LongExt.hoursToMilliseconds
 import com.example.repeatingalarmfoss.helper.extensions.LongExt.minutesToMilliseconds
 import java.util.*
+import javax.inject.Inject
 
-class NextLaunchTimeCalculationUseCase {
-    private val appContext = RepeatingAlarmApp.INSTANCE.applicationContext
-
+class NextLaunchTimeCalculationUseCase @Inject constructor(private val appContext: Context) {
     /** @param time - Timestamp, implies hours (in 24-hour format) and minutes divided with separator ":". For example, 21:12
 
      FIXME string consist of 8 bits!
