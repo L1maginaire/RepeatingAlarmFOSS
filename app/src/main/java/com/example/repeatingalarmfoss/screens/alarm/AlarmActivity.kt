@@ -14,7 +14,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.repeatingalarmfoss.ALARM_ARG_TITLE
+import com.example.repeatingalarmfoss.receivers.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.screens.NotifierService
