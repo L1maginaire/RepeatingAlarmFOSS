@@ -37,6 +37,8 @@ class AlarmManagerTest {
     fun `setting multiple alarms`() {
         assertNull(shadowAlarmManager.nextScheduledAlarm)
         val timeArray = (1L..1000L).shuffled().toList()
+        assertFalse(shadowAlarmManager.scheduledAlarms.map { it.triggerAtTime } == timeArray)
+
         for (i in timeArray.indices) {
             alarmManager.set(timeArray[i], PendingIntent.getBroadcast(context, i, Intent(context, AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
         }
