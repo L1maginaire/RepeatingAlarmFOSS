@@ -37,7 +37,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-private const val AMOUNT_DAYS_IN_WEEK = 7
+const val AMOUNT_DAYS_IN_WEEK = 7
 
 class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
     @Inject

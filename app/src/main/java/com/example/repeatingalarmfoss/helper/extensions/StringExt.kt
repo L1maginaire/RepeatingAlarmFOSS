@@ -12,7 +12,7 @@ const val TIME_PATTERN_HOURS_24_MINUTES = "HH:mm"
  *  23 Dec 2014 00:12
  *  01 May 2020 05:55
  *  */
-const val DATE_PATTERN_FOR_LOGGING = "dd MMM yyyy HH:mm"
+const val DATE_PATTERN_FOR_LOGGING = "dd EEE MMM yyyy HH:mm"
 
 /** Represents date in format "day_of_month concise_month_name year"
  *  For example:
