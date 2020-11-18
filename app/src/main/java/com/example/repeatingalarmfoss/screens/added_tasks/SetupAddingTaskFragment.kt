@@ -107,13 +107,13 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
     private fun onOkButtonClicked() {
         val description = etTaskDescription.text.toString()
         val time = buttonTimePicker.text.toString()
-        val chosenInitialDateAndTime: Date? = SimpleDateFormat(DATE_PATTERN_FOR_LOGGING, Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())
         when {
             rbDayOfWeek.isChecked -> {
                 timeSettingCallback.onTimeSet(description, RepeatingClassifier.DAY_OF_WEEK, chosenWeekDays.toString(), time)
                 logger.d { "chosen week days in dialog: $chosenWeekDays" }
             }
             rbXTimeUnit.isChecked -> {
+                val chosenInitialDateAndTime: Date? = SimpleDateFormat(DATE_PATTERN_FOR_LOGGING, Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())
                 val currentSpinnerValue = spinnerTimeUnits.selectedItem.toString()
                 val repeatingClassifierValue = etTimeUnitValue.text
                 logger.d { "chosen date in dialog: $chosenInitialDateAndTime" }

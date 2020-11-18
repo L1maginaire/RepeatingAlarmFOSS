@@ -20,12 +20,12 @@ const val ACTION_RING = "action_ring"
 const val ALARM_ARG_INTERVAL = "arg_interval"
 const val ALARM_ARG_TIME = "arg_time"
 const val ALARM_ARG_TITLE = "arg_title"
+const val ALARM_ARG_ID = "arg_id"
 const val ALARM_ARG_CLASSIFIER = "arg_classifier"
 
 class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var logger: FlightRecorder
-
     @Inject
     lateinit var nextLaunchTimeCalculationUseCase: NextLaunchTimeCalculationUseCase
 
@@ -45,6 +45,10 @@ class AlarmReceiver : BroadcastReceiver() {
 
         if (intent.action == ACTION_RING) {
             val time = intent.getStringExtra(ALARM_ARG_TIME)!!
+
+            val taskId = intent.getLongExtra(ALARM_ARG_ID, -1L)
+            if (taskId == -1L) throw IllegalStateException()
+
             val repeatingClassifier = intent.getStringExtra(ALARM_ARG_CLASSIFIER)!!
             val repeatingClassifierValue = intent.getStringExtra(ALARM_ARG_INTERVAL)!!
             val nextLaunchTime: Long = when (repeatingClassifier) {
@@ -58,9 +62,12 @@ class AlarmReceiver : BroadcastReceiver() {
                 putExtra(ALARM_ARG_TITLE, title)
                 putExtra(ALARM_ARG_CLASSIFIER, repeatingClassifier)
                 putExtra(ALARM_ARG_TIME, nextLaunchTime.toString())
+                putExtra(ALARM_ARG_ID, taskId)
             }
             logger.logScheduledEvent(what = { "Next launch:" }, `when` = nextLaunchTime)
-            (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(nextLaunchTime, PendingIntent.getBroadcast(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+            (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(nextLaunchTime, PendingIntent.getBroadcast(context, taskId.toInt(), newIntent, PendingIntent.FLAG_UPDATE_CURRENT))
         }
     }
 }
+
+/*todo try daggerGraph*/

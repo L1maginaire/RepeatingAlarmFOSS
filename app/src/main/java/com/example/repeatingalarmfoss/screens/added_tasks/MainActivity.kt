@@ -30,5 +30,5 @@ class MainActivity : AppCompatActivity(), SetupAddingTaskFragment.TimeSettingCal
     }
 
     override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = taskListFragment.onTimeSet(description, repeatingClassifier, repeatingClassifierValue, time)
-    override fun onSuccessfulScheduling() = if (root == null) setupAddingTaskFragment.setFieldsDefault() else Unit
+    override fun onSuccessfulScheduling() = if (root == null/*fixme "twoPane" field*/) setupAddingTaskFragment.setFieldsDefault() else Unit
 }

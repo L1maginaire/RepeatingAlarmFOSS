@@ -34,9 +34,10 @@ import javax.inject.Inject
 class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var logger: FlightRecorder
+
+    private val alarmManager: AlarmManager by lazy { requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager }
     private val addingTasksViewModel by viewModels<AddingTasksViewModel> { viewModelFactory }
     private lateinit var onTaskAddedCallback: TaskAddedCallback
 
@@ -80,7 +81,7 @@ class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback
 
     private fun setupViewModelSubscriptions() {
         addingTasksViewModel.addTaskEvent.observe(viewLifecycleOwner, Observer { task ->
-            scheduleAlarmManager(task.description, task.repeatingClassifier, task.repeatingClassifierValue, task.time)
+            scheduleAlarmManager(task.id, task.description, task.repeatingClassifier, task.repeatingClassifierValue, task.time)
             tasksAdapter.addNewTask(task)
             onTaskAddedCallback.onSuccessfulScheduling()
         })
@@ -96,23 +97,22 @@ class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback
         })
     }
 
-    private fun cancelAlarmManagerFor(id: Long) {
-        //TODO
-    }
+    private fun cancelAlarmManagerFor(id: Long) = alarmManager.cancel(PendingIntent.getBroadcast(requireContext(), id.toInt(), Intent(requireActivity(), AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
 
-    private fun scheduleAlarmManager(title: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) {
+    private fun scheduleAlarmManager(id: Long, title: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) {
         val intent = Intent(requireActivity(), AlarmReceiver::class.java).apply {
             action = ACTION_RING
             putExtra(ALARM_ARG_TITLE, title)
             putExtra(ALARM_ARG_INTERVAL, repeatingClassifierValue)
             putExtra(ALARM_ARG_CLASSIFIER, repeatingClassifier.name)
             putExtra(ALARM_ARG_TIME, time)
+            putExtra(ALARM_ARG_ID, id)
         }
         val nextLaunchTime: Long = if (repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) addingTasksViewModel.getNextLaunchTime(time, repeatingClassifierValue) else time.toLong()
 
         logger.logScheduledEvent(what = { "First launch:" }, `when` = nextLaunchTime)
 
-        (requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(nextLaunchTime, PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
+        alarmManager.set(nextLaunchTime, PendingIntent.getBroadcast(requireContext(), id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
 
     override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = addingTasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue, time)
