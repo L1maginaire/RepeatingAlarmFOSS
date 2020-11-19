@@ -20,6 +20,7 @@ import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_DAY_MONTH_YEAR
 import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_FOR_LOGGING
+import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_FOR_LOGGING2
 import com.example.repeatingalarmfoss.helper.extensions.TIME_PATTERN_HOURS_24_MINUTES
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.checkedChanges
@@ -113,7 +114,7 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
                 logger.d { "chosen week days in dialog: $chosenWeekDays" }
             }
             rbXTimeUnit.isChecked -> {
-                val chosenInitialDateAndTime: Date? = SimpleDateFormat(DATE_PATTERN_FOR_LOGGING, Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())
+                val chosenInitialDateAndTime: Date? = SimpleDateFormat(DATE_PATTERN_FOR_LOGGING2, Locale.getDefault()).apply { isLenient = false }.parse(buttonDatePicker.text.toString() + " " + buttonTimePicker.text.toString())
                 val currentSpinnerValue = spinnerTimeUnits.selectedItem.toString()
                 val repeatingClassifierValue = etTimeUnitValue.text
                 logger.d { "chosen date in dialog: $chosenInitialDateAndTime" }
@@ -148,7 +149,7 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
             buttonTimePicker.textChanges(),
             etTaskDescription.textChanges().map { it.isBlank().not() },
             Function3<CharSequence, CharSequence, Boolean, Boolean> { date, time, descriptionIsNotEmpty ->
-                SimpleDateFormat(DATE_PATTERN_FOR_LOGGING, Locale.getDefault()).apply { isLenient = false }.parse("$date $time")!!.time > System.currentTimeMillis() + 60000L && descriptionIsNotEmpty
+                SimpleDateFormat(DATE_PATTERN_FOR_LOGGING2, Locale.getDefault()).apply { isLenient = false }.parse("$date $time")!!.time > System.currentTimeMillis() + 60000L && descriptionIsNotEmpty
             })
             .subscribe {
                 if (dialog != null) {

@@ -46,7 +46,7 @@ class AddingTasksViewModel @Inject constructor(private val taskRepository: TaskR
     }
 
     fun addTask(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) {
-        val task = Task(description, repeatingClassifier, repeatingClassifierValue, time)
+        val task = Task(description, repeatingClassifier, repeatingClassifierValue, if (repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) getNextLaunchTime(time, repeatingClassifierValue).toString() else time)
         disposable += taskRepository.insert(task)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

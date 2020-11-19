@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
+import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.set
@@ -81,7 +82,7 @@ class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback
 
     private fun setupViewModelSubscriptions() {
         addingTasksViewModel.addTaskEvent.observe(viewLifecycleOwner, Observer { task ->
-            scheduleAlarmManager(task.id, task.description, task.repeatingClassifier, task.repeatingClassifierValue, task.time)
+            scheduleAlarmManager(task)
             tasksAdapter.addNewTask(task)
             onTaskAddedCallback.onSuccessfulScheduling()
         })
@@ -99,20 +100,10 @@ class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback
 
     private fun cancelAlarmManagerFor(id: Long) = alarmManager.cancel(PendingIntent.getBroadcast(requireContext(), id.toInt(), Intent(requireActivity(), AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
 
-    private fun scheduleAlarmManager(id: Long, title: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) {
-        val intent = Intent(requireActivity(), AlarmReceiver::class.java).apply {
-            action = ACTION_RING
-            putExtra(ALARM_ARG_TITLE, title)
-            putExtra(ALARM_ARG_INTERVAL, repeatingClassifierValue)
-            putExtra(ALARM_ARG_CLASSIFIER, repeatingClassifier.name)
-            putExtra(ALARM_ARG_TIME, time)
-            putExtra(ALARM_ARG_ID, id)
-        }
-        val nextLaunchTime: Long = if (repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) addingTasksViewModel.getNextLaunchTime(time, repeatingClassifierValue) else time.toLong()
-
-        logger.logScheduledEvent(what = { "First launch:" }, `when` = nextLaunchTime)
-
-        alarmManager.set(nextLaunchTime, PendingIntent.getBroadcast(requireContext(), id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
+    private fun scheduleAlarmManager(task: Task) {
+        val intent = AlarmReceiver.createIntent(task, requireActivity())
+        logger.logScheduledEvent(what = { "First launch:" }, `when` = task.time.toLong())
+        alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(requireContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
 
     override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = addingTasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue, time)
