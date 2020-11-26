@@ -19,7 +19,7 @@ class NotifierService : Service() {
     companion object {
         const val TAG = "NotifierService"
         const val ID = 101
-        const val TERMINATE = "action_terminate"
+        const val TERMINATE = "action_terminate" /*todo stop service*/
         const val ARG_TASK_TITLE = "arg_task_title"
     }
 
