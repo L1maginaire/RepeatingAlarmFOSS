@@ -9,32 +9,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
+import com.example.repeatingalarmfoss.base.BaseFragment
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.helper.extensions.toast
-import com.example.repeatingalarmfoss.receivers.*
+import com.example.repeatingalarmfoss.receivers.AlarmReceiver
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_task_list.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback {
+class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCallback {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var logger: FlightRecorder
 
@@ -48,7 +48,6 @@ class TaskListFragment : Fragment(), SetupAddingTaskFragment.TimeSettingCallback
         }
     }
 
-    private val clicks = CompositeDisposable()
     private val tasksAdapter = AddedTasksAdapter(::removeTask)
     private fun removeTask(id: Long) = addingTasksViewModel.removeTask(id)
 

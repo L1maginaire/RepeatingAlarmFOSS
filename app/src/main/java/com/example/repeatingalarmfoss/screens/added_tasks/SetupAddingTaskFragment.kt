@@ -44,6 +44,7 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
     @Inject
     lateinit var logger: FlightRecorder
     private val clicks = CompositeDisposable()
+    override fun onDestroyView() = super.onDestroyView().also { clicks.clear() }
     private val chosenWeekDays = FixedSizeBitSet(AMOUNT_DAYS_IN_WEEK)
     private lateinit var customView: View
     private lateinit var timeSettingCallback: TimeSettingCallback

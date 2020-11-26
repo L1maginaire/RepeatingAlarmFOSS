@@ -1,7 +1,9 @@
 package com.example.repeatingalarmfoss.base
 
 import androidx.appcompat.app.AppCompatActivity
+import io.reactivex.disposables.CompositeDisposable
 
-class BaseActivity: AppCompatActivity() {
-
+open class BaseActivity: AppCompatActivity() {
+    protected val clicks = CompositeDisposable()
+    override fun onDestroy() = super.onDestroy().also { clicks.clear() }
 }

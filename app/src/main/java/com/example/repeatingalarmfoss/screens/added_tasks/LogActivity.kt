@@ -1,15 +1,19 @@
 package com.example.repeatingalarmfoss.screens.added_tasks
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
+import com.example.repeatingalarmfoss.base.BaseActivity
+import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.FlightRecorder
-import com.example.repeatingalarmfoss.screens.alarm.ALARM_ARG_TITLE
+import com.jakewharton.rxbinding3.view.clicks
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_log.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class LogActivity : AppCompatActivity() {
+class LogActivity : BaseActivity() {
     @Inject
     lateinit var logger: FlightRecorder
 
@@ -19,5 +23,9 @@ class LogActivity : AppCompatActivity() {
         supportActionBar?.title = this::class.java.simpleName
         setContentView(R.layout.activity_log)
         logsContainer.text = logger.getEntireRecord()
+        clicks += eraseLogButton
+            .clicks()
+            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .subscribe { logger.clear().also { logsContainer.text = "" } }
     }
 }

@@ -36,4 +36,5 @@
     <string name="time_unit_day">Days</string>
     <string name="title_you_have_missed_alarm">You have missed alarm %s</string>
     <string name="missed_alarms">You have missed alarms</string>
+    <string name="erase_logs">Erase logs</string>
 </resources>

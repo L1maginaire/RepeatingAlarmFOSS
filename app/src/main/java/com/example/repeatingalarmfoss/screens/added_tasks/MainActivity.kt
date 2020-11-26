@@ -3,20 +3,17 @@ package com.example.repeatingalarmfoss.screens.added_tasks
 import android.content.Intent
 import android.hardware.SensorManager
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.base.BaseActivity
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.squareup.seismic.ShakeDetector
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(), SetupAddingTaskFragment.TimeSettingCallback, TaskAddedCallback, ShakeDetector.Listener {
+class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback, TaskAddedCallback, ShakeDetector.Listener {
     private lateinit var taskListFragment: TaskListFragment
     private lateinit var setupAddingTaskFragment: SetupAddingTaskFragment
-    private val clicks = CompositeDisposable()
-    override fun onDestroy() = super.onDestroy().also { clicks.clear() }
     private val shakeDetector: ShakeDetector by lazy { ShakeDetector(this) }
 
     override fun onResume() = super.onResume().also { shakeDetector.start(getSystemService(SENSOR_SERVICE) as SensorManager) }

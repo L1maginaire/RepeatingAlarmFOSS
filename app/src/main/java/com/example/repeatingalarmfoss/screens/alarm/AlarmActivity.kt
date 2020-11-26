@@ -11,16 +11,15 @@ import android.os.Vibrator
 import android.provider.Settings
 import android.util.Log
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.base.BaseActivity
 import com.example.repeatingalarmfoss.screens.NotifierService
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_alarm.*
@@ -29,8 +28,7 @@ import java.util.concurrent.TimeUnit
 
 const val ALARM_ARG_TITLE = "arg_title"
 
-class AlarmActivity : AppCompatActivity() {
-    private val clicks = CompositeDisposable()
+class AlarmActivity : BaseActivity() {
     private var player: MediaPlayer? = null
     private var vibrator: Vibrator? = null
     private val vibrationPattern = longArrayOf(0, 300, 300, 300)
@@ -39,7 +37,6 @@ class AlarmActivity : AppCompatActivity() {
         vibrator?.cancel()
         player?.release()
         dimScreen()
-        clicks.clear()
     }
 
     private val wakeLock: PowerManager.WakeLock by lazy { (getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, "repeatingalarmfoss:ON") }
