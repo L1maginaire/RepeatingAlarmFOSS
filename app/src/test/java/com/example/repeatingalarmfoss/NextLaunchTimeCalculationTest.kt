@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.repeatingalarmfoss.helper.extensions.LongExt
 import com.example.repeatingalarmfoss.helper.extensions.getHoursAndMinutes
-import com.example.repeatingalarmfoss.helper.extensions.toReadableDate
 import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
 import junit.framework.Assert.assertEquals
 import org.junit.Test

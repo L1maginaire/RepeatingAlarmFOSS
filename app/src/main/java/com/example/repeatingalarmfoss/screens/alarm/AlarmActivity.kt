@@ -16,7 +16,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
-import com.example.repeatingalarmfoss.receivers.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.screens.NotifierService
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.Observable
@@ -27,6 +26,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_alarm.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+
+const val ALARM_ARG_TITLE = "arg_title"
 
 class AlarmActivity : AppCompatActivity() {
     private val clicks = CompositeDisposable()
