@@ -7,6 +7,7 @@ import com.example.repeatingalarmfoss.di.modules.ContextModule
 import com.example.repeatingalarmfoss.di.modules.DatabaseModule
 import com.example.repeatingalarmfoss.di.modules.LoggerModule
 import com.example.repeatingalarmfoss.receivers.BootReceiver
+import com.example.repeatingalarmfoss.screens.added_tasks.LogActivity
 import com.example.repeatingalarmfoss.screens.added_tasks.SetupAddingTaskFragment
 import dagger.BindsInstance
 import dagger.Component
@@ -27,4 +28,5 @@ interface AppComponent {
     fun inject(receiver: AlarmReceiver)
     fun inject(receiver: BootReceiver)
     fun inject(fragment: SetupAddingTaskFragment)
+    fun inject(activity: LogActivity)
 }

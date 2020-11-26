@@ -49,6 +49,8 @@ class FlightRecorder constructor(private val logStorage: File) {
         .also { logStorage.appendText("} X { ${what.invoke()}\n") }
         .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
+    fun getEntireRecord() = logStorage.readText()
+
     private fun clearBeginningIfNeeded(meta: String, what: () -> String) {
         val newDataSize = "$meta ${what.invoke()}\n".toByteArray().size
         if ((logStorage.length() + newDataSize.toLong()) > TAPE_VOLUME) {

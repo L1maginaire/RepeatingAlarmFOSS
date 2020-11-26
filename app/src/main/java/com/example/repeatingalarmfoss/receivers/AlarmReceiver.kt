@@ -60,6 +60,8 @@ class AlarmReceiver : BroadcastReceiver() {
                 else -> throw IllegalStateException()
             }
 
+            if(nextLaunchTime <= System.currentTimeMillis()) throw IllegalStateException("nextLaunchTime is lesser than now")
+
             taskRepository.insert(task.copy(time = nextLaunchTime.toString()))
 
             logger.logScheduledEvent(what = { "Next launch:" }, `when` = nextLaunchTime)
