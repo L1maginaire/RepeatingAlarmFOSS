@@ -62,10 +62,12 @@ class AlarmReceiver : BroadcastReceiver() {
 
             if(nextLaunchTime <= System.currentTimeMillis()) throw IllegalStateException("nextLaunchTime is lesser than now")
 
-            taskRepository.insert(task.copy(time = nextLaunchTime.toString()))
+            val newTask = task.copy(time = nextLaunchTime.toString())
+            taskRepository.insert(newTask)
 
             logger.logScheduledEvent(what = { "Next launch:" }, `when` = nextLaunchTime)
-            (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.set(nextLaunchTime, PendingIntent.getBroadcast(context, task.id.toInt(), createIntent(task, context), PendingIntent.FLAG_UPDATE_CURRENT))
+            (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)
+                ?.set(nextLaunchTime, PendingIntent.getBroadcast(context, task.id.toInt(), createIntent(newTask, context), PendingIntent.FLAG_UPDATE_CURRENT))
         }
     }
 }

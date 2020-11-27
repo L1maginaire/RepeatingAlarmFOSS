@@ -6,6 +6,7 @@ import android.util.Log
 import com.example.repeatingalarmfoss.BuildConfig
 import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_FOR_LOGGING
 import java.io.File
+import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Singleton
@@ -49,7 +50,12 @@ class FlightRecorder constructor(private val logStorage: File) {
         .also { logStorage.appendText("} X { ${what.invoke()}\n") }
         .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
-    fun getEntireRecord() = logStorage.readText()
+    fun getEntireRecord() = try { logStorage.readText() } catch (e: FileNotFoundException) {
+        logStorage.createNewFile()
+        logStorage.readText()
+    }
+    
+    fun clear() = logStorage.writeText("")
 
     private fun clearBeginningIfNeeded(meta: String, what: () -> String) {
         val newDataSize = "$meta ${what.invoke()}\n".toByteArray().size
