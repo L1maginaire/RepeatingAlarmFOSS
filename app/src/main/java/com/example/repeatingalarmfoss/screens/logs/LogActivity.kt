@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss.screens.added_tasks
+package com.example.repeatingalarmfoss.screens.logs
 
 import android.os.Bundle
 import com.example.repeatingalarmfoss.R

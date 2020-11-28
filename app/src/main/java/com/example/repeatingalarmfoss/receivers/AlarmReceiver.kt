@@ -27,8 +27,10 @@ const val ALARM_BUNDLE = "arg_bundle"
 class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var logger: FlightRecorder
+
     @Inject
     lateinit var nextLaunchTimeCalculationUseCase: NextLaunchTimeCalculationUseCase
+
     @Inject
     lateinit var taskRepository: TaskRepository
 
@@ -60,7 +62,10 @@ class AlarmReceiver : BroadcastReceiver() {
                 else -> throw IllegalStateException()
             }
 
-            if(nextLaunchTime <= System.currentTimeMillis()) throw IllegalStateException("nextLaunchTime is lesser than now")
+            if (nextLaunchTime <= System.currentTimeMillis()) with("nextLaunchTime is lesser than now") {
+                logger.wtf { this }
+                throw IllegalStateException(this)
+            }
 
             val newTask = task.copy(time = nextLaunchTime.toString())
             taskRepository.insert(newTask)

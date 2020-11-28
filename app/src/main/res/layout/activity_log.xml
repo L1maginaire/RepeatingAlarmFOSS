@@ -14,7 +14,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".screens.added_tasks.LogActivity">
+        tools:context=".screens.logs.LogActivity">
 
         <TextView
             android:id="@+id/logsContainer"

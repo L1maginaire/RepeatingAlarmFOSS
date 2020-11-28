@@ -7,6 +7,7 @@ import androidx.fragment.app.commit
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.base.BaseActivity
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
+import com.example.repeatingalarmfoss.screens.logs.LogActivity
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
 

@@ -70,5 +70,5 @@ class AddingTasksViewModel @Inject constructor(private val taskRepository: TaskR
             })
     }
 
-    fun getNextLaunchTime(time: String, chosenWeekDaysBinaryString: String): Long = nextLaunchTimeCalculationUseCase.getNextLaunchTime(time, chosenWeekDaysBinaryString)
+    private fun getNextLaunchTime(time: String, chosenWeekDaysBinaryString: String): Long = nextLaunchTimeCalculationUseCase.getNextLaunchTime(time, chosenWeekDaysBinaryString)
 }
