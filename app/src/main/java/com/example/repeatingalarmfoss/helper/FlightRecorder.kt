@@ -23,31 +23,31 @@ class FlightRecorder constructor(private val logStorage: File) {
     fun logScheduledEvent(toPrintInLogcat: Boolean = true, what: () -> String, `when`: Long) {
         val message = { what.invoke() + " " + SimpleDateFormat(DATE_PATTERN_FOR_LOGGING, Locale.UK).format(`when`) }
         clearBeginningIfNeeded("} I {", message)
-            .also { logStorage.appendText("} I { ${message.invoke()}\n") }
+            .also { logStorage.appendText("} I { ${message.invoke()}\n\n") }
             .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, message.invoke())} }
     }
 
     fun i(toPrintInLogcat: Boolean = true, what: () -> String) = clearBeginningIfNeeded("} I {", what)
-        .also { logStorage.appendText("} I { ${what.invoke()}\n") }
+        .also { logStorage.appendText("} I { ${what.invoke()}\n\n") }
         .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
     fun d(toPrintInLogcat: Boolean = true, what: () -> String) = clearBeginningIfNeeded("} D {", what)
-        .also { logStorage.appendText("} D { ${what.invoke()}\n") }
+        .also { logStorage.appendText("} D { ${what.invoke()}\n\n") }
         .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
     fun w(toPrintInLogcat: Boolean = true, what: () -> String) = clearBeginningIfNeeded("} W {", what)
-        .also { logStorage.appendText("} W { ${what.invoke()}\n") }
+        .also { logStorage.appendText("} W { ${what.invoke()}\n\n") }
         .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
     fun e(toPrintInLogcat: Boolean = true, stackTrace: Array<StackTraceElement>) {
-        val readableStackTrace = stackTrace.joinToString(separator = "\n") { it.toString() }
+        val readableStackTrace = stackTrace.joinToString(separator = "\n\n") { it.toString() }
         clearBeginningIfNeeded("} E {") { readableStackTrace }
-            .also { logStorage.appendText("} E { $readableStackTrace\n") }
+            .also { logStorage.appendText("} E { $readableStackTrace\n\n") }
             .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, readableStackTrace)} }
     }
 
     fun wtf(toPrintInLogcat: Boolean = true, what: () -> String) = clearBeginningIfNeeded("} X {", what)
-        .also { logStorage.appendText("} X { ${what.invoke()}\n") }
+        .also { logStorage.appendText("} X { ${what.invoke()}\n\n") }
         .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
     fun getEntireRecord() = try { logStorage.readText() } catch (e: FileNotFoundException) {
@@ -58,7 +58,7 @@ class FlightRecorder constructor(private val logStorage: File) {
     fun clear() = logStorage.writeText("")
 
     private fun clearBeginningIfNeeded(meta: String, what: () -> String) {
-        val newDataSize = "$meta ${what.invoke()}\n".toByteArray().size
+        val newDataSize = "$meta ${what.invoke()}\n\n".toByteArray().size
         if ((logStorage.length() + newDataSize.toLong()) > TAPE_VOLUME) {
             val dataToRemain = logStorage.readBytes().drop(newDataSize).toByteArray()
             logStorage.writeBytes(dataToRemain)
