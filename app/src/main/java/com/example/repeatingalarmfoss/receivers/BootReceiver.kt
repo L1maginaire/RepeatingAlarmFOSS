@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_BOOT_COMPLETED
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
-import com.example.repeatingalarmfoss.db.TaskRepository
+import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.set
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class BootReceiver : BroadcastReceiver() {
     @Inject
-    lateinit var taskRepository: TaskRepository
+    lateinit var taskLocalDataSource: TaskLocalDataSource
     @Inject
     lateinit var logger: FlightRecorder
 
@@ -28,7 +28,7 @@ class BootReceiver : BroadcastReceiver() {
         (context.applicationContext as RepeatingAlarmApp).appComponent.inject(this)
 
         if (intent.action == ACTION_BOOT_COMPLETED) {
-            taskRepository.getAll()
+            taskLocalDataSource.getAll()
                 .timeout(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

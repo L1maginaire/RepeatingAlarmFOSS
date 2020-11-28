@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
-import com.example.repeatingalarmfoss.db.TaskRepository
+import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.screens.NotifierService
@@ -32,7 +32,7 @@ class AlarmReceiver : BroadcastReceiver() {
     lateinit var nextLaunchTimeCalculationUseCase: NextLaunchTimeCalculationUseCase
 
     @Inject
-    lateinit var taskRepository: TaskRepository
+    lateinit var taskLocalDataSource: TaskLocalDataSource
 
     companion object {
         fun createIntent(from: Task, context: Context): Intent = Intent(context, AlarmReceiver::class.java).apply {
@@ -68,7 +68,7 @@ class AlarmReceiver : BroadcastReceiver() {
             }
 
             val newTask = task.copy(time = nextLaunchTime.toString())
-            taskRepository.insert(newTask)
+            taskLocalDataSource.insert(newTask)
 
             logger.logScheduledEvent(what = { "Next launch:" }, `when` = nextLaunchTime)
             (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)

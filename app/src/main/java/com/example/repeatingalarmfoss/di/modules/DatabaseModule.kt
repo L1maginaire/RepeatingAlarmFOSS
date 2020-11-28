@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.repeatingalarmfoss.db.TaskRepository
+import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.db.TasksDb
 import dagger.Module
 import dagger.Provides
@@ -32,5 +32,5 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideTaskRepository(db: TasksDb): TaskRepository = db.taskRepository()
+    fun provideTaskRepository(db: TasksDb): TaskLocalDataSource = db.taskRepository()
 }

@@ -7,7 +7,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 
 @Dao
-interface TaskRepository {
+interface TaskLocalDataSource {
     /*TODO: classic Repository*/
     @Query("SELECT * FROM task")
     fun getAll(): Single<List<Task>>

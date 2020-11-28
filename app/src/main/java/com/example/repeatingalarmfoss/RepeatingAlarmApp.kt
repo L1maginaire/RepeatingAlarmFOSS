@@ -9,11 +9,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.repeatingalarmfoss.db.TaskRepository
-import com.example.repeatingalarmfoss.db.TasksDb
 import com.example.repeatingalarmfoss.di.components.AppComponent
 import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
 

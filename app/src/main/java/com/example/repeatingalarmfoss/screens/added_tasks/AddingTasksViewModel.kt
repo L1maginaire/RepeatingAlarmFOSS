@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
-import com.example.repeatingalarmfoss.db.TaskRepository
+import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.helper.SingleLiveEvent
 import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,7 +14,7 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class AddingTasksViewModel @Inject constructor(private val taskRepository: TaskRepository) : ViewModel() {
+class AddingTasksViewModel @Inject constructor(private val taskLocalDataSource: TaskLocalDataSource) : ViewModel() {
     @Inject
     lateinit var nextLaunchTimeCalculationUseCase: NextLaunchTimeCalculationUseCase
 
@@ -34,7 +34,7 @@ class AddingTasksViewModel @Inject constructor(private val taskRepository: TaskR
     val errorEvent: LiveData<Int> get() = _errorEvent
 
     fun removeTask(id: Long) {
-        disposable += taskRepository.delete(id)
+        disposable += taskLocalDataSource.delete(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError { it.printStackTrace() }
@@ -47,7 +47,7 @@ class AddingTasksViewModel @Inject constructor(private val taskRepository: TaskR
 
     fun addTask(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) {
         val task = Task(description, repeatingClassifier, repeatingClassifierValue, if (repeatingClassifier == RepeatingClassifier.DAY_OF_WEEK) getNextLaunchTime(time, repeatingClassifierValue).toString() else time)
-        disposable += taskRepository.insert(task)
+        disposable += taskLocalDataSource.insert(task)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError { it.printStackTrace() }
@@ -59,7 +59,7 @@ class AddingTasksViewModel @Inject constructor(private val taskRepository: TaskR
     }
 
     fun fetchTasks() {
-        disposable += taskRepository.getAll()
+        disposable += taskLocalDataSource.getAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError { it.printStackTrace() }
