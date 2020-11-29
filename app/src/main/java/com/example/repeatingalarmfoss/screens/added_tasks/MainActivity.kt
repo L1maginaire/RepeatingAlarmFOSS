@@ -15,19 +15,21 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback, TaskAddedCallback, ShakeDetector.Listener {
     private lateinit var taskListFragment: TaskListFragment
     private lateinit var setupAddingTaskFragment: SetupAddingTaskFragment
+    private var isTablet = false
     private val shakeDetector: ShakeDetector by lazy { ShakeDetector(this) }
 
     override fun onResume() = super.onResume().also { shakeDetector.start(getSystemService(SENSOR_SERVICE) as SensorManager) }
     override fun onPause() = super.onPause().also { shakeDetector.stop() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        isTablet = resources.getBoolean(R.bool.isTablet)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         taskListFragment = TaskListFragment.newInstance(this@MainActivity)
         setupAddingTaskFragment = SetupAddingTaskFragment.newInstance(this@MainActivity)
 
-        if (root == null) {
+        if (isTablet) {
             supportFragmentManager.commit {
                 replace(R.id.detailFragmentContainer, taskListFragment)
                 replace(R.id.fragmentContainer, setupAddingTaskFragment)
@@ -40,6 +42,6 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
     }
 
     override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = taskListFragment.onTimeSet(description, repeatingClassifier, repeatingClassifierValue, time)
-    override fun onSuccessfulScheduling() = if (root == null/*fixme "twoPane" field*/) setupAddingTaskFragment.setFieldsDefault() else Unit
+    override fun onSuccessfulScheduling() = if (isTablet) setupAddingTaskFragment.setFieldsDefault() else Unit
     override fun hearShake() = startActivity(Intent(this, LogActivity::class.java))
 }
