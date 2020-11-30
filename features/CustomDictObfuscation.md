@@ -15,7 +15,7 @@ Do not forget to turn on obfuscation for flavor you're gonna use to build apk. F
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        ```
+```
 Then, build .apk file (__Build -> Build Bundle(s) \ APK(s) -> Build APK(s)__). On success you'll find .apk file in __YourAppName/app/build/outputs/apk/debug__ directory.
 Decompile application, and after you'll get __classes.dex__ file, you'll need to decompile .dex file. [JD-GUI](https://github.com/java-decompiler/jd-gui) can help with this, just run the program and open classes.dex file:
 ![jd-gui-screenshot](images/jd-gui-decompilation-example.png)
