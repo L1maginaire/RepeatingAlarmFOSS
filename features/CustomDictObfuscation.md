@@ -20,7 +20,7 @@ debug {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 ```
-Then, build .apk file: ```Build -> Build Bundle(s) \ APK(s) -> Build APK(s)__```. On success you'll find .apk file in ```YourAppName/app/build/outputs/apk/debug```	 directory.
+Then, build .apk file: ```Build -> Build Bundle(s) \ APK(s) -> Build APK(s)```. On success you'll find .apk file in ```YourAppName/app/build/outputs/apk/debug```	 directory.
 Decompile application, and after you'll get __classes.dex__ file, you'll need to decompile .dex file. [JD-GUI](https://github.com/java-decompiler/jd-gui) can help with this, just run the program and open **classes.dex** file:
 ![jd-gui-screenshot](pics/jd-gui-decompilation-example.png)
 
