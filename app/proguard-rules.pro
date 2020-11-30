@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-obfuscationdictionary java_reserved.txt
+-classobfuscationdictionary java_reserved.txt
+-packageobfuscationdictionary java_reserved.txt
