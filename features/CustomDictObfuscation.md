@@ -19,8 +19,8 @@ debug {
 ```
 Then, build .apk file (__Build -> Build Bundle(s) \ APK(s) -> Build APK(s)__). On success you'll find .apk file in __YourAppName/app/build/outputs/apk/debug__ directory.
 Decompile application, and after you'll get __classes.dex__ file, you'll need to decompile .dex file. [JD-GUI](https://github.com/java-decompiler/jd-gui) can help with this, just run the program and open classes.dex file:
-![jd-gui-screenshot](images/jd-gui-decompilation-example.png)
+![jd-gui-screenshot](pics/jd-gui-decompilation-example.png)
 
 By the way, [jadx-gui](https://github.com/skylot/jadx) has workaround for the issue with java keywords in namings:
-(![jadx-screenshot]jadx-gui-decompilation-example.png)
+![jadx-screenshot](pics/jadx-gui-decompilation-example.png)
 Program detects keywords in not appropriate use and adds, let's say salt, to all these namings.
