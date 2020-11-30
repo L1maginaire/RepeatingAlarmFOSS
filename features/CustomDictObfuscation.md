@@ -23,4 +23,5 @@ Decompile application, and after you'll get __classes.dex__ file, you'll need to
 
 By the way, [jadx-gui](https://github.com/skylot/jadx) has workaround for the issue with java keywords in namings:
 ![jadx-screenshot](pics/jadx-gui-decompilation-example.png)
+
 Program detects keywords in not appropriate use and adds, let's say salt, to all these namings.
