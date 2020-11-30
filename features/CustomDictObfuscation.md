@@ -11,7 +11,8 @@ For example, we can take [Java language keywords list](https://android.googlesou
 To ensure everything works fine we should decompile our .apk file with [apktool](https://ibotpeaches.github.io/Apktool/): 
 ```apktool d -r -s app-debug.apk```
 Do not forget to turn on obfuscation for flavor you're gonna use to build apk. For example, for debug flavor we should declare in app's build.gradle such things:
-```debug {
+```
+debug {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
