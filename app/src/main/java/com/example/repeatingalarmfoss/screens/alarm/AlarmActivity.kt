@@ -2,9 +2,13 @@ package com.example.repeatingalarmfoss.screens.alarm
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.hardware.Camera
+import android.hardware.camera2.CameraManager
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.RingtoneManager
+import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.Vibrator
@@ -32,6 +36,7 @@ class AlarmActivity : BaseActivity() {
     private var player: MediaPlayer? = null
     private var vibrator: Vibrator? = null
     private val vibrationPattern = longArrayOf(0, 300, 300, 300)
+    private var stroboscopeOn = false
 
     override fun onDestroy() = super.onDestroy().also {
         vibrator?.cancel()
@@ -48,6 +53,34 @@ class AlarmActivity : BaseActivity() {
         setupClicks()
         supportActionBar?.title = intent.extras!!.getString(ALARM_ARG_TITLE)
         ring()
+        enableStroboscope()
+    }
+
+    @Suppress("DEPRECATION")
+    private fun turnFlashLight(on: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val camManager = getSystemService(CAMERA_SERVICE) as CameraManager
+            val cameraId: String = camManager.cameraIdList[0]
+            camManager.setTorchMode(cameraId, on)
+        } else {
+            val camera = Camera.open().apply {
+                parameters = parameters.apply { flashMode = if (on) Camera.Parameters.FLASH_MODE_TORCH else Camera.Parameters.FLASH_MODE_OFF }
+            }
+            if (on) camera.startPreview() else camera.stopPreview().also { camera.release() }
+        }
+    }
+
+    private fun enableStroboscope() {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            clicks += Observable.interval(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError { turnFlashLight(false) }
+                .doOnDispose { turnFlashLight(false) }
+                .subscribe {
+                    turnFlashLight(stroboscopeOn)
+                    stroboscopeOn = stroboscopeOn.not()
+                }
+        }
     }
 
     private fun setupClicks() {
