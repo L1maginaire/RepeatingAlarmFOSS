@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -11,8 +12,13 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.repeatingalarmfoss.di.components.AppComponent
 import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
+import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_LANG
+import com.example.repeatingalarmfoss.helper.extensions.getDefaultSharedPreferences
+import com.example.repeatingalarmfoss.helper.extensions.getStringOf
+import com.example.repeatingalarmfoss.helper.extensions.provideUpdatedContextWithNewLocale
+import java.util.*
 
-class RepeatingAlarmApp: Application(), LifecycleObserver {
+class RepeatingAlarmApp : Application(), LifecycleObserver {
     lateinit var appComponent: AppComponent
 
     var isAppInForeground = false
@@ -45,5 +51,16 @@ class RepeatingAlarmApp: Application(), LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onAppForegrounded() {
         isAppInForeground = true
+    }
+
+    override fun attachBaseContext(base: Context) = super.attachBaseContext(base.provideUpdatedContextWithNewLocale())
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            appLanguageHandlingUseCase.saveApplicationLanguage(newConfig.locales[0].language)
+        } else {
+//            @Suppress("DEPRECATION") appLanguageHandlingUseCase.saveApplicationLanguage(newConfig.locale.language)
+        }
     }
 }

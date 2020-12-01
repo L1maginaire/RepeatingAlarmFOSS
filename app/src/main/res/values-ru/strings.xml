@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Repeating Alarm</string>
+    <string name="add_new_task">Добавить новую задачу</string>
+    <string name="db_error">Что-то не так с базой данных!</string>
+    <string name="title_every">Каждый(-ые)</string>
+    <string name="hint_task_description">Описание задачи</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
+    <string name="dismiss">Отклонить</string>
+    <string name="toast_set_proper_time">Указанное время истекло. Пожалуйста, выберете другое время.</string>
+    <string name="title_time">Время</string>
+    <string name="title_start_from">Первый запуск</string>
+    <string name="title_day_of_week">День недели</string>
+    <string name="title_each_x_time_unit">Каждую _ %еденицу времени%</string>
+
+    <!--day of week-->
+    <string name="day_of_week_monday">Понедельник</string>
+    <string name="day_of_week_tuesday">Вторник</string>
+    <string name="day_of_week_wednesday">Среда</string>
+    <string name="day_of_week_thursday">Четверг</string>
+    <string name="day_of_week_friday">Пятница</string>
+    <string name="day_of_week_saturday">Суббота</string>
+    <string name="day_of_week_sunday">Воскресенье</string>
+
+    <!--day of week (short)-->
+    <string name="short_day_of_week_monday">ПН</string>
+    <string name="short_day_of_week_tuesday">ВТ</string>
+    <string name="short_day_of_week_wednesday">СР</string>
+    <string name="short_day_of_week_thursday">ЧТ</string>
+    <string name="short_day_of_week_friday">ПТ</string>
+    <string name="short_day_of_week_saturday">СБ</string>
+    <string name="short_day_of_week_sunday">ВС</string>
+
+    <!--time unit-->
+    <string name="time_unit_hour">Часы</string>
+    <string name="time_unit_minute">Минуты</string>
+    <string name="time_unit_day">Дни</string>
+    <string name="title_you_have_missed_alarm">Вы пропустили уведомление о %s</string>
+    <string name="missed_alarms">У Вас есть пропущенные уведомления</string>
+    <string name="erase_logs">Стереть логи</string>
+</resources>

@@ -16,4 +16,9 @@
         <item>@string/time_unit_hour</item>
         <item>@string/time_unit_day</item>
     </string-array>
+
+    <string-array name="supported_locales">
+        <item>"ru"</item>
+        <item>"en"</item>
+    </string-array>
 </resources>
