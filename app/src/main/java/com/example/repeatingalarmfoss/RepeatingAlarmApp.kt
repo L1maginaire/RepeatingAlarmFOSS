@@ -12,11 +12,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.repeatingalarmfoss.di.components.AppComponent
 import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
-import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_LANG
-import com.example.repeatingalarmfoss.helper.extensions.getDefaultSharedPreferences
-import com.example.repeatingalarmfoss.helper.extensions.getStringOf
 import com.example.repeatingalarmfoss.helper.extensions.provideUpdatedContextWithNewLocale
-import java.util.*
 
 class RepeatingAlarmApp : Application(), LifecycleObserver {
     lateinit var appComponent: AppComponent
