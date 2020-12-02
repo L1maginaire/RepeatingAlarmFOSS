@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_LANG
+import com.example.repeatingalarmfoss.helper.extensions.getLocalesLanguage
 import com.example.repeatingalarmfoss.helper.extensions.getStringOf
 import com.example.repeatingalarmfoss.helper.extensions.provideUpdatedContextWithNewLocale
 import io.reactivex.disposables.CompositeDisposable
@@ -18,9 +19,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        @Suppress("DEPRECATION")
-        currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) resources.configuration.locales[0].language else resources.configuration.locale.language
+        currentLocale = resources.configuration.getLocalesLanguage()
     }
 
     override fun onRestart() {

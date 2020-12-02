@@ -1,4 +1,4 @@
-## Feature: App-wide language.
+## Feature: App-wide language
 
 Beware! This approach [might be buggy](https://stackoverflow.com/a/2900144), but anyway, it seems, there's no alternatives to it.
 

@@ -3,6 +3,7 @@ package com.example.repeatingalarmfoss.helper.extensions
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.os.Build
 import androidx.preference.PreferenceManager
 import com.example.repeatingalarmfoss.R
 import java.util.*
@@ -19,3 +20,6 @@ fun Context.provideUpdatedContextWithNewLocale(
 }
 
 fun Context.getDefaultSharedPreferences(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+@Suppress("DEPRECATION")
+fun Configuration.getLocalesLanguage(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) locales[0].language else locale.language
