@@ -13,6 +13,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.repeatingalarmfoss.di.components.AppComponent
 import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
 import com.example.repeatingalarmfoss.helper.extensions.*
+import java.util.*
 
 class RepeatingAlarmApp : Application(), LifecycleObserver {
     lateinit var appComponent: AppComponent
@@ -52,7 +53,9 @@ class RepeatingAlarmApp : Application(), LifecycleObserver {
     override fun attachBaseContext(base: Context) = super.attachBaseContext(base.provideUpdatedContextWithNewLocale())
 
     override fun onConfigurationChanged(newConfig: Configuration) {
+        val newLocale = Locale(getDefaultSharedPreferences().getStringOf(PREF_APP_LANG) ?: Locale.UK.language)
+        Locale.setDefault(newLocale)
+        newConfig.setLocale(newLocale)
         super.onConfigurationChanged(newConfig)
-        getDefaultSharedPreferences().writeStringOf(PREF_APP_LANG, newConfig.getLocalesLanguage())
     }
 }
