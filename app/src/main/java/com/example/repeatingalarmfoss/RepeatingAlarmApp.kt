@@ -12,7 +12,10 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.repeatingalarmfoss.di.components.AppComponent
 import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
+import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_LANG
+import com.example.repeatingalarmfoss.helper.extensions.getDefaultSharedPreferences
 import com.example.repeatingalarmfoss.helper.extensions.provideUpdatedContextWithNewLocale
+import com.example.repeatingalarmfoss.helper.extensions.writeStringOf
 
 class RepeatingAlarmApp : Application(), LifecycleObserver {
     lateinit var appComponent: AppComponent
@@ -53,10 +56,7 @@ class RepeatingAlarmApp : Application(), LifecycleObserver {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            appLanguageHandlingUseCase.saveApplicationLanguage(newConfig.locales[0].language)
-        } else {
-//            @Suppress("DEPRECATION") appLanguageHandlingUseCase.saveApplicationLanguage(newConfig.locale.language)
-        }
+        @Suppress("DEPRECATION")
+        getDefaultSharedPreferences().writeStringOf(PREF_APP_LANG, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) newConfig.locales[0].language else newConfig.locale.language)
     }
 }
