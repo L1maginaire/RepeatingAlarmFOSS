@@ -5,7 +5,7 @@
         android:defaultValue="English"
         android:entries="@array/supported_languages"
         android:entryValues="@array/supported_locales"
-        android:key="pref_widget_opacity"
+        android:key="PREF_APP_LANG"
         android:title="@string/title_language"
         app:iconSpaceReserved="false" />
 </PreferenceScreen>

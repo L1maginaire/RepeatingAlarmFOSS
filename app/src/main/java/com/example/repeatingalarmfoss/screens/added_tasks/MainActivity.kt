@@ -3,11 +3,15 @@ package com.example.repeatingalarmfoss.screens.added_tasks
 import android.content.Intent
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.provider.Settings
+import android.view.Menu
+import android.view.MenuItem
 import androidx.fragment.app.commit
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.base.BaseActivity
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.screens.logs.LogActivity
+import com.example.repeatingalarmfoss.screens.settings.SettingsActivity
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,6 +24,21 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
 
     override fun onResume() = super.onResume().also { shakeDetector.start(getSystemService(SENSOR_SERVICE) as SensorManager) }
     override fun onPause() = super.onPause().also { shakeDetector.stop() }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_main_setting -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isTablet = resources.getBoolean(R.bool.isTablet)
