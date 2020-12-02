@@ -1,11 +1,8 @@
 package com.example.repeatingalarmfoss.base
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.os.SharedMemory
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_LANG
@@ -13,7 +10,7 @@ import com.example.repeatingalarmfoss.helper.extensions.getStringOf
 import com.example.repeatingalarmfoss.helper.extensions.provideUpdatedContextWithNewLocale
 import io.reactivex.disposables.CompositeDisposable
 
-open class BaseActivity : AppCompatActivity(){
+open class BaseActivity : AppCompatActivity() {
     protected val clicks = CompositeDisposable()
     override fun onDestroy() = super.onDestroy().also { clicks.clear() }
 
