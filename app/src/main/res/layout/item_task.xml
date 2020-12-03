@@ -7,7 +7,7 @@
 
         <variable
             name="task"
-            type="com.example.repeatingalarmfoss.db.Task" />
+            type="com.example.repeatingalarmfoss.screens.added_tasks.TaskUi" />
     </data>
 
     <LinearLayout
@@ -41,10 +41,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@id/markerIv"
+                app:layout_constraintEnd_toStartOf="@id/taskTimeTv"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="31dp"
                 android:text="@{task.description}"
                 android:textSize="16sp"
                 tools:text="Some task" />
+
+            <TextView
+                android:id="@+id/taskTimeTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/taskDescriptionTv"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="31dp"
+                android:text="@{task.time}"
+                android:textSize="16sp"
+                tools:text="01 May 2020 05:55" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </layout>

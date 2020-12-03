@@ -1,8 +1,10 @@
 package com.example.repeatingalarmfoss.db
 
+import androidx.annotation.VisibleForTesting
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -12,6 +14,10 @@ interface TaskLocalDataSource {
     @Query("SELECT * FROM task")
     fun getAll(): Single<List<Task>>
 
+    @VisibleForTesting
+    @Query("SELECT COUNT(id) FROM task")
+    fun getCount(): Int
+
     @Query("SELECT * FROM task WHERE id IN (:ids)")
     fun loadAllByIds(ids: IntArray): Single<List<Task>>
 
@@ -20,6 +26,9 @@ interface TaskLocalDataSource {
 
     @Insert
     fun insert(task: Task): Single<Long>
+
+    @Insert
+    fun insertAll(tasks: List<Task>): Completable
 
     @Query("DELETE FROM task WHERE id = :id")
     fun delete(id: Long): Completable

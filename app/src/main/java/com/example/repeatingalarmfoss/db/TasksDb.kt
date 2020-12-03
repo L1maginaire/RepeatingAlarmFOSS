@@ -7,5 +7,5 @@ import androidx.room.TypeConverters
 @Database(entities = [Task::class], version = 2)
 @TypeConverters(RepeatingClassifierConverter::class)
 abstract class TasksDb : RoomDatabase() {
-    abstract fun taskRepository(): TaskLocalDataSource
+    abstract fun taskDao(): TaskLocalDataSource
 }

@@ -9,7 +9,6 @@ import com.example.repeatingalarmfoss.helper.extensions.LongExt.minutesToMillise
 import com.example.repeatingalarmfoss.screens.added_tasks.AMOUNT_DAYS_IN_WEEK
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.min
 
 class NextLaunchTimeCalculationUseCase @Inject constructor(private val appContext: Context) {
     /** @param time - Timestamp, implies hours (in 24-hour format) and minutes divided with separator ":". For example, 21:12

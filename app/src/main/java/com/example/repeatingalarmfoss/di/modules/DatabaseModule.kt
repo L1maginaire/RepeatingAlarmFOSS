@@ -32,5 +32,5 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideTaskRepository(db: TasksDb): TaskLocalDataSource = db.taskRepository()
+    fun provideTaskRepository(db: TasksDb): TaskLocalDataSource = db.taskDao()
 }

@@ -15,11 +15,10 @@ import androidx.fragment.app.DialogFragment
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
-import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
+import com.example.repeatingalarmfoss.helper.rx.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_DAY_MONTH_YEAR
-import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_FOR_LOGGING
 import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_FOR_LOGGING2
 import com.example.repeatingalarmfoss.helper.extensions.TIME_PATTERN_HOURS_24_MINUTES
 import com.jakewharton.rxbinding3.view.clicks

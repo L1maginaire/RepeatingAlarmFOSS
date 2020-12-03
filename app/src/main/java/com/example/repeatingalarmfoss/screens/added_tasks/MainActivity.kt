@@ -3,7 +3,6 @@ package com.example.repeatingalarmfoss.screens.added_tasks
 import android.content.Intent
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.commit
@@ -14,7 +13,6 @@ import com.example.repeatingalarmfoss.screens.logs.LogActivity
 import com.example.repeatingalarmfoss.screens.settings.SettingsActivity
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
-
 
 class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback, TaskAddedCallback, ShakeDetector.Listener {
     private lateinit var taskListFragment: TaskListFragment
@@ -64,3 +62,6 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
     override fun onSuccessfulScheduling() = if (isTablet) setupAddingTaskFragment.setFieldsDefault() else Unit
     override fun hearShake() = startActivity(Intent(this, LogActivity::class.java))
 }
+
+/*todo: dark theme ||| rate us ||| notification management ||| widget ||| in-app languages ||| article for doze mode \ app standby ||| settings - notification light ||| */
+/*todo bug on rotate NPE for button, tests for baseContext, back arrow in settings fragment*/

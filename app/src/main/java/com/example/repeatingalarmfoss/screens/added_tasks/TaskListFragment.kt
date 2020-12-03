@@ -1,3 +1,5 @@
+@file:Suppress("RedundantSamConstructor")
+
 package com.example.repeatingalarmfoss.screens.added_tasks
 
 import android.app.AlarmManager
@@ -18,10 +20,10 @@ import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseFragment
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
-import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.helper.extensions.toast
+import com.example.repeatingalarmfoss.helper.rx.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.receivers.AlarmReceiver
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -81,7 +83,6 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
 
     private fun setupViewModelSubscriptions() {
         addingTasksViewModel.addTaskEvent.observe(viewLifecycleOwner, Observer { task ->
-            scheduleAlarmManager(task)
             tasksAdapter.addNewTask(task)
             onTaskAddedCallback.onSuccessfulScheduling()
         })
@@ -91,6 +92,9 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
         })
         addingTasksViewModel.fetchAllTasksEvent.observe(viewLifecycleOwner, Observer {
             tasksAdapter.tasks = it.toMutableList()
+        })
+        addingTasksViewModel.scheduleTaskEvent.observe(viewLifecycleOwner, Observer {
+            scheduleAlarmManager(it)
         })
         addingTasksViewModel.errorEvent.observe(viewLifecycleOwner, Observer { errorMessage ->
             toast(getString(errorMessage))
@@ -102,7 +106,7 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
     private fun scheduleAlarmManager(task: Task) {
         val intent = AlarmReceiver.createIntent(task, requireActivity())
         logger.logScheduledEvent(what = { "First launch:" }, `when` = task.time.toLong())
-        alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(requireContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT))
+        alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(requireContext(), task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
 
     override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = addingTasksViewModel.addTask(description, repeatingClassifier, repeatingClassifierValue, time)

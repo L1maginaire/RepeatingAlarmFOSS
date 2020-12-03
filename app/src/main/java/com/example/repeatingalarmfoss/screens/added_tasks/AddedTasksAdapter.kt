@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repeatingalarmfoss.databinding.ItemTaskBinding
-import com.example.repeatingalarmfoss.db.Task
-import com.example.repeatingalarmfoss.helper.DEFAULT_UI_SKIP_DURATION
+import com.example.repeatingalarmfoss.helper.extensions.toReadableDate
+import com.example.repeatingalarmfoss.helper.rx.DEFAULT_UI_SKIP_DURATION
 import com.jakewharton.rxbinding3.view.longClicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -17,13 +17,13 @@ import java.util.concurrent.TimeUnit
 
 class AddedTasksAdapter(private val longClickCallback: (id: Long) -> Unit) : RecyclerView.Adapter<AddedTasksAdapter.ViewHolder>() {
     private val clicks = CompositeDisposable()
-    var tasks: MutableList<Task> = mutableListOf()
+    var tasks: MutableList<TaskUi> = mutableListOf()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    fun addNewTask(task: Task) = tasks.add(task).also { notifyDataSetChanged() }
+    fun addNewTask(task: TaskUi) = tasks.add(task).also { notifyDataSetChanged() }
     fun removeTask(id: Long) = tasks.remove(tasks.first { it.id == id }).also { notifyDataSetChanged() }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) = clicks.clear()
@@ -40,5 +40,11 @@ class AddedTasksAdapter(private val longClickCallback: (id: Long) -> Unit) : Rec
 
     class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         val binding: ItemTaskBinding? = DataBindingUtil.bind(containerView)
+    }
+}
+
+data class TaskUi(val id: Long, val description: String, val time: String) {
+    companion object {
+        fun testObject(id: Long, description: String, time: String) = TaskUi(id, description, time.toLong().toReadableDate())
     }
 }

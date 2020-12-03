@@ -2,6 +2,7 @@ package com.example.repeatingalarmfoss.di.components
 
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.di.ViewModelBuilderModule
+import com.example.repeatingalarmfoss.di.modules.SchedulerModule
 import com.example.repeatingalarmfoss.di.modules.ContextModule
 import com.example.repeatingalarmfoss.di.modules.DatabaseModule
 import com.example.repeatingalarmfoss.di.modules.LoggerModule
@@ -14,7 +15,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [DatabaseModule::class, ContextModule::class, ViewModelBuilderModule::class, LoggerModule::class])
+@Component(modules = [DatabaseModule::class, ContextModule::class, ViewModelBuilderModule::class, LoggerModule::class, SchedulerModule::class])
 interface AppComponent {
     @Component.Builder
     interface Builder {
