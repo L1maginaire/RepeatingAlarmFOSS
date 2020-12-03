@@ -35,15 +35,15 @@ fun Context.provideUpdatedContextWithNewLocale(
 }
 ```
 
-Good practice will be also to observe device's language preference change and persist it's value:
+Good practice will be also to ignore device's language preference changes and insist on app-wide language persisted:
 ```
 override fun onConfigurationChanged(newConfig: Configuration) {
-    super.onConfigurationChanged(newConfig
-    @Suppress("DEPRECATION")
-    getDefaultSharedPreferences().writeStringOf(PREF_APP_LANG, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                                                                    newConfig.locales[0].language
-                                                                    else
-                                                                    newConfig.locale.language)
+    if (newConfig.getLocalesLanguage() != getDefaultSharedPreferences().getStringOf(PREF_APP_LANG)) {
+        val newLocale = Locale(getDefaultSharedPreferences().getStringOf(PREF_APP_LANG) ?: Locale.UK.language)
+        Locale.setDefault(newLocale)
+        newConfig.setLocale(newLocale)
+    }
+    super.onConfigurationChanged(newConfig)
 }
 ```
 

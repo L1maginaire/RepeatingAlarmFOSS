@@ -50,7 +50,7 @@ class RepeatingAlarmApp : Application(), LifecycleObserver {
         isAppInForeground = true
     }
 
-    override fun attachBaseContext(base: Context) = super.attachBaseContext(base.provideUpdatedContextWithNewLocale())
+    override fun attachBaseContext(base: Context) = super.attachBaseContext(base.provideUpdatedContextWithNewLocale(defaultLocale = Locale.getDefault().language))
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         val newLocale = Locale(getDefaultSharedPreferences().getStringOf(PREF_APP_LANG) ?: Locale.UK.language)
