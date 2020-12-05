@@ -46,6 +46,13 @@ class BaseComposers @Inject constructor(private val schedulers: SchedulersProvid
                 .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
         }
 
+    fun <T> commonMaybeFetchTransformer(): MaybeTransformer<T, T> =
+        MaybeTransformer {
+            it.retry(RxHttpErrorHandler())
+                .compose(applyMaybeSchedulers())
+                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
+        }
+
     fun <T> commonObservableFetchTransformer(): ObservableTransformer<T, T> =
         ObservableTransformer {
             it.retry(RxHttpErrorHandler())

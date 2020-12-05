@@ -3,6 +3,7 @@ package com.example.repeatingalarmfoss.helper.extensions
 import android.content.SharedPreferences
 
 const val PREF_APP_LANG = "PREF_APP_LANG"
+const val PREF_APP_THEME = "PREF_APP_THEME"
 
 fun SharedPreferences.getBooleanOf(keyToValue: String) = getBoolean(keyToValue, false)
 fun SharedPreferences.getStringOf(keyToValue: String) = getString(keyToValue, null)

@@ -34,14 +34,14 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCallback {
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+//    @Inject
+//    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var logger: FlightRecorder
 
     private val alarmManager: AlarmManager by lazy { requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager }
-    private val addingTasksViewModel by viewModels<AddingTasksViewModel> { viewModelFactory }
+    private val addingTasksViewModel: AddingTasksViewModel by viewModels()
     private lateinit var onTaskAddedCallback: TaskAddedCallback
 
     companion object {
@@ -56,7 +56,10 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_task_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (requireActivity().application as RepeatingAlarmApp).appComponent.addTaskComponent().create().inject(this)
+        (requireActivity().application as RepeatingAlarmApp).appComponent.addTaskComponent().create().apply {
+            inject(this@TaskListFragment)
+            inject(addingTasksViewModel)
+        }
 
         if (requireActivity().root == null) {
             addTaskFab.isVisible = false

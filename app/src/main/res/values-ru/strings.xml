@@ -38,5 +38,9 @@
     <string name="missed_alarms">У Вас есть пропущенные уведомления</string>
     <string name="erase_logs">Стереть логи</string>
     <string name="title_language">Язык</string>
-    <string name="title_settings">"Настройки"</string>
+    <string name="title_settings">Настройки</string>
+    <string name="title_light_theme">Светлый режим</string>
+    <string name="title_default_theme">Режим устройства по-умолчанию</string>
+    <string name="title_dark_theme">Темный режим</string>
+    <string name="title_themes">Режимы отображения</string>
 </resources>

@@ -1,24 +1,18 @@
 package com.example.repeatingalarmfoss.screens.added_tasks
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.base.BaseViewModel
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.SingleLiveEvent
-import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
+import io.reactivex.rxkotlin.plusAssign
 
-class AddingTasksViewModel @Inject constructor(private val taskInteractor: TaskInteractor) : ViewModel() {
+class AddingTasksViewModel : BaseViewModel() {
     @Inject
-    lateinit var nextLaunchTimeCalculationUseCase: NextLaunchTimeCalculationUseCase
-
-    private val disposable = CompositeDisposable()
-    override fun onCleared() = disposable.clear()
-
+    lateinit var taskInteractor: TaskInteractor
     private val _addTaskEvent = SingleLiveEvent<TaskUi>()
     val addTaskEvent: LiveData<TaskUi> get() = _addTaskEvent
 

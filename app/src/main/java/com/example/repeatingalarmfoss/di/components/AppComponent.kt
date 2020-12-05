@@ -1,11 +1,11 @@
 package com.example.repeatingalarmfoss.di.components
 
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
-import com.example.repeatingalarmfoss.di.ViewModelBuilderModule
-import com.example.repeatingalarmfoss.di.modules.SchedulerModule
+import com.example.repeatingalarmfoss.base.BaseActivityViewModel
 import com.example.repeatingalarmfoss.di.modules.ContextModule
 import com.example.repeatingalarmfoss.di.modules.DatabaseModule
 import com.example.repeatingalarmfoss.di.modules.LoggerModule
+import com.example.repeatingalarmfoss.di.modules.SchedulerModule
 import com.example.repeatingalarmfoss.receivers.AlarmReceiver
 import com.example.repeatingalarmfoss.receivers.BootReceiver
 import com.example.repeatingalarmfoss.screens.added_tasks.SetupAddingTaskFragment
@@ -15,7 +15,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [DatabaseModule::class, ContextModule::class, ViewModelBuilderModule::class, LoggerModule::class, SchedulerModule::class])
+@Component(modules = [DatabaseModule::class, ContextModule::class, LoggerModule::class, SchedulerModule::class])
 interface AppComponent {
     @Component.Builder
     interface Builder {
@@ -29,4 +29,5 @@ interface AppComponent {
     fun inject(receiver: BootReceiver)
     fun inject(fragment: SetupAddingTaskFragment)
     fun inject(activity: LogActivity)
+    fun inject(activity: BaseActivityViewModel)
 }

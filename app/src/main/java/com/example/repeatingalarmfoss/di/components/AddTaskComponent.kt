@@ -1,6 +1,7 @@
 package com.example.repeatingalarmfoss.di.components
 
 import com.example.repeatingalarmfoss.di.modules.AddTaskModule
+import com.example.repeatingalarmfoss.screens.added_tasks.AddingTasksViewModel
 import com.example.repeatingalarmfoss.screens.added_tasks.MainActivity
 import com.example.repeatingalarmfoss.screens.added_tasks.TaskListFragment
 import dagger.Subcomponent
@@ -12,4 +13,5 @@ interface AddTaskComponent {
         fun create(): AddTaskComponent
     }
     fun inject(activity: TaskListFragment)
+    fun inject(viewModel: AddingTasksViewModel)
 }

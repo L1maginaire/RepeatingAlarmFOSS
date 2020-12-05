@@ -7,10 +7,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_LANG
+import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_THEME
 import com.example.repeatingalarmfoss.helper.extensions.getStringOf
 import java.util.*
 
@@ -38,11 +40,17 @@ class SettingsActivity : AppCompatActivity() /*do not use BasicActivity as paren
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) = setPreferencesFromResource(R.xml.preferences, rootKey)
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-            if (key == PREF_APP_LANG) {
-                val newLocale = Locale(sharedPreferences.getStringOf(key)!!)
-                Locale.setDefault(newLocale)
-                @Suppress("DEPRECATION") requireActivity().resources.updateConfiguration(resources.configuration.apply { setLocale(newLocale) }, resources.displayMetrics)
-                requireActivity().recreate()
+            when (key) {
+                PREF_APP_LANG -> {
+                    val newLocale = Locale(sharedPreferences.getStringOf(key)!!)
+                    Locale.setDefault(newLocale)
+                    @Suppress("DEPRECATION") requireActivity().resources.updateConfiguration(resources.configuration.apply { setLocale(newLocale) }, resources.displayMetrics)
+                    requireActivity().recreate()
+                }
+                PREF_APP_THEME -> {
+                    AppCompatDelegate.setDefaultNightMode(sharedPreferences.getStringOf(PREF_APP_THEME)!!.toInt())
+                    requireActivity().recreate()
+                }
             }
         }
     }
