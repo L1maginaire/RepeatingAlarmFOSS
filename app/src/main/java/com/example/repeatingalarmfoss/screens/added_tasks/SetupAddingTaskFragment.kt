@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.example.repeatingalarmfoss.R
@@ -162,8 +163,8 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
         clicks += Observable.combineLatest(rbDayOfWeek.checkedChanges(), rbXTimeUnit.checkedChanges(), BiFunction<Boolean, Boolean, Unit> { dayOfWeek, xTimeUnit ->
             rbXTimeUnit.isChecked = xTimeUnit && dayOfWeek.not()
             rbDayOfWeek.isChecked = xTimeUnit.not() && dayOfWeek
-            containerDayOfWeek.setBackgroundColor(if (xTimeUnit.not() && dayOfWeek) Color.GREEN else Color.WHITE)
-            containerEveryXTimeunit.setBackgroundColor(if (xTimeUnit && dayOfWeek.not()) Color.GREEN else Color.WHITE)
+            containerDayOfWeek.setBackgroundColor(if (xTimeUnit.not() && dayOfWeek) ContextCompat.getColor(requireContext(), R.color.colorPrimary) else ContextCompat.getColor(requireContext(), android.R.color.transparent))
+            containerEveryXTimeunit.setBackgroundColor(if (xTimeUnit && dayOfWeek.not()) ContextCompat.getColor(requireContext(), R.color.colorPrimary) else ContextCompat.getColor(requireContext(), android.R.color.transparent))
         }).subscribe()
     }
 
