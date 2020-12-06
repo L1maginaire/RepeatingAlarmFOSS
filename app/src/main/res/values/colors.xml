@@ -7,4 +7,5 @@
     <color name="primaryTextLightColor">#8e8e8e</color>
     <color name="colorBackground">#fafafa</color>
     <color name="textColorLight">#ffffff</color>
+    <color name="statusBarColor">#510000</color>
 </resources>
