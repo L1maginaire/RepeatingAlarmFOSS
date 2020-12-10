@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <application
         android:name=".RepeatingAlarmApp"
@@ -18,10 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".screens.low_battery.LowBatteryNotifierActivity" />
         <activity android:name=".screens.logs.LogActivity" />
 
         <service
-            android:name=".screens.NotifierService"
+            android:name=".services.AlarmNotifierService"
             android:enabled="true"
             android:exported="false" />
 
@@ -32,8 +33,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="com.example.repeatingalarmfoss.screens.settings.SettingsActivity" />
-
+        <activity android:name=".screens.settings.SettingsActivity" />
         <activity
             android:name=".screens.alarm.AlarmActivity"
             android:label="@string/title_activity_alarm"
@@ -48,6 +48,10 @@
 
         <receiver
             android:name=".receivers.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
+        <receiver
+            android:name=".receivers.LowBatteryTracker"
             android:enabled="true"
             android:exported="true" />
     </application>

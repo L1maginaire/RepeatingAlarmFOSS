@@ -34,9 +34,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCallback {
-//    @Inject
-//    lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var logger: FlightRecorder
 

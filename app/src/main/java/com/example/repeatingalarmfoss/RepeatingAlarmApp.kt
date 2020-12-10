@@ -1,21 +1,23 @@
 package com.example.repeatingalarmfoss
 
-import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.annotation.SuppressLint
+import android.app.*
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.multidex.MultiDexApplication
 import com.example.repeatingalarmfoss.di.components.AppComponent
 import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
 import com.example.repeatingalarmfoss.helper.extensions.*
+import com.example.repeatingalarmfoss.receivers.LowBatteryTracker
 import java.util.*
 
-class RepeatingAlarmApp : Application(), LifecycleObserver {
+class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
     lateinit var appComponent: AppComponent
 
     var isAppInForeground = false
@@ -25,6 +27,9 @@ class RepeatingAlarmApp : Application(), LifecycleObserver {
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         createMissedAlarmNotificationChannel()
+
+        (getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
+        scheduleLowBatteryChecker()
     }
 
     private fun setupDagger() {
@@ -33,6 +38,7 @@ class RepeatingAlarmApp : Application(), LifecycleObserver {
             .build()
     }
 
+    @SuppressLint("WrongConstant")
     private fun createMissedAlarmNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(NotificationsManager.CHANNEL_MISSED_ALARM, getString(R.string.app_name), NotificationManager.IMPORTANCE_MAX)

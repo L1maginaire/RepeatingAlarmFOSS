@@ -13,10 +13,11 @@ import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.helper.FlightRecorder
+import com.example.repeatingalarmfoss.helper.extensions.activityImplicitLaunch
 import com.example.repeatingalarmfoss.helper.extensions.set
-import com.example.repeatingalarmfoss.screens.NotifierService
 import com.example.repeatingalarmfoss.screens.alarm.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
+import com.example.repeatingalarmfoss.services.AlarmNotifierService
 import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
 import javax.inject.Inject
 
@@ -47,14 +48,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         if (intent.action == ACTION_RING) {
             val task = intent.getBundleExtra(ALARM_BUNDLE)!!.getParcelable<Task>(ALARM_ARG_TASK)!!
-            if (Build.VERSION.SDK_INT >= 29 && app.isAppInForeground.not()) {
-                ContextCompat.startForegroundService(context, Intent(context, NotifierService::class.java))
-            } else {
-                context.startActivity(Intent(context, AlarmActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    putExtra(ALARM_ARG_TITLE, task.description)
-                })
-            }
+            context.activityImplicitLaunch(AlarmNotifierService::class.java, AlarmActivity::class.java, ALARM_ARG_TITLE, task.description)
 
             val nextLaunchTime: Long = when (task.repeatingClassifier) {
                 RepeatingClassifier.EVERY_X_TIME_UNIT -> nextLaunchTimeCalculationUseCase.getNextLaunchTime(task.time.toLong(), task.repeatingClassifierValue)

@@ -43,4 +43,6 @@
     <string name="title_default_theme">Device default theme</string>
     <string name="title_dark_theme">Dark theme</string>
     <string name="title_themes">Themes</string>
+    <string name="title_battery_low">Battery low</string>
+    <string name="description_low_battery">Battery low! Please charge.</string>
 </resources>

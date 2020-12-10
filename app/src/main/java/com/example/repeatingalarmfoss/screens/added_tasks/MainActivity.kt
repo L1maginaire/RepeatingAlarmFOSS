@@ -63,5 +63,5 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
     override fun hearShake() = startActivity(Intent(this, LogActivity::class.java))
 }
 
-/*todo: dark theme ||| rate us ||| notification management ||| widget ||| in-app languages ||| article for doze mode \ app standby ||| settings - notification light ||| */
+/*todo: flavor ||| rate us ||| notification management ||| widget ||| article for doze mode \ app standby ||| settings - notification light ||| */
 /*todo bug on rotate NPE for button, tests for baseContext, back arrow in settings fragment*/

@@ -11,12 +11,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.base.BaseActivity
 import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_LANG
 import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_THEME
 import com.example.repeatingalarmfoss.helper.extensions.getStringOf
 import java.util.*
 
-class SettingsActivity : AppCompatActivity() /*do not use BasicActivity as parent. Problem with attachBaseContext() and recreation*/ {
+class SettingsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)

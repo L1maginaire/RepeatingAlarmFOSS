@@ -1,5 +1,6 @@
-package com.example.repeatingalarmfoss.screens
+package com.example.repeatingalarmfoss.services
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -15,9 +16,9 @@ import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
 
-class NotifierService : Service() {
+class AlarmNotifierService : Service() {
     companion object {
-        const val TAG = "NotifierService"
+        const val TAG = "AlarmNotifierService"
         const val ID = 101
         const val TERMINATE = "action_terminate" /*todo stop service*/
         const val ARG_TASK_TITLE = "arg_task_title"
@@ -40,9 +41,10 @@ class NotifierService : Service() {
         startForeground(ID, notificationBuilder.build())
     }
 
+    @SuppressLint("WrongConstant")
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(channelId: String, channelName: String) {
-        val chan = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE).apply {
+        val chan = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_MAX).apply {
             lightColor = Color.BLUE
             lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         }
@@ -64,6 +66,6 @@ class NotifierService : Service() {
         SpannableString(getString(R.string.dismiss)).apply {
             setSpan(ForegroundColorSpan(Color.RED), 0, getString(R.string.dismiss).length, 0)
         },
-        PendingIntent.getService(this, 0, Intent(this, NotifierService::class.java).apply { this.action = TERMINATE }, PendingIntent.FLAG_UPDATE_CURRENT)
+        PendingIntent.getService(this, 0, Intent(this, AlarmNotifierService::class.java).apply { this.action = TERMINATE }, PendingIntent.FLAG_UPDATE_CURRENT)
     )
 }

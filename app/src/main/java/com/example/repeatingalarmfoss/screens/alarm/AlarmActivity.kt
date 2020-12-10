@@ -20,7 +20,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.base.BaseActivity
-import com.example.repeatingalarmfoss.screens.NotifierService
+import com.example.repeatingalarmfoss.services.AlarmNotifierService
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -87,7 +87,7 @@ class AlarmActivity : BaseActivity() {
         clicks += cancelButton.clicks()
             .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe {
-                stopService(Intent(this, NotifierService::class.java))
+                stopService(Intent(this, AlarmNotifierService::class.java))
                 finish()
             }
         clicks += Observable.timer(10, TimeUnit.MINUTES)
@@ -130,14 +130,14 @@ class AlarmActivity : BaseActivity() {
                         if (isPlaying.not()) {
                             prepare()
                             start()
-                            Log.i(NotifierService.TAG, "Playing ringtone now.")
+                            Log.i(AlarmNotifierService.TAG, "Playing ringtone now.")
                         } else {
-                            Log.w(NotifierService.TAG, "Ringtone is already playing.")
+                            Log.w(AlarmNotifierService.TAG, "Ringtone is already playing.")
                         }
                     } catch (e: IllegalStateException) {
-                        Log.w(NotifierService.TAG, e)
+                        Log.w(AlarmNotifierService.TAG, e)
                     } catch (e: IOException) {
-                        Log.w(NotifierService.TAG, e)
+                        Log.w(AlarmNotifierService.TAG, e)
                     }
                 }
                 if ((getSystemService(AUDIO_SERVICE) as? AudioManager)?.ringerMode != AudioManager.RINGER_MODE_SILENT) {
