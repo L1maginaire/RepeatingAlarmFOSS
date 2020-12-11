@@ -45,4 +45,5 @@
     <string name="title_themes">Themes</string>
     <string name="title_battery_low">Battery low</string>
     <string name="description_low_battery">Battery low! Please charge.</string>
+    <string name="title_alarms">Alarms</string>
 </resources>

@@ -15,12 +15,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#f0f0f0"
-            android:paddingTop="16dp" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,5 +55,11 @@
                 android:textSize="16sp"
                 tools:text="01 May 2020 05:55" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f0f0f0"
+            android:paddingTop="16dp" />
+
     </LinearLayout>
 </layout>

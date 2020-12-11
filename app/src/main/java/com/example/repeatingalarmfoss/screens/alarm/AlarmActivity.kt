@@ -51,7 +51,7 @@ class AlarmActivity : BaseActivity() {
         turnOnScreen()
         setContentView(R.layout.activity_alarm)
         setupClicks()
-        supportActionBar?.title = intent.extras!!.getString(ALARM_ARG_TITLE)
+        tvTaskTitle.text = intent.extras!!.getString(ALARM_ARG_TITLE)
         ring()
         enableStroboscope()
     }

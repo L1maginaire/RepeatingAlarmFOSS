@@ -33,7 +33,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".screens.settings.SettingsActivity" />
         <activity
             android:name=".screens.alarm.AlarmActivity"
             android:label="@string/title_activity_alarm"

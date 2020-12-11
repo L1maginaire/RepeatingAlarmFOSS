@@ -124,4 +124,5 @@ dependencies {
 
     /* MISC */
     implementation 'com.squareup:seismic:1.0.2'
+    implementation 'nl.joery.animatedbottombar:library:1.0.9'
 }

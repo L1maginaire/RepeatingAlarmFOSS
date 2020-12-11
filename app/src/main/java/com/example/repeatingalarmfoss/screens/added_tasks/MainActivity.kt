@@ -3,14 +3,12 @@ package com.example.repeatingalarmfoss.screens.added_tasks
 import android.content.Intent
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.fragment.app.commit
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.base.BaseActivity
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.screens.logs.LogActivity
-import com.example.repeatingalarmfoss.screens.settings.SettingsActivity
+import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -23,21 +21,6 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
     override fun onResume() = super.onResume().also { shakeDetector.start(getSystemService(SENSOR_SERVICE) as SensorManager) }
     override fun onPause() = super.onPause().also { shakeDetector.stop() }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_main_setting -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         isTablet = resources.getBoolean(R.bool.isTablet)
         super.onCreate(savedInstanceState)
@@ -45,15 +28,32 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
 
         taskListFragment = TaskListFragment.newInstance(this@MainActivity)
         setupAddingTaskFragment = SetupAddingTaskFragment.newInstance(this@MainActivity)
-
+        val settingsContainer: Int
+        val settingsFragment = SettingsFragment()
         if (isTablet) {
+            settingsContainer = R.id.detailFragmentContainer
             supportFragmentManager.commit {
                 replace(R.id.detailFragmentContainer, taskListFragment)
                 replace(R.id.fragmentContainer, setupAddingTaskFragment)
             }
         } else {
+            settingsContainer = R.id.root
             supportFragmentManager.commit {
                 replace(R.id.root, taskListFragment)
+            }
+        }
+        bottomBar.apply {
+//            setupWithViewPager(mainViewPager)
+            onTabSelected = {
+                supportFragmentManager.commit {
+                    replace(
+                        settingsContainer, when (it.id) {
+                            R.id.tab_alarm -> taskListFragment
+                            R.id.tab_settings -> settingsFragment
+                            else -> throw IllegalStateException()
+                        }
+                    )
+                }
             }
         }
     }

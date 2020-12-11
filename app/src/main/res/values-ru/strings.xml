@@ -45,4 +45,5 @@
     <string name="title_themes">Режимы отображения</string>
     <string name="title_battery_low">Низкий заряд батареи</string>
     <string name="description_low_battery">Заряд батареи низок! Пожалуйста, подключите зарядное устройство.</string>
+    <string name="title_alarms">Уведомления</string>
 </resources>
