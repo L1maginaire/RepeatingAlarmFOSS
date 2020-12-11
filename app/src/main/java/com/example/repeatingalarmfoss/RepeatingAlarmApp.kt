@@ -15,6 +15,7 @@ import com.example.repeatingalarmfoss.di.components.AppComponent
 import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
 import com.example.repeatingalarmfoss.helper.extensions.*
 import com.example.repeatingalarmfoss.receivers.LowBatteryTracker
+import es.dmoral.toasty.Toasty
 import java.util.*
 
 class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
@@ -31,6 +32,8 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
 
         (getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
         scheduleLowBatteryChecker()
+
+        Toasty.Config.getInstance().apply()
     }
 
     private fun setupDagger() {
