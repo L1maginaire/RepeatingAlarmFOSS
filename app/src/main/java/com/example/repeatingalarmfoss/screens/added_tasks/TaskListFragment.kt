@@ -58,7 +58,7 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
             inject(addingTasksViewModel)
         }
 
-        if (requireActivity().root == null) {
+        if (requireActivity().pager == null) {
             addTaskFab.isVisible = false
         } else {
             setupClicks()

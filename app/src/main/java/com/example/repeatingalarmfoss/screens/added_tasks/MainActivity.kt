@@ -1,3 +1,5 @@
+@file:Suppress("UNSAFE_CALL_ON_PARTIALLY_DEFINED_RESOURCE")
+
 package com.example.repeatingalarmfoss.screens.added_tasks
 
 import android.content.Intent
@@ -28,26 +30,17 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
 
         taskListFragment = TaskListFragment.newInstance(this@MainActivity)
         setupAddingTaskFragment = SetupAddingTaskFragment.newInstance(this@MainActivity)
-        val settingsContainer: Int
         val settingsFragment = SettingsFragment()
         if (isTablet) {
-            settingsContainer = R.id.detailFragmentContainer
             supportFragmentManager.commit {
                 replace(R.id.detailFragmentContainer, taskListFragment)
                 replace(R.id.fragmentContainer, setupAddingTaskFragment)
             }
-        } else {
-            settingsContainer = R.id.root
-            supportFragmentManager.commit {
-                replace(R.id.root, taskListFragment)
-            }
-        }
-        bottomBar.apply {
-//            setupWithViewPager(mainViewPager)
-            onTabSelected = {
+            bottomBar.onTabSelected = {
                 supportFragmentManager.commit {
                     replace(
-                        settingsContainer, when (it.id) {
+                        R.id.detailFragmentContainer,
+                        when (it.id) {
                             R.id.tab_alarm -> taskListFragment
                             R.id.tab_settings -> settingsFragment
                             else -> throw IllegalStateException()
@@ -55,6 +48,9 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
                     )
                 }
             }
+        } else {
+            pager.adapter = MainScreenViewPagerAdapter(this, supportFragmentManager)
+            bottomBar.setupWithViewPager(pager)
         }
     }
 
