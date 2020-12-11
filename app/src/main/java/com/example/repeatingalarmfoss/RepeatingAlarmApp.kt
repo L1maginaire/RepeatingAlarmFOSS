@@ -23,6 +23,7 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
     var isAppInForeground = false
 
     override fun onCreate() {
+        getDefaultSharedPreferences().incrementAppLaunchCounter()
         setupDagger()
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)

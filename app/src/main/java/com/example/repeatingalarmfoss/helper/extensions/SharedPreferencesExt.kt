@@ -4,8 +4,12 @@ import android.content.SharedPreferences
 
 const val PREF_APP_LANG = "PREF_APP_LANG"
 const val PREF_APP_THEME = "PREF_APP_THEME"
+const val PREF_LAUNCH_COUNTER = "PREF_LAUNCH_COUNTER"
+const val PREF_LAUNCH_NEVER_SHOW = "PREF_LAUNCH_NEVER_SHOW"
 
 fun SharedPreferences.getBooleanOf(keyToValue: String) = getBoolean(keyToValue, false)
 fun SharedPreferences.getStringOf(keyToValue: String) = getString(keyToValue, null)
 fun SharedPreferences.writeBooleanOf(keyToValue: String, value: Boolean) = edit().also { it.putBoolean(keyToValue, value) }.apply()
 fun SharedPreferences.writeStringOf(keyToValue: String, value: String) = edit().also { it.putString(keyToValue, value) }.apply()
+fun SharedPreferences.incrementAppLaunchCounter() = edit().also { it.putInt(PREF_LAUNCH_COUNTER, getInt(PREF_LAUNCH_COUNTER, 0).inc()) }.apply()
+fun SharedPreferences.getAppLaunchCounter() = getInt(PREF_LAUNCH_COUNTER, 0)

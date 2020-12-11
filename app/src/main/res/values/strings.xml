@@ -46,4 +46,8 @@
     <string name="title_battery_low">Battery low</string>
     <string name="description_low_battery">Battery low! Please charge.</string>
     <string name="title_alarms">Alarms</string>
+    <string name="title_rate_our_app">Are you enjoying using our app?</string>
+    <string name="title_yes">Yes</string>
+    <string name="title_no">No</string>
+    <string name="title_dont_ask_againg">Don\'t ask again</string>
 </resources>

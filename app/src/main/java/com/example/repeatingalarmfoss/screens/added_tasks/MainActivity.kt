@@ -9,10 +9,16 @@ import androidx.fragment.app.commit
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.base.BaseActivity
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
+import com.example.repeatingalarmfoss.helper.extensions.PREF_LAUNCH_NEVER_SHOW
+import com.example.repeatingalarmfoss.helper.extensions.getBooleanOf
+import com.example.repeatingalarmfoss.helper.extensions.getDefaultSharedPreferences
+import com.example.repeatingalarmfoss.helper.extensions.getAppLaunchCounter
 import com.example.repeatingalarmfoss.screens.logs.LogActivity
 import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
+
+private const val LAUNCH_COUNTER_THRESHOLD = 5
 
 class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback, TaskAddedCallback, ShakeDetector.Listener {
     private lateinit var taskListFragment: TaskListFragment
@@ -52,6 +58,8 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
             pager.adapter = MainScreenViewPagerAdapter(this, supportFragmentManager)
             bottomBar.setupWithViewPager(pager)
         }
+
+        if (getDefaultSharedPreferences().getAppLaunchCounter() % LAUNCH_COUNTER_THRESHOLD == 0 && getDefaultSharedPreferences().getBooleanOf(PREF_LAUNCH_NEVER_SHOW).not()) RateMyAppDialog().show(supportFragmentManager, RateMyAppDialog::class.java.simpleName)
     }
 
     override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = taskListFragment.onTimeSet(description, repeatingClassifier, repeatingClassifierValue, time)
@@ -59,5 +67,5 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
     override fun hearShake() = startActivity(Intent(this, LogActivity::class.java))
 }
 
-/*todo: flavor ||| rate us ||| notification management ||| widget ||| article for doze mode \ app standby ||| settings - notification light ||| */
+/*todo: flavor ||| notification management ||| widget ||| article for doze mode \ app standby ||| settings - notification light ||| */
 /*todo bug on rotate NPE for button, tests for baseContext, back arrow in settings fragment*/
