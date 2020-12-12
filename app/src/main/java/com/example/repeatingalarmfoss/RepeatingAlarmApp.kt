@@ -1,7 +1,10 @@
 package com.example.repeatingalarmfoss
 
 import android.annotation.SuppressLint
-import android.app.*
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -30,8 +33,10 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         createMissedAlarmNotificationChannel()
 
-        (getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
-        scheduleLowBatteryChecker()
+        if (getDefaultSharedPreferences().getBooleanOf(PREF_LOW_BATTERY_DND_AT_NIGHT).not()) {
+            cancelLowBatteryChecker()
+            scheduleLowBatteryChecker()
+        }
 
         Toasty.Config.getInstance().apply()
     }

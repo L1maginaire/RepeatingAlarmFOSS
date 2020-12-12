@@ -50,4 +50,5 @@
     <string name="title_yes">Да</string>
     <string name="title_no">Нет</string>
     <string name="title_dont_ask_againg">Не показывать больше</string>
+    <string name="title_do_not_disturb_at_night_on_battery_low">Не беспокоить уведомлениями о низком заряде батареи ночью (00:00 – 09:00)</string>
 </resources>

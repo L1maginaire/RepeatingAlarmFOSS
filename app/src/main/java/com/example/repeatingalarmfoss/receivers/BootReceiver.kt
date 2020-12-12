@@ -10,8 +10,7 @@ import android.content.Intent.ACTION_BOOT_COMPLETED
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.helper.FlightRecorder
-import com.example.repeatingalarmfoss.helper.extensions.scheduleLowBatteryChecker
-import com.example.repeatingalarmfoss.helper.extensions.set
+import com.example.repeatingalarmfoss.helper.extensions.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -20,6 +19,7 @@ import javax.inject.Inject
 class BootReceiver : BroadcastReceiver() {
     @Inject
     lateinit var taskLocalDataSource: TaskLocalDataSource
+
     @Inject
     lateinit var logger: FlightRecorder
 

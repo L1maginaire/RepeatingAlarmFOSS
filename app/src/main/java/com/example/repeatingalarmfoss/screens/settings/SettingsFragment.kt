@@ -9,9 +9,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.example.repeatingalarmfoss.R
-import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_LANG
-import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_THEME
-import com.example.repeatingalarmfoss.helper.extensions.getStringOf
+import com.example.repeatingalarmfoss.helper.extensions.*
 import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {

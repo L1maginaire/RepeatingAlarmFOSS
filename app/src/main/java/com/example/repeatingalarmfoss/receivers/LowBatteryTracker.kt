@@ -8,10 +8,11 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.FlightRecorder
-import com.example.repeatingalarmfoss.helper.extensions.activityImplicitLaunch
-import com.example.repeatingalarmfoss.helper.extensions.toReadableDate
+import com.example.repeatingalarmfoss.helper.extensions.*
 import com.example.repeatingalarmfoss.screens.low_battery.LowBatteryNotifierActivity
 import com.example.repeatingalarmfoss.services.LowBatteryNotificationService
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 private const val BATTERY_THRESHOLD_PERCENTAGE = 30
@@ -26,8 +27,12 @@ class LowBatteryTracker : BroadcastReceiver() {
 
     @SuppressLint("NewApi")
     override fun onReceive(context: Context, intent: Intent) {
-        val app = context.applicationContext as RepeatingAlarmApp /*todo as @Inject*/
-        app.appComponent.inject(this)
+        if (context.getDefaultSharedPreferences().getBooleanOf(PREF_LOW_BATTERY_DND_AT_NIGHT) && isTimeBetweenTwoTime("00:00", "09:00", SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())))
+            return
+
+        (context.applicationContext as RepeatingAlarmApp).apply {
+            appComponent.inject(this@LowBatteryTracker)
+        }
 
         (batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) ?: IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { intentFilter ->
             context.registerReceiver(null, intentFilter)?.let { intent ->

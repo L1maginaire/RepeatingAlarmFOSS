@@ -1,13 +1,11 @@
 package com.example.repeatingalarmfoss.helper.extensions
 
 import android.app.AlarmManager
-import android.app.AlarmManager.INTERVAL_FIFTEEN_MINUTES
 import android.app.AlarmManager.INTERVAL_HOUR
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import com.example.repeatingalarmfoss.receivers.LowBatteryTracker
 
 const val BATTERY_CHECKER_ID = 999
@@ -24,7 +22,10 @@ fun AlarmManager.set(startTime: Long, pendingIntent: PendingIntent) = if (Build.
 
 fun Context.scheduleLowBatteryChecker() = (getSystemService(Context.ALARM_SERVICE) as AlarmManager).setInexactRepeating(
     AlarmManager.RTC_WAKEUP,
-    System.currentTimeMillis()+5000,
+    System.currentTimeMillis() + LongExt.minutesToMilliseconds(5),
     INTERVAL_HOUR,
     PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
 )
+
+fun Context.cancelLowBatteryChecker() = (this.getSystemService(Context.ALARM_SERVICE) as AlarmManager)
+    .cancel(PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
