@@ -8,14 +8,14 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.example.repeatingalarmfoss.R
-import com.example.repeatingalarmfoss.helper.extensions.PREF_LAUNCH_NEVER_SHOW
+import com.example.repeatingalarmfoss.helper.extensions.PREF_NEVER_SHOW_RATE_APP
 import com.example.repeatingalarmfoss.helper.extensions.getDefaultSharedPreferences
 import com.example.repeatingalarmfoss.helper.extensions.writeBooleanOf
 
 class RateMyAppDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext())
         .setIcon(R.drawable.ic_baseline_star_rate_24)
-        .setNeutralButton(R.string.title_dont_ask_againg) { _, _ -> requireContext().getDefaultSharedPreferences().writeBooleanOf(PREF_LAUNCH_NEVER_SHOW, true) }
+        .setNeutralButton(R.string.title_dont_ask_againg) { _, _ -> requireContext().getDefaultSharedPreferences().writeBooleanOf(PREF_NEVER_SHOW_RATE_APP, true) }
         .setTitle(R.string.title_rate_our_app)
         .setPositiveButton(R.string.title_yes) { _, _ ->
             val appPackageName: String = requireActivity().packageName

@@ -14,7 +14,7 @@
         android:title="@string/title_themes"
         app:iconSpaceReserved="false" />
     <CheckBoxPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="PREF_LOW_BATTERY_DND_AT_NIGHT"
         android:title="@string/title_do_not_disturb_at_night_on_battery_low" />
 </PreferenceScreen>

@@ -1,5 +1,8 @@
 package com.example.repeatingalarmfoss.helper.extensions
 
+import java.text.SimpleDateFormat
+import java.util.*
+
 /** Represents hours and minutes in hours:minutes way. Hours will be shown in 24-hour format. For example,
  *  00:12
  *  05:55
@@ -29,3 +32,9 @@ fun String.yellow() = this.toColorfulString(33)
 fun String.red() = this.toColorfulString(31)
 
 private fun String.toColorfulString(colorCode: Int): String = 27.toChar() + "[${colorCode}m$this" + 27.toChar() + "[0m"
+
+/** String representing current hours in 24 format and minutes, with `:` delimiter. For example:
+ * 00:52
+ * 08:11
+ * */
+fun now(): String = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())

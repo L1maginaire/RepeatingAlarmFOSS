@@ -1,12 +1,9 @@
 package com.example.repeatingalarmfoss
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import androidx.lifecycle.Lifecycle
@@ -17,27 +14,27 @@ import androidx.multidex.MultiDexApplication
 import com.example.repeatingalarmfoss.di.components.AppComponent
 import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
 import com.example.repeatingalarmfoss.helper.extensions.*
-import com.example.repeatingalarmfoss.receivers.LowBatteryTracker
+import com.example.repeatingalarmfoss.repositories.PersistedLocaleResult
+import com.example.repeatingalarmfoss.repositories.PreferencesRepository
 import es.dmoral.toasty.Toasty
 import java.util.*
+import javax.inject.Inject
 
 class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
+    @Inject
+    lateinit var preferencesRepository: PreferencesRepository
+
     lateinit var appComponent: AppComponent
 
     var isAppInForeground = false
 
     override fun onCreate() {
-        getDefaultSharedPreferences().incrementAppLaunchCounter()
         setupDagger()
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        preferencesRepository.incrementAppLaunchCounter()
         createMissedAlarmNotificationChannel()
-
-        if (getDefaultSharedPreferences().getBooleanOf(PREF_LOW_BATTERY_DND_AT_NIGHT).not()) {
-            cancelLowBatteryChecker()
-            scheduleLowBatteryChecker()
-        }
-
+        cancelLowBatteryChecker().also { scheduleLowBatteryChecker() }
         Toasty.Config.getInstance().apply()
     }
 
@@ -45,6 +42,7 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
         appComponent = DaggerAppComponent.builder()
             .application(this)
             .build()
+            .apply { inject(this@RepeatingAlarmApp) }
     }
 
     @SuppressLint("WrongConstant")
@@ -68,9 +66,12 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
     override fun attachBaseContext(base: Context) = super.attachBaseContext(base.provideUpdatedContextWithNewLocale(defaultLocale = Locale.getDefault().language))
 
     override fun onConfigurationChanged(newConfig: Configuration) {
-        val newLocale = Locale(getDefaultSharedPreferences().getStringOf(PREF_APP_LANG) ?: Locale.UK.language)
-        Locale.setDefault(newLocale)
-        newConfig.setLocale(newLocale)
+        preferencesRepository.getPersistedLocale().blockingGet().also {
+            if (it is PersistedLocaleResult.Success) {
+                Locale.setDefault(it.locale)
+                newConfig.setLocale(it.locale)
+            }
+        }
         super.onConfigurationChanged(newConfig)
     }
 }

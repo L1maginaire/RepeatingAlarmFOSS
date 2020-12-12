@@ -1,26 +1,32 @@
-@file:Suppress("UNSAFE_CALL_ON_PARTIALLY_DEFINED_RESOURCE")
+@file:Suppress("UNSAFE_CALL_ON_PARTIALLY_DEFINED_RESOURCE", "RedundantSamConstructor")
 
 package com.example.repeatingalarmfoss.screens.added_tasks
 
 import android.content.Intent
 import android.hardware.SensorManager
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.fragment.app.commit
+import androidx.lifecycle.Observer
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
+import com.example.repeatingalarmfoss.base.BaseActivityViewModel
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
-import com.example.repeatingalarmfoss.helper.extensions.PREF_LAUNCH_NEVER_SHOW
+import com.example.repeatingalarmfoss.helper.extensions.PREF_NEVER_SHOW_RATE_APP
+import com.example.repeatingalarmfoss.helper.extensions.getAppLaunchCounter
 import com.example.repeatingalarmfoss.helper.extensions.getBooleanOf
 import com.example.repeatingalarmfoss.helper.extensions.getDefaultSharedPreferences
-import com.example.repeatingalarmfoss.helper.extensions.getAppLaunchCounter
+import com.example.repeatingalarmfoss.repositories.PreferencesRepository
 import com.example.repeatingalarmfoss.screens.logs.LogActivity
 import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
-
-private const val LAUNCH_COUNTER_THRESHOLD = 5
+import javax.inject.Inject
 
 class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback, TaskAddedCallback, ShakeDetector.Listener {
+    private val viewModel: MainActivityViewModel by viewModels()
+
     private lateinit var taskListFragment: TaskListFragment
     private lateinit var setupAddingTaskFragment: SetupAddingTaskFragment
     private var isTablet = false
@@ -30,6 +36,7 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
     override fun onPause() = super.onPause().also { shakeDetector.stop() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (applicationContext as RepeatingAlarmApp).appComponent.inject(viewModel)
         isTablet = resources.getBoolean(R.bool.isTablet)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -59,7 +66,8 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
             bottomBar.setupWithViewPager(pager)
         }
 
-        if (getDefaultSharedPreferences().getAppLaunchCounter() % LAUNCH_COUNTER_THRESHOLD == 0 && getDefaultSharedPreferences().getBooleanOf(PREF_LAUNCH_NEVER_SHOW).not()) RateMyAppDialog().show(supportFragmentManager, RateMyAppDialog::class.java.simpleName)
+        viewModel.showRateMyAppEvent.observe(this, Observer { RateMyAppDialog().show(supportFragmentManager, RateMyAppDialog::class.java.simpleName) })
+        viewModel.checkShowRateMyApp()
     }
 
     override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = taskListFragment.onTimeSet(description, repeatingClassifier, repeatingClassifierValue, time)
