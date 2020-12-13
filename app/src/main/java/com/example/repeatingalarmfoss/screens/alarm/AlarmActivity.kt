@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit
 const val ALARM_ARG_TITLE = "arg_title"
 
 class AlarmActivity : BaseActivity() {
+    private val tag = javaClass.simpleName
     private var player: MediaPlayer? = null
     private var vibrator: Vibrator? = null
     private val vibrationPattern = longArrayOf(0, 300, 300, 300)
@@ -100,7 +101,7 @@ class AlarmActivity : BaseActivity() {
     }
 
     private fun showMissedAlarmNotification() {
-        val builder = NotificationCompat.Builder(this, NotificationsManager.CHANNEL_MISSED_ALARM)
+        val builder = NotificationCompat.Builder(this, NotificationsManager.CHANNEL_ALARM)
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setContentTitle(String.format(getString(R.string.title_you_have_missed_alarm), intent.getStringExtra(ALARM_ARG_TITLE)))
             .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -130,14 +131,14 @@ class AlarmActivity : BaseActivity() {
                         if (isPlaying.not()) {
                             prepare()
                             start()
-                            Log.i(AlarmNotifierService.TAG, "Playing ringtone now.")
+                            Log.i(tag, "Playing ringtone now.")
                         } else {
-                            Log.w(AlarmNotifierService.TAG, "Ringtone is already playing.")
+                            Log.w(tag, "Ringtone is already playing.")
                         }
                     } catch (e: IllegalStateException) {
-                        Log.w(AlarmNotifierService.TAG, e)
+                        Log.w(tag, e)
                     } catch (e: IOException) {
-                        Log.w(AlarmNotifierService.TAG, e)
+                        Log.w(tag, e)
                     }
                 }
                 if ((getSystemService(AUDIO_SERVICE) as? AudioManager)?.ringerMode != AudioManager.RINGER_MODE_SILENT) {

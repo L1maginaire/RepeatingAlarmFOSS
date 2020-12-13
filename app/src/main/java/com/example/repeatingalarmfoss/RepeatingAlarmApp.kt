@@ -33,7 +33,7 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         preferencesRepository.incrementAppLaunchCounter()
-        createMissedAlarmNotificationChannel()
+        createNotificationChannels()
         cancelLowBatteryChecker().also { scheduleLowBatteryChecker() }
         Toasty.Config.getInstance().apply()
     }
@@ -46,10 +46,11 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
     }
 
     @SuppressLint("WrongConstant")
-    private fun createMissedAlarmNotificationChannel() {
+    private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(NotificationsManager.CHANNEL_MISSED_ALARM, getString(R.string.app_name), NotificationManager.IMPORTANCE_MAX)
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
+            val channelMissedAlarm = NotificationChannel(NotificationsManager.CHANNEL_ALARM, getString(R.string.app_name), NotificationManager.IMPORTANCE_MAX)
+            val channelBatteryLow = NotificationChannel(NotificationsManager.CHANNEL_BATTERY_LOW_ID, getString(R.string.app_name), NotificationManager.IMPORTANCE_MAX)
+            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannels(listOf(channelMissedAlarm, channelBatteryLow))
         }
     }
 
@@ -66,12 +67,13 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
     override fun attachBaseContext(base: Context) = super.attachBaseContext(base.provideUpdatedContextWithNewLocale(defaultLocale = Locale.getDefault().language))
 
     override fun onConfigurationChanged(newConfig: Configuration) {
-        preferencesRepository.getPersistedLocale().blockingGet().also {
-            if (it is PersistedLocaleResult.Success) {
-                Locale.setDefault(it.locale)
-                newConfig.setLocale(it.locale)
+        preferencesRepository.getPersistedLocale()
+            .blockingGet().also {
+                if (it is PersistedLocaleResult.Success) {
+                    Locale.setDefault(it.locale)
+                    newConfig.setLocale(it.locale)
+                }
             }
-        }
         super.onConfigurationChanged(newConfig)
     }
 }

@@ -5,9 +5,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
@@ -15,9 +13,9 @@ import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.activityImplicitLaunch
 import com.example.repeatingalarmfoss.helper.extensions.set
-import com.example.repeatingalarmfoss.screens.alarm.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
 import com.example.repeatingalarmfoss.services.AlarmNotifierService
+import com.example.repeatingalarmfoss.services.AlarmNotifierService.Companion.ARG_TASK_TITLE
 import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
 import javax.inject.Inject
 
@@ -48,7 +46,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         if (intent.action == ACTION_RING) {
             val task = intent.getBundleExtra(ALARM_BUNDLE)!!.getParcelable<Task>(ALARM_ARG_TASK)!!
-            context.activityImplicitLaunch(AlarmNotifierService::class.java, AlarmActivity::class.java, ALARM_ARG_TITLE, task.description)
+            context.activityImplicitLaunch(AlarmNotifierService::class.java, AlarmActivity::class.java, ARG_TASK_TITLE, task.description)
 
             val nextLaunchTime: Long = when (task.repeatingClassifier) {
                 RepeatingClassifier.EVERY_X_TIME_UNIT -> nextLaunchTimeCalculationUseCase.getNextLaunchTime(task.time.toLong(), task.repeatingClassifierValue)

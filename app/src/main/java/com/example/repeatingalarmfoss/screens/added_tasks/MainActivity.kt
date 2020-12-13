@@ -11,18 +11,11 @@ import androidx.lifecycle.Observer
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
-import com.example.repeatingalarmfoss.base.BaseActivityViewModel
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
-import com.example.repeatingalarmfoss.helper.extensions.PREF_NEVER_SHOW_RATE_APP
-import com.example.repeatingalarmfoss.helper.extensions.getAppLaunchCounter
-import com.example.repeatingalarmfoss.helper.extensions.getBooleanOf
-import com.example.repeatingalarmfoss.helper.extensions.getDefaultSharedPreferences
-import com.example.repeatingalarmfoss.repositories.PreferencesRepository
 import com.example.repeatingalarmfoss.screens.logs.LogActivity
 import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
 
 class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback, TaskAddedCallback, ShakeDetector.Listener {
     private val viewModel: MainActivityViewModel by viewModels()
@@ -75,5 +68,5 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
     override fun hearShake() = startActivity(Intent(this, LogActivity::class.java))
 }
 
-/*todo: flavor ||| notification management ||| widget ||| article for doze mode \ app standby ||| settings - notification light ||| */
+/*todo: flavor ||| notification management ||| widget ||| article for doze mode \ app standby ||| settings - notification light ||| bug -- rate dialog appears twice*/
 /*todo bug on rotate NPE for button, tests for baseContext, back arrow in settings fragment*/
