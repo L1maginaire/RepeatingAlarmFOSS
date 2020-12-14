@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,17 +37,20 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<AddingTasksViewModel> { viewModelFactory }
+
     @Inject
     lateinit var logger: FlightRecorder
 
     private val alarmManager: AlarmManager by lazy { requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager }
-    private lateinit var onTaskAddedCallback: TaskAddedCallback
+    private var onTaskAddedCallback: TaskAddedCallback? = null
 
     companion object {
         fun newInstance() = TaskListFragment()
     }
 
-    override fun onAttach(context: Context) = super.onAttach(context).also { this.onTaskAddedCallback = context as MainActivity }
+    override fun onAttach(context: Context) = super.onAttach(context).also { onTaskAddedCallback = context as MainActivity }
+    override fun onDetach() = super.onDetach().also { onTaskAddedCallback = null }
+
     private val tasksAdapter = AddedTasksAdapter(::removeTask)
     private fun removeTask(id: Long) = viewModel.removeTask(id)
 
@@ -85,7 +87,7 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
     private fun setupViewModelSubscriptions() {
         viewModel.addTaskEvent.observe(viewLifecycleOwner, Observer { task ->
             tasksAdapter.addNewTask(task)
-            onTaskAddedCallback.onSuccessfulScheduling()
+            onTaskAddedCallback?.onSuccessfulScheduling()
         })
         viewModel.removeTaskEvent.observe(viewLifecycleOwner, Observer { id ->
             cancelAlarmManagerFor(id)
