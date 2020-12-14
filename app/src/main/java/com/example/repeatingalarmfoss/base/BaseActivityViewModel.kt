@@ -2,14 +2,12 @@ package com.example.repeatingalarmfoss.base
 
 import androidx.lifecycle.LiveData
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.SingleLiveEvent
 import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
 
-class BaseActivityViewModel : BaseViewModel() {
-    @Inject
-    lateinit var prefInteractor: BaseActivitySettingsInteractor
-
+class BaseActivityViewModel @Inject constructor(private val prefInteractor: BaseActivitySettingsInteractor): BaseViewModel() {
     private val _setNightModeValueAndRecreateEvent = SingleLiveEvent<Int>()
     val nightModeChangedEvent: LiveData<Int> get() = _setNightModeValueAndRecreateEvent
 

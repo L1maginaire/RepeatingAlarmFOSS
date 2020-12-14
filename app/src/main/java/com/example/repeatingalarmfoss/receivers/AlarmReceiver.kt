@@ -16,7 +16,6 @@ import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.screens.alarm.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
 import com.example.repeatingalarmfoss.services.AlarmNotifierService
-import com.example.repeatingalarmfoss.services.AlarmNotifierService.Companion.ARG_TASK_TITLE
 import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
 import javax.inject.Inject
 

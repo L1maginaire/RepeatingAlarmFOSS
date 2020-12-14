@@ -18,7 +18,7 @@ import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback, TaskAddedCallback, ShakeDetector.Listener {
-    private val viewModel: MainActivityViewModel by viewModels()
+    private val viewModel by viewModels<MainActivityViewModel> { viewModelFactory }
 
     private lateinit var taskListFragment: TaskListFragment
     private lateinit var setupAddingTaskFragment: SetupAddingTaskFragment
@@ -29,7 +29,9 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
     override fun onPause() = super.onPause().also { shakeDetector.stop() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (applicationContext as RepeatingAlarmApp).appComponent.inject(viewModel)
+        (application as RepeatingAlarmApp).appComponent.apply {
+            inject(this@MainActivity)
+        }
         isTablet = resources.getBoolean(R.bool.isTablet)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -69,5 +71,5 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
     override fun hearShake() = startActivity(Intent(this, LogActivity::class.java))
 }
 
-/*todo: flavor ||| notification management ||| widget ||| article for doze mode \ app standby ||| settings - notification light ||| bug -- rate dialog appears twice*/
+/*todo: flavor ||| notification management ||| widget ||| article for doze mode \ app standby ||| settings - notification light ||| bug -- rate dialog appears twice ||| bug - on API<21 wakelock crashes ||| contentprovider*/
 /*todo bug on rotate NPE for button, tests for baseContext, back arrow in settings fragment*/

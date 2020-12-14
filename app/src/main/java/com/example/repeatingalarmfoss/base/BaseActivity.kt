@@ -8,21 +8,26 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.extensions.getLocalesLanguage
 import com.example.repeatingalarmfoss.helper.extensions.provideUpdatedContextWithNewLocale
 import com.example.repeatingalarmfoss.helper.extensions.toast
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
 open class BaseActivity : AppCompatActivity() {
-    private val viewModel: BaseActivityViewModel by viewModels()
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel by viewModels<BaseActivityViewModel> { viewModelFactory }
+
     protected val clicks = CompositeDisposable()
     override fun onDestroy() = super.onDestroy().also { clicks.clear() }
 
     private lateinit var currentLocale: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (application as RepeatingAlarmApp).appComponent.inject(viewModel)
+        (application as RepeatingAlarmApp).appComponent.inject(this)
 
         super.onCreate(savedInstanceState)
         currentLocale = resources.configuration.getLocalesLanguage()

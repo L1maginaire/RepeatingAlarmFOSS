@@ -7,12 +7,10 @@ import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.SingleLiveEvent
 import io.reactivex.functions.Consumer
-import javax.inject.Inject
 import io.reactivex.rxkotlin.plusAssign
+import javax.inject.Inject
 
-class AddingTasksViewModel : BaseViewModel() {
-    @Inject
-    lateinit var taskInteractor: TaskInteractor
+class AddingTasksViewModel @Inject constructor(private val taskInteractor: TaskInteractor) : BaseViewModel() {
     private val _addTaskEvent = SingleLiveEvent<TaskUi>()
     val addTaskEvent: LiveData<TaskUi> get() = _addTaskEvent
 
