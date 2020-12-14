@@ -34,10 +34,11 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        taskListFragment = TaskListFragment.newInstance(this@MainActivity)
-        setupAddingTaskFragment = SetupAddingTaskFragment.newInstance(this@MainActivity)
-        val settingsFragment = SettingsFragment()
         if (isTablet) {
+            val settingsFragment = SettingsFragment()
+            taskListFragment = TaskListFragment.newInstance()
+            setupAddingTaskFragment = SetupAddingTaskFragment.newInstance(this@MainActivity)
+
             supportFragmentManager.commit {
                 replace(R.id.detailFragmentContainer, taskListFragment)
                 replace(R.id.fragmentContainer, setupAddingTaskFragment)
@@ -55,7 +56,7 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
                 }
             }
         } else {
-            pager.adapter = MainScreenViewPagerAdapter(this, supportFragmentManager)
+            pager.adapter = MainScreenViewPagerAdapter(supportFragmentManager)
             bottomBar.setupWithViewPager(pager)
         }
 

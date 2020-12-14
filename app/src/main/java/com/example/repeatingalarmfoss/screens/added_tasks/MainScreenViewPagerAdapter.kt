@@ -6,11 +6,11 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
 
-class MainScreenViewPagerAdapter(private val activity: MainActivity, supportFragmentManager: FragmentManager) : FragmentStatePagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class MainScreenViewPagerAdapter(supportFragmentManager: FragmentManager) : FragmentStatePagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getCount(): Int = 2
 
     override fun getItem(position: Int): Fragment = when (position) {
-        0 -> TaskListFragment.newInstance(activity)
+        0 -> TaskListFragment.newInstance()
         1 -> SettingsFragment()
         else -> throw IllegalStateException()
     }

@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,11 +43,10 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
     private lateinit var onTaskAddedCallback: TaskAddedCallback
 
     companion object {
-        fun newInstance(onTaskAddedCallback: TaskAddedCallback) = TaskListFragment().apply {
-            this.onTaskAddedCallback = onTaskAddedCallback
-        }
+        fun newInstance() = TaskListFragment()
     }
 
+    override fun onAttach(context: Context) = super.onAttach(context).also { this.onTaskAddedCallback = context as MainActivity }
     private val tasksAdapter = AddedTasksAdapter(::removeTask)
     private fun removeTask(id: Long) = addingTasksViewModel.removeTask(id)
 
