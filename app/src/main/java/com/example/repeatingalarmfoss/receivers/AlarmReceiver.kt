@@ -17,6 +17,11 @@ import com.example.repeatingalarmfoss.screens.alarm.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
 import com.example.repeatingalarmfoss.services.AlarmNotifierService
 import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 const val ACTION_RING = "action_ring"
@@ -36,6 +41,8 @@ class AlarmReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var taskLocalDataSource: TaskLocalDataSource
+
+    private val disposable = CompositeDisposable()
 
     companion object {
         fun createIntent(from: Task, context: Context): Intent = Intent(context, AlarmReceiver::class.java).apply {
@@ -64,11 +71,19 @@ class AlarmReceiver : BroadcastReceiver() {
             }
 
             val newTask = task.copy(time = nextLaunchTime.toString())
-            taskLocalDataSource.insert(newTask)
 
-            logger.logScheduledEvent(what = { "Next launch:" }, `when` = nextLaunchTime)
-            (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)
-                ?.set(nextLaunchTime, PendingIntent.getBroadcast(context, task.id.toInt(), createIntent(newTask, context), PendingIntent.FLAG_UPDATE_CURRENT))
+            disposable.plusAssign(
+                taskLocalDataSource.insert(newTask)
+                    .timeout(5, TimeUnit.SECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        logger.logScheduledEvent(what = { "Next launch:" }, `when` = nextLaunchTime)
+                        alarmManager?.set(nextLaunchTime, PendingIntent.getBroadcast(context, task.id.toInt(), createIntent(newTask, context), PendingIntent.FLAG_UPDATE_CURRENT/*todo check all those flags impact!*/))
+                    }, {
+                        logger.wtf { "${javaClass.simpleName} couldn't save Task into database" }
+                    })
+            )
         }
     }
 }

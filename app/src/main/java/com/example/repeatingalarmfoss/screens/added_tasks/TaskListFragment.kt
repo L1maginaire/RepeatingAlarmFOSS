@@ -7,19 +7,18 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseFragment
-import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.set
@@ -76,8 +75,9 @@ class TaskListFragment : BaseFragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = tasksAdapter
         }
-        addingTasksViewModel.fetchTasks()
     }
+
+    override fun onResume() = super.onResume().also { addingTasksViewModel.fetchTasks() }
 
     private fun setupClicks() {
         clicks += addTaskFab.clicks()

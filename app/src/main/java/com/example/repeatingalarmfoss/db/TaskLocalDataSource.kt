@@ -3,6 +3,7 @@ package com.example.repeatingalarmfoss.db
 import androidx.annotation.VisibleForTesting
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import io.reactivex.Completable
@@ -10,7 +11,6 @@ import io.reactivex.Single
 
 @Dao
 interface TaskLocalDataSource {
-    /*TODO: classic Repository*/
     @Query("SELECT * FROM task")
     fun getAll(): Single<List<Task>>
 
@@ -24,7 +24,7 @@ interface TaskLocalDataSource {
     @Query("SELECT * FROM task WHERE description LIKE :desc LIMIT 1")
     fun findByName(desc: String): Single<Task>
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     fun insert(task: Task): Single<Long>
 
     @Insert
