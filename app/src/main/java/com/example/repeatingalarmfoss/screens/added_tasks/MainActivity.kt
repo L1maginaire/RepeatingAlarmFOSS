@@ -11,13 +11,12 @@ import androidx.lifecycle.Observer
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
-import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.screens.logs.LogActivity
 import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback, TaskAddedCallback, ShakeDetector.Listener {
+class MainActivity : BaseActivity(), TaskAddedCallback, ShakeDetector.Listener {
     private val viewModel by viewModels<MainActivityViewModel> { viewModelFactory }
 
     private lateinit var taskListFragment: TaskListFragment
@@ -39,7 +38,7 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
         if (isTablet) {
             val settingsFragment = SettingsFragment()
             taskListFragment = TaskListFragment.newInstance()
-            setupAddingTaskFragment = SetupAddingTaskFragment.newInstance(this@MainActivity)
+            setupAddingTaskFragment = SetupAddingTaskFragment.newInstance()
 
             supportFragmentManager.commit {
                 replace(R.id.detailFragmentContainer, taskListFragment)
@@ -66,7 +65,6 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
         viewModel.checkShowRateMyApp()
     }
 
-    override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = taskListFragment.onTimeSet(description, repeatingClassifier, repeatingClassifierValue, time)
     override fun onSuccessfulScheduling() = if (isTablet) setupAddingTaskFragment.setFieldsDefault() else Unit
     override fun hearShake() = startActivity(Intent(this, LogActivity::class.java))
 }

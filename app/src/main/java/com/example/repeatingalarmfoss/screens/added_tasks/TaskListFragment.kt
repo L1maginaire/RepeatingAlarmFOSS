@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,10 +34,10 @@ import kotlinx.android.synthetic.main.fragment_task_list.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCallback {
+class TaskListFragment : BaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel by viewModels<AddingTasksViewModel> { viewModelFactory }
+    private val addingTasksViewModel by activityViewModels<AddingTasksViewModel> { viewModelFactory }
 
     @Inject
     lateinit var logger: FlightRecorder
@@ -52,7 +53,7 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
     override fun onDetach() = super.onDetach().also { onTaskAddedCallback = null }
 
     private val tasksAdapter = AddedTasksAdapter(::removeTask)
-    private fun removeTask(id: Long) = viewModel.removeTask(id)
+    private fun removeTask(id: Long) = addingTasksViewModel.removeTask(id)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_task_list, container, false)
 
@@ -75,31 +76,31 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
             layoutManager = LinearLayoutManager(requireContext())
             adapter = tasksAdapter
         }
-        viewModel.fetchTasks()
+        addingTasksViewModel.fetchTasks()
     }
 
     private fun setupClicks() {
         clicks += addTaskFab.clicks()
             .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-            .subscribe { SetupAddingTaskFragment.newInstance(this).show(childFragmentManager, SetupAddingTaskFragment::class.java.simpleName) }
+            .subscribe { SetupAddingTaskFragment.newInstance().show(childFragmentManager, SetupAddingTaskFragment::class.java.simpleName) }
     }
 
     private fun setupViewModelSubscriptions() {
-        viewModel.addTaskEvent.observe(viewLifecycleOwner, Observer { task ->
+        addingTasksViewModel.addTaskEvent.observe(viewLifecycleOwner, Observer { task ->
             tasksAdapter.addNewTask(task)
             onTaskAddedCallback?.onSuccessfulScheduling()
         })
-        viewModel.removeTaskEvent.observe(viewLifecycleOwner, Observer { id ->
+        addingTasksViewModel.removeTaskEvent.observe(viewLifecycleOwner, Observer { id ->
             cancelAlarmManagerFor(id)
             tasksAdapter.removeTask(id)
         })
-        viewModel.fetchAllTasksEvent.observe(viewLifecycleOwner, Observer {
+        addingTasksViewModel.fetchAllTasksEvent.observe(viewLifecycleOwner, Observer {
             tasksAdapter.tasks = it.toMutableList()
         })
-        viewModel.scheduleTaskEvent.observe(viewLifecycleOwner, Observer {
+        addingTasksViewModel.scheduleTaskEvent.observe(viewLifecycleOwner, Observer {
             scheduleAlarmManager(it)
         })
-        viewModel.errorEvent.observe(viewLifecycleOwner, Observer { errorMessage ->
+        addingTasksViewModel.errorEvent.observe(viewLifecycleOwner, Observer { errorMessage ->
             toast(getString(errorMessage))
         })
     }
@@ -111,8 +112,6 @@ class TaskListFragment : BaseFragment(), SetupAddingTaskFragment.TimeSettingCall
         logger.logScheduledEvent(what = { "First launch:" }, `when` = task.time.toLong())
         alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(requireContext(), task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
-
-    override fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String) = viewModel.addTask(description, repeatingClassifier, repeatingClassifierValue, time)
 }
 
 interface TaskAddedCallback {

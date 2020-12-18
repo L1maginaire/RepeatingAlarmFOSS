@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,15 +12,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
-import com.example.repeatingalarmfoss.helper.rx.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_DAY_MONTH_YEAR
 import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_FOR_LOGGING2
 import com.example.repeatingalarmfoss.helper.extensions.TIME_PATTERN_HOURS_24_MINUTES
+import com.example.repeatingalarmfoss.helper.rx.DEFAULT_UI_SKIP_DURATION
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.checkedChanges
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -42,17 +43,18 @@ const val AMOUNT_DAYS_IN_WEEK = 7
 
 class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCallback, DatePickerFragment.OnDateSetCallback {
     @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val addingTasksViewModel by activityViewModels<AddingTasksViewModel> { viewModelFactory }
+
+    @Inject
     lateinit var logger: FlightRecorder
     private val clicks = CompositeDisposable()
     override fun onDestroyView() = super.onDestroyView().also { clicks.clear() }
     private val chosenWeekDays = FixedSizeBitSet(AMOUNT_DAYS_IN_WEEK)
     private lateinit var customView: View
-    private lateinit var timeSettingCallback: TimeSettingCallback
 
     companion object {
-        fun newInstance(timeSettingCallback: TimeSettingCallback) = SetupAddingTaskFragment().apply {
-            this.timeSettingCallback = timeSettingCallback
-        }
+        fun newInstance() = SetupAddingTaskFragment()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = customView
@@ -86,9 +88,11 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
         etTimeUnitValue.setText("1")
     }
 
-    override fun onAttach(context: Context) = (requireActivity().application as RepeatingAlarmApp).appComponent.inject(this)
-        .apply { super.onAttach(context) }
-        .also { customView = LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_creating_task, null as ViewGroup?) }
+    override fun onAttach(context: Context) {
+        (requireActivity().application as RepeatingAlarmApp).appComponent.inject(this)
+        customView = LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_creating_task, null as ViewGroup?)
+        super.onAttach(context)
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireActivity())
         .setTitle(getString(R.string.add_new_task))
@@ -111,7 +115,7 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
         val time = buttonTimePicker.text.toString()
         when {
             rbDayOfWeek.isChecked -> {
-                timeSettingCallback.onTimeSet(description, RepeatingClassifier.DAY_OF_WEEK, chosenWeekDays.toString(), time)
+                addingTasksViewModel.addTask(description, RepeatingClassifier.DAY_OF_WEEK, chosenWeekDays.toString(), time)
                 logger.d { "chosen week days in dialog: $chosenWeekDays" }
             }
             rbXTimeUnit.isChecked -> {
@@ -119,7 +123,7 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
                 val currentSpinnerValue = spinnerTimeUnits.selectedItem.toString()
                 val repeatingClassifierValue = etTimeUnitValue.text
                 logger.d { "chosen date in dialog: $chosenInitialDateAndTime" }
-                timeSettingCallback.onTimeSet(description, RepeatingClassifier.EVERY_X_TIME_UNIT, repeatingClassifierValue.toString() + currentSpinnerValue, chosenInitialDateAndTime?.time.toString())
+                addingTasksViewModel.addTask(description, RepeatingClassifier.EVERY_X_TIME_UNIT, repeatingClassifierValue.toString() + currentSpinnerValue, chosenInitialDateAndTime?.time.toString())
             }
         }
     }

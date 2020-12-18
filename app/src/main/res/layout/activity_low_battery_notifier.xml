@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
-        android:id="@+id/butonGotIt"
+        android:id="@+id/buttonGotIt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_got_it"
