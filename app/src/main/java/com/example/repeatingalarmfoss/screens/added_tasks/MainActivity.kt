@@ -71,5 +71,5 @@ class MainActivity : BaseActivity(), SetupAddingTaskFragment.TimeSettingCallback
     override fun hearShake() = startActivity(Intent(this, LogActivity::class.java))
 }
 
-/*todo: flavor ||| notification management ||| widget ||| article for doze mode \ app standby ||| settings - notification light ||| bug -- rate dialog appears twice ||| bug - on API<21 wakelock crashes ||| contentprovider*/
+/*todo: flavors ||| notification management ||| widget ||| article for doze mode \ app standby ||| multiselection to delete ||| settings - notification light ||| bug -- rate dialog appears twice ||| bug - on API<21 wakelock crashes ||| contentprovider*/
 /*todo bug on rotate NPE for button, tests for baseContext, back arrow in settings fragment*/

@@ -3,6 +3,7 @@ package com.example.repeatingalarmfoss.di.components
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
 import com.example.repeatingalarmfoss.base.BaseActivityViewModel
+import com.example.repeatingalarmfoss.base.NotifyingActivity
 import com.example.repeatingalarmfoss.di.ViewModelBuilderModule
 import com.example.repeatingalarmfoss.di.modules.*
 import com.example.repeatingalarmfoss.receivers.AlarmReceiver
@@ -26,6 +27,7 @@ interface AppComponent {
         fun application(app: RepeatingAlarmApp): Builder
         fun build(): AppComponent
     }
+    fun inject(activity: NotifyingActivity)
     fun inject(activity: BaseActivity)
     fun inject(activity: MainActivity)
     fun inject(activity: TaskListFragment)

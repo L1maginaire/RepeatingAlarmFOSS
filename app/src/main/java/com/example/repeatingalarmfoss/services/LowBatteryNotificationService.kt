@@ -1,11 +1,8 @@
 package com.example.repeatingalarmfoss.services
 
-import android.app.*
+import android.app.Activity
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.os.Build
 import android.os.Bundle
-import androidx.core.app.NotificationCompat
 import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.base.ForegroundService
