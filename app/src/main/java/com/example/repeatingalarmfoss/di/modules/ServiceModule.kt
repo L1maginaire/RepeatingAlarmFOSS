@@ -1,6 +1,7 @@
 package com.example.repeatingalarmfoss.di.modules
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Context.*
@@ -41,6 +42,10 @@ class ServiceModule {
     @Provides
     @Singleton
     fun provideInfoAboutFlashFeature(context: Context): Boolean = context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
+
+    @Provides
+    @Singleton
+    fun provideAlarmManager(context: Context): AlarmManager? = context.getSystemService(ALARM_SERVICE) as AlarmManager?
 
     @Provides
     @Singleton

@@ -25,6 +25,10 @@ const val ALARM_BUNDLE = "arg_bundle"
 
 class AlarmReceiver : BroadcastReceiver() {
     @Inject
+    @JvmField
+    var alarmManager: AlarmManager? = null
+
+    @Inject
     lateinit var logger: FlightRecorder
 
     @Inject
