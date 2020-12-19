@@ -1,0 +1,15 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:id="@+id/widgetItemContainer"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/widgetItemTaskNameLabel"
+        android:layout_width="match_parent"
+        android:gravity="start"
+        tools:text="20 Sun Dec 2020 00:27 sadadfsaffsaffsaf"
+        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content" />
+</LinearLayout>

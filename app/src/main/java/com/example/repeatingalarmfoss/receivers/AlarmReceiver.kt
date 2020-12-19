@@ -72,7 +72,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
             val newTask = task.copy(time = nextLaunchTime.toString())
 
-            disposable.plusAssign(
+            disposable.plusAssign( /*todo to service    */
                 taskLocalDataSource.insert(newTask)
                     .timeout(5, TimeUnit.SECONDS)
                     .subscribeOn(Schedulers.io())
