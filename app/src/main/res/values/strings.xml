@@ -52,4 +52,6 @@
     <string name="title_dont_ask_againg">Don\'t ask again</string>
     <string name="title_do_not_disturb_at_night_on_battery_low">Do not disturb at night (00:00 – 09:00)  when battery low</string>
     <string name="title_got_it">Got it!</string>
+    <string name="title_channel_notifications">Alarm Notifications</string>
+    <string name="title_channel_low_battery">Low Battery Notifications</string>
 </resources>

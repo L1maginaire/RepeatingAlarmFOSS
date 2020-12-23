@@ -52,4 +52,6 @@
     <string name="title_dont_ask_againg">Не показывать больше</string>
     <string name="title_do_not_disturb_at_night_on_battery_low">Не беспокоить уведомлениями о низком заряде батареи ночью (00:00 – 09:00)</string>
     <string name="title_got_it">Понятно!</string>
+    <string name="title_channel_notifications">Уведомления о запланированных событиях</string>
+    <string name="title_channel_low_battery">Уведомления о низком заряде батаери</string>
 </resources>

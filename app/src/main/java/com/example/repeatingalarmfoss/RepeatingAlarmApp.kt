@@ -52,8 +52,8 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.createNotificationChannels(
                 listOf(
-                    NotificationChannel(NotificationsManager.CHANNEL_ALARM, getString(R.string.app_name), NotificationManager.IMPORTANCE_MAX),
-                    NotificationChannel(NotificationsManager.CHANNEL_BATTERY_LOW_ID, getString(R.string.app_name), NotificationManager.IMPORTANCE_MAX)
+                    NotificationChannel(NotificationsManager.CHANNEL_ALARM, getString(R.string.title_channel_notifications), NotificationManager.IMPORTANCE_MAX),
+                    NotificationChannel(NotificationsManager.CHANNEL_BATTERY_LOW_ID, getString(R.string.title_channel_low_battery), NotificationManager.IMPORTANCE_MAX)
                 )
             )
         }
