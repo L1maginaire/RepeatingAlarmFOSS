@@ -21,7 +21,9 @@ import java.util.*
 import javax.inject.Inject
 
 class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
-    private val notificationManager: NotificationManager by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
+    @Inject
+    @JvmField
+    var notificationManager: NotificationManager? = null
 
     @Inject
     lateinit var preferencesRepository: PreferencesRepository
@@ -50,7 +52,7 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
     @SuppressLint("WrongConstant")
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.createNotificationChannels(
+            notificationManager!!.createNotificationChannels(
                 listOf(
                     NotificationChannel(NotificationsManager.CHANNEL_ALARM, getString(R.string.title_channel_notifications), NotificationManager.IMPORTANCE_MAX),
                     NotificationChannel(NotificationsManager.CHANNEL_BATTERY_LOW_ID, getString(R.string.title_channel_low_battery), NotificationManager.IMPORTANCE_MAX)
