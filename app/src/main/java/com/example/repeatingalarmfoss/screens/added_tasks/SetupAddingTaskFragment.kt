@@ -19,16 +19,11 @@ import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
 import com.example.repeatingalarmfoss.helper.FlightRecorder
-import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_DAY_MONTH_YEAR
-import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_FOR_LOGGING2
-import com.example.repeatingalarmfoss.helper.extensions.TIME_PATTERN_HOURS_24_MINUTES
-import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
-import com.example.repeatingalarmfoss.helper.rx.DEFAULT_UI_SKIP_DURATION
+import com.example.repeatingalarmfoss.helper.extensions.*
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.checkedChanges
 import com.jakewharton.rxbinding3.widget.textChanges
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function3
@@ -37,7 +32,6 @@ import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.dialog_creating_task.*
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 const val AMOUNT_DAYS_IN_WEEK = 7
@@ -63,8 +57,8 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         buttonOk.isVisible = dialog == null
         if (dialog == null) {
-            buttonTimePicker.text = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
-            buttonDatePicker.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
+            buttonTimePicker.text = now()
+            buttonDatePicker.text = today()
             setupClicks()
             clicks += buttonOk.clicks()
                 .throttleFirst()
@@ -76,15 +70,17 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
     }
 
     fun setFieldsDefault() {
-        buttonTimePicker.text = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
-        buttonDatePicker.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
-        toggleMon.isChecked = false
-        toggleTue.isChecked = false
-        toggleWed.isChecked = false
-        toggleThu.isChecked = false
-        toggleFri.isChecked = false
-        toggleSat.isChecked = false
-        toggleSun.isChecked = false
+        buttonTimePicker.text = now()
+        buttonDatePicker.text = today()
+        with(false) {
+            toggleMon.isChecked = this
+            toggleTue.isChecked = this
+            toggleWed.isChecked = this
+            toggleThu.isChecked = this
+            toggleFri.isChecked = this
+            toggleSat.isChecked = this
+            toggleSun.isChecked = this
+        }
         etTaskDescription.setText("")
         etTimeUnitValue.setText("1")
     }
@@ -105,8 +101,8 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
         .setNegativeButton(android.R.string.cancel, null)
         .create().apply {
             setOnShowListener {
-                buttonTimePicker.text = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
-                buttonDatePicker.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
+                buttonTimePicker.text = now()
+                buttonDatePicker.text = today()
                 setupClicks()
             }
         }
@@ -132,11 +128,11 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
     private fun setupClicks() {
         clicks += buttonTimePicker.clicks()
             .throttleFirst()
-            .subscribe { TimePickerFragment(this).show(requireActivity().supportFragmentManager, TimePickerFragment::class.java.simpleName) }
+            .subscribe { TimePickerFragment(this).show() }
 
         clicks += buttonDatePicker.clicks()
             .throttleFirst()
-            .subscribe { DatePickerFragment(this).show(requireActivity().supportFragmentManager, TimePickerFragment::class.java.simpleName) }
+            .subscribe { DatePickerFragment(this).show() }
 
         clicks += Observable.combineLatest(toggleMon.checkedChanges(), toggleTue.checkedChanges(), toggleWed.checkedChanges(), toggleThu.checkedChanges(), toggleFri.checkedChanges(), toggleSat.checkedChanges(), toggleSun.checkedChanges(),
             Function7<Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Unit> { mon, tue, wed, thu, fri, sat, sun ->

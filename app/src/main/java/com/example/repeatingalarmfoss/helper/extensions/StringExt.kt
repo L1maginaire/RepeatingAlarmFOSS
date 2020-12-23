@@ -38,3 +38,5 @@ private fun String.toColorfulString(colorCode: Int): String = 27.toChar() + "[${
  * 08:11
  * */
 fun now(): String = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
+
+fun today(): String = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
