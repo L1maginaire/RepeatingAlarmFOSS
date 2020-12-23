@@ -23,6 +23,9 @@ class BootReceiver : BroadcastReceiver() {
     @Inject
     lateinit var logger: FlightRecorder
 
+    @Inject
+    lateinit var alarmManager: AlarmManager
+
     @Suppress("NAME_SHADOWING")
     @SuppressLint("CheckResult")
     override fun onReceive(context: Context, intent: Intent) {
@@ -39,7 +42,7 @@ class BootReceiver : BroadcastReceiver() {
                     list.forEachIndexed { index, task ->
                         logger.logScheduledEvent(what = { "Rescheduling ($index) of ${list.size}: " }, `when` = task.time.toLong())
                         val intent = AlarmReceiver.createIntent(task, context)
-                        (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(task.time.toLong(), PendingIntent.getBroadcast(context, task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
+                        alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(context, task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
                     }
                 }, { logger.e(stackTrace = it.stackTrace) })
         }

@@ -38,9 +38,8 @@ class TaskListFragment : BaseFragment() {
     @Inject
     lateinit var logger: FlightRecorder
 
-    @JvmField
     @Inject
-    var alarmManager: AlarmManager? = null
+    lateinit var alarmManager: AlarmManager
     private var onTaskAddedCallback: TaskAddedCallback? = null
 
     companion object {
@@ -104,12 +103,12 @@ class TaskListFragment : BaseFragment() {
         })
     }
 
-    private fun cancelAlarmManagerFor(id: Long) = alarmManager?.cancel(PendingIntent.getBroadcast(requireContext(), id.toInt(), Intent(requireActivity(), AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
+    private fun cancelAlarmManagerFor(id: Long) = alarmManager.cancel(PendingIntent.getBroadcast(requireContext(), id.toInt(), Intent(requireActivity(), AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
 
     private fun scheduleAlarmManager(task: Task) {
         val intent = AlarmReceiver.createIntent(task, requireActivity())
         logger.logScheduledEvent(what = { "First launch:" }, `when` = task.time.toLong())
-        alarmManager?.set(task.time.toLong(), PendingIntent.getBroadcast(requireContext(), task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
+        alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(requireContext(), task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
 }
 

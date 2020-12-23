@@ -128,11 +128,11 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
     private fun setupClicks() {
         clicks += buttonTimePicker.clicks()
             .throttleFirst()
-            .subscribe { TimePickerFragment(this).show() }
+            .subscribe { TimePickerFragment(this).show(requireActivity().supportFragmentManager) }
 
         clicks += buttonDatePicker.clicks()
             .throttleFirst()
-            .subscribe { DatePickerFragment(this).show() }
+            .subscribe { DatePickerFragment(this).show(requireActivity().supportFragmentManager) }
 
         clicks += Observable.combineLatest(toggleMon.checkedChanges(), toggleTue.checkedChanges(), toggleWed.checkedChanges(), toggleThu.checkedChanges(), toggleFri.checkedChanges(), toggleSat.checkedChanges(), toggleSun.checkedChanges(),
             Function7<Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Unit> { mon, tue, wed, thu, fri, sat, sun ->

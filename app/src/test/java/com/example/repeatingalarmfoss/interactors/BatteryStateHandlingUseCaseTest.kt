@@ -9,11 +9,11 @@ import android.os.Build
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.PREF_LOW_BATTERY_DND_AT_NIGHT
 import com.example.repeatingalarmfoss.helper.extensions.activityImplicitLaunch
-import com.example.repeatingalarmfoss.receivers.BATTERY_THRESHOLD_PERCENTAGE
 import com.example.repeatingalarmfoss.repositories.PermissionToNotifyAboutLowBatteryResult
 import com.example.repeatingalarmfoss.repositories.PreferencesRepository
 import com.example.repeatingalarmfoss.screens.low_battery.LowBatteryNotifierActivity
 import com.example.repeatingalarmfoss.services.LowBatteryNotificationService
+import com.example.repeatingalarmfoss.usecases.BATTERY_THRESHOLD_PERCENTAGE
 import com.example.repeatingalarmfoss.usecases.BatteryStateHandlingUseCase
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import io.reactivex.Single

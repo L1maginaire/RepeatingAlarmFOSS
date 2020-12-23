@@ -30,8 +30,7 @@ const val ALARM_BUNDLE = "arg_bundle"
 
 class AlarmReceiver : BroadcastReceiver() {
     @Inject
-    @JvmField
-    var alarmManager: AlarmManager? = null
+    lateinit var alarmManager: AlarmManager
 
     @Inject
     lateinit var logger: FlightRecorder
@@ -79,7 +78,7 @@ class AlarmReceiver : BroadcastReceiver() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         logger.logScheduledEvent(what = { "Next launch:" }, `when` = nextLaunchTime)
-                        alarmManager?.set(nextLaunchTime, PendingIntent.getBroadcast(context, task.id.toInt(), createIntent(newTask, context), PendingIntent.FLAG_UPDATE_CURRENT/*todo check all those flags impact!*/))
+                        alarmManager.set(nextLaunchTime, PendingIntent.getBroadcast(context, task.id.toInt(), createIntent(newTask, context), PendingIntent.FLAG_UPDATE_CURRENT/*todo check all those flags impact!*/))
                     }, {
                         logger.wtf { "${javaClass.simpleName} couldn't save Task into database" }
                     })

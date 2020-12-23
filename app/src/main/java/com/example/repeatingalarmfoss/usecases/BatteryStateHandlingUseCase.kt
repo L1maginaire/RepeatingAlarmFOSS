@@ -14,7 +14,7 @@ import com.example.repeatingalarmfoss.screens.low_battery.LowBatteryNotifierActi
 import com.example.repeatingalarmfoss.services.LowBatteryNotificationService
 import javax.inject.Inject
 
-private const val BATTERY_THRESHOLD_PERCENTAGE = 30
+const val BATTERY_THRESHOLD_PERCENTAGE = 30
 
 class BatteryStateHandlingUseCase @Inject constructor(private val context: Context, @JvmField private val batteryManager: BatteryManager? = null, private val logger: FlightRecorder, private val preferencesRepository: PreferencesRepository) {
     @SuppressLint("NewApi")

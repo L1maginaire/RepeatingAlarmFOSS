@@ -12,7 +12,6 @@ class LowBatteryTracker : BroadcastReceiver() {
     @Inject
     lateinit var batteryStateHandlingUseCase: BatteryStateHandlingUseCase
 
-    @SuppressLint("NewApi", "CheckResult")
     override fun onReceive(context: Context, intent: Intent) {
         (context.applicationContext as RepeatingAlarmApp).apply {
             appComponent.inject(this@LowBatteryTracker)
