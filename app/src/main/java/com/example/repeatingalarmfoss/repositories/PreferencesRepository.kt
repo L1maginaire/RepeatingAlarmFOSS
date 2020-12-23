@@ -27,7 +27,7 @@ class PreferencesRepository @Inject constructor(private val sharedPreferences: S
         .onErrorReturn { PersistedLocaleResult.Failure }
 
     fun isPermittedToShowRateDialog(): Single<PermissionToShowRateDialogResult> = Single.just(PREF_NEVER_SHOW_RATE_APP)
-        .map { sharedPreferences.getAppLaunchCounter() % LAUNCH_COUNTER_THRESHOLD == 0 && sharedPreferences.getBooleanOf(it).not() }
+        .map { sharedPreferences.getBooleanOf(it).not() && sharedPreferences.getAppLaunchCounter() % LAUNCH_COUNTER_THRESHOLD == 0 }
         .map<PermissionToShowRateDialogResult> { PermissionToShowRateDialogResult.Success(it) }
         .onErrorReturn { PermissionToShowRateDialogResult.Failure }
 }

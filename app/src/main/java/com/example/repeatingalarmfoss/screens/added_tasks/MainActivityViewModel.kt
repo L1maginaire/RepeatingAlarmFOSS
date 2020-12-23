@@ -21,7 +21,7 @@ class MainActivityViewModel @Inject constructor(private val preferenceRepository
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(Consumer {
-                if (it is PermissionToShowRateDialogResult.Success) {
+                if (it is PermissionToShowRateDialogResult.Success && it.toShow) {
                     _showRateMyAppEvent.call()
                 }
             })
