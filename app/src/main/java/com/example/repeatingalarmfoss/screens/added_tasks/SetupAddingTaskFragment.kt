@@ -22,6 +22,7 @@ import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_DAY_MONTH_YEAR
 import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_FOR_LOGGING2
 import com.example.repeatingalarmfoss.helper.extensions.TIME_PATTERN_HOURS_24_MINUTES
+import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
 import com.example.repeatingalarmfoss.helper.rx.DEFAULT_UI_SKIP_DURATION
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.checkedChanges
@@ -66,7 +67,7 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
             buttonDatePicker.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
             setupClicks()
             clicks += buttonOk.clicks()
-                .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .throttleFirst()
                 .subscribe {
                     buttonOk.isEnabled = false
                     onOkButtonClicked()
@@ -130,11 +131,11 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
 
     private fun setupClicks() {
         clicks += buttonTimePicker.clicks()
-            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .throttleFirst()
             .subscribe { TimePickerFragment(this).show(requireActivity().supportFragmentManager, TimePickerFragment::class.java.simpleName) }
 
         clicks += buttonDatePicker.clicks()
-            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .throttleFirst()
             .subscribe { DatePickerFragment(this).show(requireActivity().supportFragmentManager, TimePickerFragment::class.java.simpleName) }
 
         clicks += Observable.combineLatest(toggleMon.checkedChanges(), toggleTue.checkedChanges(), toggleWed.checkedChanges(), toggleThu.checkedChanges(), toggleFri.checkedChanges(), toggleSat.checkedChanges(), toggleSun.checkedChanges(),

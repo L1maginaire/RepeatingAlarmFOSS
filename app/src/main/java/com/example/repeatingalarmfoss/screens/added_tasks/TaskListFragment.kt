@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,15 +21,13 @@ import com.example.repeatingalarmfoss.base.BaseFragment
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.set
+import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
 import com.example.repeatingalarmfoss.helper.extensions.toast
-import com.example.repeatingalarmfoss.helper.rx.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.receivers.AlarmReceiver
 import com.jakewharton.rxbinding3.view.clicks
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_task_list.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TaskListFragment : BaseFragment() {
@@ -41,14 +38,16 @@ class TaskListFragment : BaseFragment() {
     @Inject
     lateinit var logger: FlightRecorder
 
-    private val alarmManager: AlarmManager by lazy { requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager }
+    @JvmField
+    @Inject
+    var alarmManager: AlarmManager? = null
     private var onTaskAddedCallback: TaskAddedCallback? = null
 
     companion object {
         fun newInstance() = TaskListFragment()
     }
 
-    override fun onAttach(context: Context) = super.onAttach(context).also { onTaskAddedCallback = context as MainActivity }
+    override fun onAttach(context: Context) = super.onAttach(context).also { onTaskAddedCallback = context as MainActivity } /*todo mb shared viewModel?*/
     override fun onDetach() = super.onDetach().also { onTaskAddedCallback = null }
 
     private val tasksAdapter = AddedTasksAdapter(::removeTask)
@@ -81,7 +80,7 @@ class TaskListFragment : BaseFragment() {
 
     private fun setupClicks() {
         clicks += addTaskFab.clicks()
-            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .throttleFirst()
             .subscribe { SetupAddingTaskFragment.newInstance().show(childFragmentManager, SetupAddingTaskFragment::class.java.simpleName) }
     }
 
@@ -105,12 +104,12 @@ class TaskListFragment : BaseFragment() {
         })
     }
 
-    private fun cancelAlarmManagerFor(id: Long) = alarmManager.cancel(PendingIntent.getBroadcast(requireContext(), id.toInt(), Intent(requireActivity(), AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
+    private fun cancelAlarmManagerFor(id: Long) = alarmManager?.cancel(PendingIntent.getBroadcast(requireContext(), id.toInt(), Intent(requireActivity(), AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
 
     private fun scheduleAlarmManager(task: Task) {
         val intent = AlarmReceiver.createIntent(task, requireActivity())
         logger.logScheduledEvent(what = { "First launch:" }, `when` = task.time.toLong())
-        alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(requireContext(), task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
+        alarmManager?.set(task.time.toLong(), PendingIntent.getBroadcast(requireContext(), task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
     }
 }
 

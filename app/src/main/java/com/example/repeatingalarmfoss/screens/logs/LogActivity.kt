@@ -6,6 +6,7 @@ import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
 import com.example.repeatingalarmfoss.helper.rx.DEFAULT_UI_SKIP_DURATION
 import com.example.repeatingalarmfoss.helper.FlightRecorder
+import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
@@ -25,7 +26,7 @@ class LogActivity : BaseActivity() {
         logsContainer.text = logger.getEntireRecord()
         clicks += eraseLogButton
             .clicks()
-            .throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .throttleFirst()
             .subscribe { logger.clear().also { logsContainer.text = "" } }
     }
 }
