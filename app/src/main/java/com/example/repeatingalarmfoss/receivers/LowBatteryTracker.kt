@@ -8,8 +8,6 @@ import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.usecases.BatteryStateHandlingUseCase
 import javax.inject.Inject
 
-const val BATTERY_THRESHOLD_PERCENTAGE = 30
-
 class LowBatteryTracker : BroadcastReceiver() {
     @Inject
     lateinit var batteryStateHandlingUseCase: BatteryStateHandlingUseCase

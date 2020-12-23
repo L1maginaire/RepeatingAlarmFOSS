@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.example.repeatingalarmfoss.helper.extensions.LongExt.minutesToMilliseconds
 import com.example.repeatingalarmfoss.receivers.LowBatteryTracker
 
 const val BATTERY_CHECKER_ID = 999
@@ -20,12 +21,12 @@ fun AlarmManager.set(startTime: Long, pendingIntent: PendingIntent) = if (Build.
     setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, startTime, pendingIntent)
 }
 
-fun Context.scheduleLowBatteryChecker() = (getSystemService(Context.ALARM_SERVICE) as AlarmManager).setInexactRepeating(
+fun Context.scheduleLowBatteryChecker() = (getSystemService(Context.ALARM_SERVICE) as AlarmManager).setRepeating(
     AlarmManager.RTC_WAKEUP,
-    System.currentTimeMillis() + LongExt.minutesToMilliseconds(5),
+    System.currentTimeMillis() + minutesToMilliseconds(5),
     INTERVAL_HOUR,
-    PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
+    PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), 0)
 )
 
 fun Context.cancelLowBatteryChecker() = (this.getSystemService(Context.ALARM_SERVICE) as AlarmManager)
-    .cancel(PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
+    .cancel(PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), 0))

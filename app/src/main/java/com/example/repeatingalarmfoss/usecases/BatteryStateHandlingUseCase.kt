@@ -8,12 +8,13 @@ import android.os.BatteryManager
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.activityImplicitLaunch
 import com.example.repeatingalarmfoss.helper.extensions.toReadableDate
-import com.example.repeatingalarmfoss.receivers.BATTERY_THRESHOLD_PERCENTAGE
 import com.example.repeatingalarmfoss.repositories.PermissionToNotifyAboutLowBatteryResult
 import com.example.repeatingalarmfoss.repositories.PreferencesRepository
 import com.example.repeatingalarmfoss.screens.low_battery.LowBatteryNotifierActivity
 import com.example.repeatingalarmfoss.services.LowBatteryNotificationService
 import javax.inject.Inject
+
+private const val BATTERY_THRESHOLD_PERCENTAGE = 30
 
 class BatteryStateHandlingUseCase @Inject constructor(private val context: Context, @JvmField private val batteryManager: BatteryManager? = null, private val logger: FlightRecorder, private val preferencesRepository: PreferencesRepository) {
     @SuppressLint("NewApi")
