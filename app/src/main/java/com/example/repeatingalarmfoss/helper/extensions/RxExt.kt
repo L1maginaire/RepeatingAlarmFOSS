@@ -5,4 +5,5 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 
+/** Only for RxView elements!*/
 fun Observable<Unit>.throttleFirst(): Observable<Unit> = compose { it.throttleFirst(DEFAULT_UI_SKIP_DURATION, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()) }
