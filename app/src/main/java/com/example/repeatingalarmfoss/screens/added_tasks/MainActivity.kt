@@ -15,8 +15,13 @@ import com.example.repeatingalarmfoss.screens.logs.LogActivity
 import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
+/*TODO subcomponent with Fragment, Adapter, etc. dependencies*/
 class MainActivity : BaseActivity(), TaskAddedCallback, ShakeDetector.Listener {
+    @Inject
+    lateinit var sensorManager: SensorManager
+
     private val viewModel by viewModels<MainActivityViewModel> { viewModelFactory }
 
     private lateinit var taskListFragment: TaskListFragment
@@ -24,7 +29,7 @@ class MainActivity : BaseActivity(), TaskAddedCallback, ShakeDetector.Listener {
     private var isTablet = false
     private val shakeDetector: ShakeDetector by lazy { ShakeDetector(this) }
 
-    override fun onResume() = super.onResume().also { shakeDetector.start(getSystemService(SENSOR_SERVICE) as SensorManager) }
+    override fun onResume() = super.onResume().also { shakeDetector.start(sensorManager) }
     override fun onPause() = super.onPause().also { shakeDetector.stop() }
 
     override fun onCreate(savedInstanceState: Bundle?) {

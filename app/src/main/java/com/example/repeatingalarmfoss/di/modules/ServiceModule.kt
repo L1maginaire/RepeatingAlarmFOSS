@@ -7,6 +7,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Context.*
 import android.content.pm.PackageManager
+import android.hardware.SensorManager
 import android.hardware.camera2.CameraManager
 import android.media.AudioManager
 import android.os.BatteryManager
@@ -30,6 +31,10 @@ class ServiceModule {
     @Provides
     @Singleton
     fun provideVibrator(context: Context): Vibrator? = context.getSystemService(VIBRATOR_SERVICE) as Vibrator?
+
+    @Provides
+    @Singleton
+    fun provideSensorManager(context: Context): SensorManager = context.getSystemService(SENSOR_SERVICE) as SensorManager
 
     @Provides
     @Singleton

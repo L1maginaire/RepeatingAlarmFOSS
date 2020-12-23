@@ -6,6 +6,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.base.NotifyingActivity
+import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -25,7 +26,7 @@ class AlarmActivity : NotifyingActivity() {
 
     private fun setupClicks() {
         clicks += cancelButton.clicks()
-            .throttleFirst(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .throttleFirst()
             .subscribe { finish() }
         clicks += Observable.timer(10, TimeUnit.MINUTES)
             .observeOn(AndroidSchedulers.mainThread())

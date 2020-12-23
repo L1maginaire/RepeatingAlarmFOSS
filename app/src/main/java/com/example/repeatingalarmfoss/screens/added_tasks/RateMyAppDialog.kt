@@ -12,6 +12,7 @@ import com.example.repeatingalarmfoss.helper.extensions.PREF_NEVER_SHOW_RATE_APP
 import com.example.repeatingalarmfoss.helper.extensions.getDefaultSharedPreferences
 import com.example.repeatingalarmfoss.helper.extensions.writeBooleanOf
 
+/*TODO self-made layout*/
 class RateMyAppDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext())
         .setIcon(R.drawable.ic_baseline_star_rate_24)

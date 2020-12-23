@@ -182,8 +182,4 @@ class SetupAddingTaskFragment : DialogFragment(), TimePickerFragment.OnTimeSetCa
     override fun onDateSet(year: Int, month: Int, day: Int) {
         buttonDatePicker.text = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date(year - 1900, month, day))
     }
-
-    interface TimeSettingCallback {
-        fun onTimeSet(description: String, repeatingClassifier: RepeatingClassifier, repeatingClassifierValue: String, time: String)
-    }
 }
