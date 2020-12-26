@@ -34,11 +34,15 @@ fun Context.getDefaultSharedPreferences(): SharedPreferences = PreferenceManager
 fun Configuration.getLocalesLanguage(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) locales[0].language else locale.language
 
 /** workaround for Android 10 restrictions to launch activities in background:
- * https://developer.android.com/guide/components/activities/background-starts
+ *  https://developer.android.com/guide/components/activities/background-starts
  * */
 fun Context.activityImplicitLaunch(service: Class<out Service>, activity: Class<out Activity>, extraName: String? = null, extraValue: String? = null /*todo: afterwards should be implemented Bundle*/) {
     if (Build.VERSION.SDK_INT >= 29 && (applicationContext as RepeatingAlarmApp).isAppInForeground.not()) {
-        ContextCompat.startForegroundService(this, Intent(this, service))
+        ContextCompat.startForegroundService(this, Intent(this, service).apply {
+            if(extraName.isNullOrBlank().not() && extraValue.isNullOrBlank().not()) {
+                putExtra(extraName, extraValue)
+            }
+        })
     } else {
         startActivity(Intent(this, activity).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
