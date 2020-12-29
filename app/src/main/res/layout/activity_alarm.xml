@@ -12,14 +12,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/cancelButton"
+        app:layout_constraintBottom_toTopOf="@id/gotInButton"
         tools:text="Some title" />
 
     <Button
-        android:id="@+id/cancelButton"
+        android:id="@+id/gotInButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@android:string/cancel"
+        android:text="@string/title_got_it"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTaskTitle"
