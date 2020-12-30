@@ -11,9 +11,9 @@ import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
 import com.example.repeatingalarmfoss.services.AlarmNotifierService
 import com.example.repeatingalarmfoss.services.NextLaunchPreparingService
 
-const val ACTION_RING = "action_ring"
-const val ALARM_ARG_TASK = "arg_task"
-const val ALARM_BUNDLE = "arg_bundle"
+private const val ACTION_RING = "action_ring"
+private const val ALARM_ARG_TASK = "arg_task"
+private const val ALARM_BUNDLE = "arg_bundle"
 
 class AlarmReceiver : BroadcastReceiver() {
     companion object {

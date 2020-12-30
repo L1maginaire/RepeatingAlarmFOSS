@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss.screens.added_tasks
+package com.example.repeatingalarmfoss.screens.added_tasks.viewmodels
 
 import androidx.lifecycle.LiveData
 import com.example.repeatingalarmfoss.base.BaseViewModel

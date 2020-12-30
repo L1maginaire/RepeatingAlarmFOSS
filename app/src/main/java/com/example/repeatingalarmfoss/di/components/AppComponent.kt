@@ -12,6 +12,7 @@ import com.example.repeatingalarmfoss.screens.added_tasks.TaskListFragment
 import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
 import com.example.repeatingalarmfoss.screens.logs.LogActivity
 import com.example.repeatingalarmfoss.services.NextLaunchPreparingService
+import com.example.repeatingalarmfoss.services.ReschedulingAlarmsOnBootService
 import com.example.repeatingalarmfoss.widget.WidgetProvider
 import dagger.BindsInstance
 import dagger.Component
@@ -34,8 +35,8 @@ interface AppComponent {
     fun inject(service: NextLaunchPreparingService)
     fun inject(service: BaseService)
     fun inject(service: BaseJobIntentService)
+    fun inject(service: ReschedulingAlarmsOnBootService)
     fun inject(service: ForegroundService)
-    fun inject(receiver: BootReceiver)
     fun inject(widgetProvider: WidgetProvider)
     fun inject(app: RepeatingAlarmApp)
     fun inject(receiver: LowBatteryTracker)

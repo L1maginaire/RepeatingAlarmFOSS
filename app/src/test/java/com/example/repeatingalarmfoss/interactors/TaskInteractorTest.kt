@@ -12,7 +12,7 @@ import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.rx.BaseComposers
 import com.example.repeatingalarmfoss.helper.rx.TestSchedulers
 import com.example.repeatingalarmfoss.screens.added_tasks.*
-import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
+import com.example.repeatingalarmfoss.usecases.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

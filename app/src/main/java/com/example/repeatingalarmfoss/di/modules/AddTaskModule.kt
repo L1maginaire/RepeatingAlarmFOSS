@@ -2,8 +2,8 @@ package com.example.repeatingalarmfoss.di.modules
 
 import androidx.lifecycle.ViewModel
 import com.example.repeatingalarmfoss.di.ViewModelKey
-import com.example.repeatingalarmfoss.screens.added_tasks.AddingTasksViewModel
-import com.example.repeatingalarmfoss.screens.added_tasks.MainActivityViewModel
+import com.example.repeatingalarmfoss.screens.added_tasks.viewmodels.AddingTasksViewModel
+import com.example.repeatingalarmfoss.screens.added_tasks.viewmodels.MainActivityViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

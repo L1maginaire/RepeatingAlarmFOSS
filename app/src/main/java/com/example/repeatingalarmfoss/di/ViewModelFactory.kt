@@ -3,7 +3,6 @@ package com.example.repeatingalarmfoss.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.repeatingalarmfoss.base.BaseActivityViewModel
-import com.example.repeatingalarmfoss.screens.added_tasks.AddingTasksViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module

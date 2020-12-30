@@ -24,6 +24,7 @@ import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
 import com.example.repeatingalarmfoss.helper.extensions.toast
 import com.example.repeatingalarmfoss.receivers.AlarmReceiver
+import com.example.repeatingalarmfoss.screens.added_tasks.viewmodels.AddingTasksViewModel
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*

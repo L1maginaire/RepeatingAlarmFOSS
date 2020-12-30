@@ -11,6 +11,7 @@ import javax.inject.Inject
 const val ID_LowBatteryNotificationService = 1001
 const val ID_AlarmNotifierService = 1002
 const val ID_Job_NextLaunchPreparing = 1003
+const val ID_ReschedulingAlarmsOnBootService = 1004
 
 abstract class BaseService: Service() {
     @Inject lateinit var logger: FlightRecorder
