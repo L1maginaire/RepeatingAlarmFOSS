@@ -21,7 +21,7 @@ android {
         }
     }
     compileSdkVersion 30
-    buildToolsVersion "30.0.0"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.example.repeatingalarmfoss"
@@ -114,7 +114,7 @@ dependencies {
     implementation 'com.jakewharton.rxbinding3:rxbinding-material:3.1.0'
 
     /* ROOM */
-    def room_version = "2.2.5"
+    def room_version = "2.2.6"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
