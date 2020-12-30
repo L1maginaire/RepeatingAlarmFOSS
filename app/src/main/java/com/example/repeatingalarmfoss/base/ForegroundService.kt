@@ -2,7 +2,6 @@ package com.example.repeatingalarmfoss.base
 
 import android.app.Activity
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -19,16 +18,14 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.repeatingalarmfoss.NotificationsManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
-import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.Notifier
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-abstract class ForegroundService : Service() {
+abstract class ForegroundService : BaseService() {
     companion object {
         const val ACTION_TERMINATE = "ACTION_TERMINATE"
         const val ACTION_STOP_FOREGROUND = "STOP_FOREGROUND"
@@ -36,7 +33,6 @@ abstract class ForegroundService : Service() {
     }
 
     @Inject lateinit var notifier: Notifier
-    @Inject lateinit var logger: FlightRecorder
     private val disposable = CompositeDisposable()
     private val timer = Observable.timer(10, TimeUnit.MINUTES, AndroidSchedulers.mainThread())
     private lateinit var previousTitle: String
@@ -49,49 +45,53 @@ abstract class ForegroundService : Service() {
     @DrawableRes abstract fun getIcon(): Int
 
     override fun onCreate() {
-        (applicationContext as RepeatingAlarmApp).appComponent.inject(this)
         super.onCreate()
+        (application as RepeatingAlarmApp).appComponent.inject(this)
         notifier.start()
-        Log.d("a", "aaa service created!")
+        Log.d("a", "${this::javaClass} onCreate()")
     }
 
     @CallSuper
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_NOT_STICKY.also {
-        Log.d("a", "aaa onStart")
-        when (intent?.action) {
-            ACTION_TERMINATE -> {
-                Log.d("a", "aaa terminate")
-                stopSelf()
-            }
-            ACTION_SHOW_NOTIFICATION -> {
-                if (disposable.size() > 0) {
-                    disposable.clear()
-                    showMissedAlarmNotification(previousTitle)
-                }
-                disposable.add(timer.subscribe {
-                    showMissedAlarmNotification(getTitle(intent))
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY.also {
+            Log.d("a", "${this::javaClass} onStartCommand()")
+            when (intent?.action) {
+                ACTION_TERMINATE -> {
+                    Log.d("a", "${this::javaClass} action:terminate")
                     stopSelf()
-                })
+                }
+                ACTION_SHOW_NOTIFICATION -> {
+                    if (disposable.size() > 0) {
+                        disposable.clear()
+                        showMissedAlarmNotification(previousTitle)
+                    }
+                    disposable.add(timer.subscribe {
+                        showMissedAlarmNotification(getTitle(intent))
+                        stopSelf()
+                    })
 
-                val notificationBuilder = NotificationCompat.Builder(this, getChannelId())
-                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                    .setSmallIcon(getIcon())
-                    .setContentText(getTitle(intent))
-                    .addAction(getCancelAction())
-                    .setPriority(NotificationCompat.PRIORITY_MAX)
-                    .setCategory(NotificationCompat.CATEGORY_ALARM)
-                    .setFullScreenIntent(getFullscreenIntent(intent.extras!!, getActivity()), true)
-                    .setLargeIcon(BitmapFactory.decodeResource(resources, getIcon()))
-                startForeground(getServiceId(), notificationBuilder.build())
-                logger.i { "(${getTitle(intent)}) playing..." }
-                previousTitle = getTitle(intent)
+                    val notificationBuilder = NotificationCompat.Builder(this, getChannelId())
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                        .setSmallIcon(getIcon())
+                        .setContentText(getTitle(intent))
+                        .addAction(getCancelAction())
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setCategory(NotificationCompat.CATEGORY_ALARM)
+                        .setFullScreenIntent(getFullscreenIntent(intent.extras!!, getActivity()), true)
+                        .setLargeIcon(BitmapFactory.decodeResource(resources, getIcon()))
+                    startForeground(getServiceId(), notificationBuilder.build())
+                    logger.i { "(${getTitle(intent)}) playing..." }
+                    previousTitle = getTitle(intent)
+                }
+                ACTION_STOP_FOREGROUND -> stopForeground(true)
+                else -> throw IllegalStateException()
             }
-            ACTION_STOP_FOREGROUND -> stopForeground(true)
-            else -> throw IllegalStateException()
         }
     }
 
     private fun showMissedAlarmNotification(title: String) {
+        logger.i { "$title missed notification" }
         val builder = NotificationCompat.Builder(this, NotificationsManager.CHANNEL_ALARM)
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setContentTitle(String.format(getString(R.string.title_you_have_missed_alarm), title))
@@ -117,9 +117,8 @@ abstract class ForegroundService : Service() {
     )
 
     override fun onDestroy() {
-        super.onDestroy()
         disposable.clear()
         notifier.stop()
-        Log.d("a", "aaa ${this::javaClass} is destroyed")
+        logger.i { "${this::javaClass} is destroyed" }
     }
 }
