@@ -5,7 +5,8 @@ import android.os.Bundle
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.repeatingalarmfoss.NotificationsManager
+import com.example.repeatingalarmfoss.CHANNEL_ALARM
+import com.example.repeatingalarmfoss.MISSED_ALARM_NOTIFICATION_ID
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.ForegroundService.Companion.ACTION_TERMINATE
@@ -67,10 +68,10 @@ class AlarmActivity : NotifyingActivity() {
     }
 
     private fun showMissedAlarmNotification() {
-        val builder = NotificationCompat.Builder(this, NotificationsManager.CHANNEL_ALARM)
+        val builder = NotificationCompat.Builder(this, CHANNEL_ALARM)
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setContentTitle(String.format(getString(R.string.title_you_have_missed_alarm), intent.getStringExtra(ALARM_ARG_TITLE)))
             .setPriority(NotificationCompat.PRIORITY_MAX)
-        NotificationManagerCompat.from(this).notify(NotificationsManager.MISSED_ALARM_NOTIFICATION_ID, builder.build())
+        NotificationManagerCompat.from(this).notify(MISSED_ALARM_NOTIFICATION_ID, builder.build())
     }
 }

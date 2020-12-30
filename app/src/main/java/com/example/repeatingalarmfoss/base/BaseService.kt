@@ -8,9 +8,13 @@ import com.example.repeatingalarmfoss.helper.FlightRecorder
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
+const val ID_LowBatteryNotificationService = 1001
+const val ID_AlarmNotifierService = 1002
+const val ID_Job_NextLaunchPreparing = 1003
+
 abstract class BaseService: Service() {
     @Inject lateinit var logger: FlightRecorder
-    private val subscriptions = CompositeDisposable()
+    protected val subscriptions = CompositeDisposable()
 
     @CallSuper
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -23,6 +27,7 @@ abstract class BaseService: Service() {
         logger.i { "${this.javaClass.simpleName} creating..." }
     }
 
+    @CallSuper
     override fun onDestroy() {
         logger.i { "${this.javaClass.simpleName} destroyed" }
         subscriptions.clear()

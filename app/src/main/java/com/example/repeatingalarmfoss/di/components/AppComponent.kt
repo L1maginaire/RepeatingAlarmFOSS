@@ -1,10 +1,7 @@
 package com.example.repeatingalarmfoss.di.components
 
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
-import com.example.repeatingalarmfoss.base.BaseActivity
-import com.example.repeatingalarmfoss.base.BaseService
-import com.example.repeatingalarmfoss.base.ForegroundService
-import com.example.repeatingalarmfoss.base.NotifyingActivity
+import com.example.repeatingalarmfoss.base.*
 import com.example.repeatingalarmfoss.di.ViewModelBuilderModule
 import com.example.repeatingalarmfoss.di.modules.*
 import com.example.repeatingalarmfoss.receivers.BootReceiver
@@ -36,6 +33,7 @@ interface AppComponent {
     fun inject(activity: TaskListFragment)
     fun inject(service: NextLaunchPreparingService)
     fun inject(service: BaseService)
+    fun inject(service: BaseJobIntentService)
     fun inject(service: ForegroundService)
     fun inject(receiver: BootReceiver)
     fun inject(widgetProvider: WidgetProvider)

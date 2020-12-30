@@ -15,13 +15,13 @@ import androidx.annotation.CallSuper
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.repeatingalarmfoss.NotificationsManager
+import com.example.repeatingalarmfoss.CHANNEL_ALARM
+import com.example.repeatingalarmfoss.MISSED_ALARM_NOTIFICATION_ID
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.Notifier
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -33,7 +33,6 @@ abstract class ForegroundService : BaseService() {
     }
 
     @Inject lateinit var notifier: Notifier
-    private val disposable = CompositeDisposable()
     private val timer = Observable.timer(10, TimeUnit.MINUTES, AndroidSchedulers.mainThread())
     private lateinit var previousTitle: String
 
@@ -62,11 +61,11 @@ abstract class ForegroundService : BaseService() {
                     stopSelf()
                 }
                 ACTION_SHOW_NOTIFICATION -> {
-                    if (disposable.size() > 0) {
-                        disposable.clear()
+                    if (subscriptions.size() > 0) {
+                        subscriptions.clear()
                         showMissedAlarmNotification(previousTitle)
                     }
-                    disposable.add(timer.subscribe {
+                    subscriptions.add(timer.subscribe {
                         showMissedAlarmNotification(getTitle(intent))
                         stopSelf()
                     })
@@ -92,11 +91,11 @@ abstract class ForegroundService : BaseService() {
 
     private fun showMissedAlarmNotification(title: String) {
         logger.i { "$title missed notification" }
-        val builder = NotificationCompat.Builder(this, NotificationsManager.CHANNEL_ALARM)
+        val builder = NotificationCompat.Builder(this, CHANNEL_ALARM)
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setContentTitle(String.format(getString(R.string.title_you_have_missed_alarm), title))
             .setPriority(NotificationCompat.PRIORITY_MAX)
-        NotificationManagerCompat.from(this).notify(NotificationsManager.MISSED_ALARM_NOTIFICATION_ID, builder.build())
+        NotificationManagerCompat.from(this).notify(MISSED_ALARM_NOTIFICATION_ID, builder.build())
     }
 
     private fun getCancelAction(): NotificationCompat.Action = NotificationCompat.Action(
@@ -117,8 +116,7 @@ abstract class ForegroundService : BaseService() {
     )
 
     override fun onDestroy() {
-        disposable.clear()
+        super.onDestroy()
         notifier.stop()
-        logger.i { "${this::javaClass} is destroyed" }
     }
 }

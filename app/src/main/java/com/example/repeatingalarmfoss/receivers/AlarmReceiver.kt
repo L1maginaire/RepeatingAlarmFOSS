@@ -26,7 +26,7 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == ACTION_RING) {
             val task = intent.getBundleExtra(ALARM_BUNDLE)!!.getParcelable<Task>(ALARM_ARG_TASK)!!
-            NextLaunchPreparingService.enqueueWork(context, Intent(context, NextLaunchPreparingService::class.java), task)
+            NextLaunchPreparingService.enqueueWork(context, NextLaunchPreparingService::class.java, task)
 
             val bundle = Bundle().apply {
                 putString(ALARM_ARG_TITLE, task.description)
