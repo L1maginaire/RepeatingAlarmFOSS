@@ -6,7 +6,7 @@ import com.example.repeatingalarmfoss.CHANNEL_ALARM
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.base.ForegroundService
 import com.example.repeatingalarmfoss.base.ID_AlarmNotifierService
-import com.example.repeatingalarmfoss.screens.alarm.ALARM_ARG_TITLE
+import com.example.repeatingalarmfoss.ALARM_ARG_TITLE
 import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
 
 class AlarmNotifierService : ForegroundService() {

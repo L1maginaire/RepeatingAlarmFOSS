@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.repeatingalarmfoss.CHANNEL_ALARM
-import com.example.repeatingalarmfoss.MISSED_ALARM_NOTIFICATION_ID
-import com.example.repeatingalarmfoss.R
-import com.example.repeatingalarmfoss.RepeatingAlarmApp
+import com.example.repeatingalarmfoss.*
 import com.example.repeatingalarmfoss.base.ForegroundService.Companion.ACTION_TERMINATE
 import com.example.repeatingalarmfoss.base.NotifyingActivity
 import com.example.repeatingalarmfoss.helper.FlightRecorder
@@ -21,8 +18,6 @@ import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_alarm.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
-const val ALARM_ARG_TITLE = "arg_title"
 
 class AlarmActivity : NotifyingActivity() {
     @Inject
