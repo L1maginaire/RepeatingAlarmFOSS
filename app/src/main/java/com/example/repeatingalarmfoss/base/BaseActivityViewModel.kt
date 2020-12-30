@@ -14,23 +14,18 @@ class BaseActivityViewModel @Inject constructor(private val prefInteractor: Base
     private val _recreateEvent = SingleLiveEvent<Any>()
     val recreateEvent: LiveData<Any> get() = _recreateEvent
 
-    private val _errorEvent = SingleLiveEvent<Int>()
-    val errorEvent: LiveData<Int> get() = _errorEvent
-
     fun checkNightModeState(toBeCompared: Int) {
         disposable += prefInteractor.handleThemeChanges(toBeCompared).subscribe {
-            when (it) {
-                is NightModeChangesResult.Success -> _setNightModeValueAndRecreateEvent.value = it.code
-                is NightModeChangesResult.SharedChangesCorruptionError -> _errorEvent.value = R.string.db_error
+            if (it is NightModeChangesResult.Success) {
+                 _setNightModeValueAndRecreateEvent.value = it.code
             }
         }
     }
 
     fun checkLocaleChanged(currentLocale: String) {
         disposable += prefInteractor.checkLocaleChanged(currentLocale).subscribe {
-            when (it) {
-                is LocaleChangedResult.Success -> _recreateEvent.call()
-                is LocaleChangedResult.SharedPreferencesCorruptionError -> _errorEvent.value = R.string.db_error
+            if (it is LocaleChangedResult.Success) {
+                _recreateEvent.call()
             }
         }
     }

@@ -17,20 +17,17 @@ import java.util.concurrent.TimeUnit
 class LowBatteryNotifierActivity : NotifyingActivity() {
     override fun onCreate(savedInstanceState: Bundle?) = super.onCreate(savedInstanceState).apply {
         setContentView(R.layout.activity_low_battery_notifier)
-        clicks += Observable.timer(10, TimeUnit.MINUTES, AndroidSchedulers.mainThread())
-            .subscribe {
-                startService(Intent(this@LowBatteryNotifierActivity, LowBatteryNotificationService::class.java).apply {
-                    action = ForegroundService.ACTION_TERMINATE
-                })
-                finish()
-            }
-        clicks += buttonGotIt.clicks()
+        subscriptions += Observable.timer(10, TimeUnit.MINUTES, AndroidSchedulers.mainThread())
+            .subscribe { shutdownNotifiers() }
+        subscriptions += buttonGotIt.clicks()
             .throttleFirst()
-            .subscribe {
-                startService(Intent(this@LowBatteryNotifierActivity, LowBatteryNotificationService::class.java).apply {
-                    action = ForegroundService.ACTION_TERMINATE
-                })
-                finish()
-            }
+            .subscribe { shutdownNotifiers() }
+    }
+
+    private fun shutdownNotifiers() {
+        startService(Intent(this@LowBatteryNotifierActivity, LowBatteryNotificationService::class.java).apply {
+            action = ForegroundService.ACTION_TERMINATE
+        })
+        finish()
     }
 }

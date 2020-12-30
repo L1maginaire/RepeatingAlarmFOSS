@@ -49,7 +49,7 @@ class AlarmActivity : NotifyingActivity() {
         } else super.dispatchKeyEvent(event)
 
     private fun setupClicks() {
-        clicks += gotInButton.clicks()
+        subscriptions += gotInButton.clicks()
             .throttleFirst()
             .subscribe {
                 startService(Intent(this, AlarmNotifierService::class.java).apply {
@@ -57,7 +57,7 @@ class AlarmActivity : NotifyingActivity() {
                 })
                 finish()
             }
-        clicks += Observable.timer(10, TimeUnit.MINUTES, AndroidSchedulers.mainThread())
+        subscriptions += Observable.timer(10, TimeUnit.MINUTES, AndroidSchedulers.mainThread())
             .subscribe {
                 startService(Intent(this, AlarmNotifierService::class.java).apply {
                     action = ACTION_TERMINATE

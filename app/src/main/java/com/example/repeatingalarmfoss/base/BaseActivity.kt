@@ -17,12 +17,11 @@ import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 open class BaseActivity : AppCompatActivity() {
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<BaseActivityViewModel> { viewModelFactory }
 
-    protected val clicks = CompositeDisposable()
-    override fun onDestroy() = super.onDestroy().also { clicks.clear() }
+    protected val subscriptions = CompositeDisposable()
+    override fun onDestroy() = super.onDestroy().also { subscriptions.clear() }
 
     private lateinit var currentLocale: String
 
@@ -32,9 +31,6 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         currentLocale = resources.configuration.getLocalesLanguage()
 
-        viewModel.errorEvent.observe(this, Observer {
-            toast(getString(it))
-        })
         viewModel.recreateEvent.observe(this, Observer {
             recreate()
         })

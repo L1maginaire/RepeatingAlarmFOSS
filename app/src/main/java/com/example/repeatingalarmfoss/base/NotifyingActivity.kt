@@ -12,26 +12,15 @@ import com.example.repeatingalarmfoss.helper.extensions.LongExt.minutesToMillise
 import javax.inject.Inject
 
 open class NotifyingActivity : BaseActivity() {
-    @Inject
-    lateinit var wakeLock: PowerManager.WakeLock
-
-    @Inject
-    lateinit var keyguardManager: KeyguardManager
-
-    @Inject
-    lateinit var notifier: Notifier
-
-    override fun onDestroy() = super.onDestroy().also {
-        notifier.stop()
-        dimScreen()
-    }
+    @Inject lateinit var wakeLock: PowerManager.WakeLock
+    @Inject lateinit var keyguardManager: KeyguardManager
+    override fun onDestroy() = super.onDestroy().also { dimScreen() }
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as RepeatingAlarmApp).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         turnOnScreen()
-        notifier.start()
     }
 
     @Suppress("DEPRECATION")
