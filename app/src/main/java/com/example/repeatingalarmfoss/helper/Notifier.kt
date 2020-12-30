@@ -19,12 +19,11 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
 class Notifier @Inject constructor(
     @JvmField private val cameraManager: CameraManager? = null,
     private val vibrator: Vibrator?,
     private val audioManager: AudioManager?,
-    private val deviceHasFlashFeature: Boolean,
+    private val deviceHasFlashFeature: Boolean, /*todo named injection*/
     private val context: Context,
     private val contentResolver: ContentResolver,
     private val logger: FlightRecorder

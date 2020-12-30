@@ -3,6 +3,7 @@ package com.example.repeatingalarmfoss.helper.extensions
 import android.app.AlarmManager
 import android.app.AlarmManager.INTERVAL_HOUR
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -28,5 +29,4 @@ fun Context.scheduleLowBatteryChecker() = (getSystemService(Context.ALARM_SERVIC
     PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), 0)
 )
 
-fun Context.cancelLowBatteryChecker() = (this.getSystemService(Context.ALARM_SERVICE) as AlarmManager)
-    .cancel(PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), 0))
+fun Context.cancelLowBatteryChecker() = (this.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(PendingIntent.getBroadcast(this, BATTERY_CHECKER_ID, Intent(this, LowBatteryTracker::class.java), 0))

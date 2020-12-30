@@ -4,6 +4,7 @@ import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.helper.FlightRecorder
+import com.example.repeatingalarmfoss.helper.extensions.toReadableDate
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -17,7 +18,7 @@ class NextLaunchPreparationUseCase
                 else -> throw IllegalStateException()
             }
         }.doOnSuccess {
-            if (it <= now) with("nextLaunchTime is lesser than now") {
+            if (it < now) with("nextLaunchTime (${it.toReadableDate()}) is lesser than now (${now.toReadableDate()})") {
                 println("a")
                 logger.wtf { this }
                 throw IllegalStateException(this)
@@ -31,7 +32,7 @@ class NextLaunchPreparationUseCase
                 .map<NextLaunchPreparationResult> { NextLaunchPreparationResult.Success(taskWithUpdatedLaunchTime) }
                 .doOnError { logger.wtf { "${javaClass.simpleName} couldn't save Task into database" } }
                 .onErrorReturn { NextLaunchPreparationResult.DatabaseCorruptionError }
-                .doOnSuccess { logger.logScheduledEvent(what = { "Next launch:" }, `when` = taskWithUpdatedLaunchTime.time.toLong()) }
+                .doOnSuccess { logger.logScheduledEvent(what = { "(${task.description}) Next launch:" }, `when` = taskWithUpdatedLaunchTime.time.toLong()) }
         }.onErrorReturn { NextLaunchPreparationResult.IncorrectNextLaunchTimeError }
 }
 

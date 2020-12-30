@@ -15,7 +15,6 @@ import com.example.repeatingalarmfoss.usecases.NextLaunchPreparationUseCase
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
-import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
 const val ARG_TASK = "nextLaunchArgTask"
@@ -41,10 +40,7 @@ class NextLaunchPreparingService : JobIntentService() {
         disposable += nextLaunchPreparationUseCase.execute(task)
             .subscribe(Consumer {
                 if (it is NextLaunchPreparationResult.Success) {
-                    alarmManager.set(
-                        it.newTask.time.toLong(),
-                        PendingIntent.getBroadcast(applicationContext, it.newTask.id.toInt(), AlarmReceiver.createIntent(it.newTask, applicationContext), PendingIntent.FLAG_UPDATE_CURRENT/*todo check all those flags impact!*/)
-                    )
+                    alarmManager.set(it.newTask.time.toLong(), PendingIntent.getBroadcast(applicationContext, it.newTask.id.toInt(), AlarmReceiver.createIntent(it.newTask, applicationContext), PendingIntent.FLAG_UPDATE_CURRENT))
                 }
             })
     }

@@ -7,14 +7,13 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
-import android.util.Log
+import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
-import com.example.repeatingalarmfoss.screens.alarm.ALARM_ARG_TITLE
-import com.example.repeatingalarmfoss.screens.low_battery.LowBatteryNotifierActivity
-import com.example.repeatingalarmfoss.services.LowBatteryNotificationService
+import com.example.repeatingalarmfoss.base.ForegroundService.Companion.ACTION_SHOW_NOTIFICATION
+import com.example.repeatingalarmfoss.base.ForegroundService.Companion.ACTION_STOP_FOREGROUND
 import java.util.*
 
 fun Context.provideUpdatedContextWithNewLocale(
@@ -36,19 +35,20 @@ fun Configuration.getLocalesLanguage(): String = if (Build.VERSION.SDK_INT >= Bu
 /** workaround for Android 10 restrictions to launch activities in background:
  *  https://developer.android.com/guide/components/activities/background-starts
  * */
-fun Context.activityImplicitLaunch(service: Class<out Service>, activity: Class<out Activity>, extraName: String? = null, extraValue: String? = null /*todo: afterwards should be implemented Bundle*/) {
+fun Context.activityImplicitLaunch(service: Class<out Service>, activity: Class<out Activity>, bundle: Bundle? = null) {
     if (Build.VERSION.SDK_INT >= 29 && (applicationContext as RepeatingAlarmApp).isAppInForeground.not()) {
         ContextCompat.startForegroundService(this, Intent(this, service).apply {
-            if(extraName.isNullOrBlank().not() && extraValue.isNullOrBlank().not()) {
-                putExtra(extraName, extraValue)
-            }
+            action = ACTION_SHOW_NOTIFICATION
+            bundle?.let { putExtras(it) }
         })
     } else {
+        startService(Intent(this, service).apply {
+            bundle?.let { putExtras(it) }
+            action = ACTION_STOP_FOREGROUND
+        })
         startActivity(Intent(this, activity).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            if(extraName.isNullOrBlank().not() && extraValue.isNullOrBlank().not()) {
-                putExtra(extraName, extraValue)
-            }
+            bundle?.let { putExtras(it) }
         })
     }
 }

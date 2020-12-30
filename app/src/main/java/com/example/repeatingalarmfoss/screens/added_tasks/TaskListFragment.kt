@@ -103,14 +103,14 @@ class TaskListFragment : BaseFragment() {
         })
     }
 
-    private fun cancelAlarmManagerFor(id: Long) = alarmManager.cancel(PendingIntent.getBroadcast(requireContext(), id.toInt(), Intent(requireActivity(), AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
+    private fun cancelAlarmManagerFor(id: Long) = alarmManager.cancel(PendingIntent.getBroadcast(requireActivity().applicationContext, id.toInt(), Intent(requireActivity(), AlarmReceiver::class.java), 0))
 
     private fun scheduleAlarmManager(task: Task) {
         val intent = AlarmReceiver.createIntent(task, requireActivity())
-        logger.logScheduledEvent(what = { "First launch:" }, `when` = task.time.toLong())
-        alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(requireContext(), task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
+        logger.logScheduledEvent(what = { "(${task.description}) First launch:" }, `when` = task.time.toLong())
+        alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(requireActivity().applicationContext, task.id.toInt(), intent, 0))
     }
-}
+}/*todo cancelling doesn't work!*/
 
 interface TaskAddedCallback {
     fun onSuccessfulScheduling()

@@ -4,8 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.extensions.activityImplicitLaunch
 import com.example.repeatingalarmfoss.screens.alarm.ALARM_ARG_TITLE
@@ -29,7 +27,11 @@ class AlarmReceiver : BroadcastReceiver() {
         if (intent.action == ACTION_RING) {
             val task = intent.getBundleExtra(ALARM_BUNDLE)!!.getParcelable<Task>(ALARM_ARG_TASK)!!
             NextLaunchPreparingService.enqueueWork(context, Intent(context, NextLaunchPreparingService::class.java), task)
-            context.activityImplicitLaunch(AlarmNotifierService::class.java, AlarmActivity::class.java, ALARM_ARG_TITLE, task.description)
+
+            val bundle = Bundle().apply {
+                putString(ALARM_ARG_TITLE, task.description)
+            }
+            context.activityImplicitLaunch(AlarmNotifierService::class.java, AlarmActivity::class.java, bundle)
         }
     }
 }

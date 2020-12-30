@@ -42,7 +42,7 @@ class BootReceiver : BroadcastReceiver() {
                     list.forEachIndexed { index, task ->
                         logger.logScheduledEvent(what = { "Rescheduling ($index) of ${list.size}: " }, `when` = task.time.toLong())
                         val intent = AlarmReceiver.createIntent(task, context)
-                        alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(context, task.id.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT))
+                        alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(context, task.id.toInt(), intent, 0))
                     }
                 }, { logger.e(stackTrace = it.stackTrace) })
         }
