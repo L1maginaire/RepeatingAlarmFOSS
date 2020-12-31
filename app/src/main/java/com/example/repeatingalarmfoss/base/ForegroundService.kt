@@ -53,40 +53,35 @@ abstract class ForegroundService : BaseService() {
     @CallSuper
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        return START_NOT_STICKY.also {
-            Log.d("a", "${this::javaClass} onStartCommand()")
-            when (intent?.action) {
-                ACTION_TERMINATE -> {
-                    Log.d("a", "${this::javaClass} action:terminate")
+        when (intent?.action) {
+            ACTION_SHOW_NOTIFICATION -> {
+                if (subscriptions.size() > 0) {
+                    subscriptions.clear()
+                    showMissedAlarmNotification(previousTitle)
+                }
+                subscriptions.add(timer.subscribe {
+                    showMissedAlarmNotification(getTitle(intent))
                     stopSelf()
-                }
-                ACTION_SHOW_NOTIFICATION -> {
-                    if (subscriptions.size() > 0) {
-                        subscriptions.clear()
-                        showMissedAlarmNotification(previousTitle)
-                    }
-                    subscriptions.add(timer.subscribe {
-                        showMissedAlarmNotification(getTitle(intent))
-                        stopSelf()
-                    })
+                })
 
-                    val notificationBuilder = NotificationCompat.Builder(this, getChannelId())
-                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                        .setSmallIcon(getIcon())
-                        .setContentText(getTitle(intent))
-                        .addAction(getCancelAction())
-                        .setPriority(NotificationCompat.PRIORITY_MAX)
-                        .setCategory(NotificationCompat.CATEGORY_ALARM)
-                        .setFullScreenIntent(getFullscreenIntent(intent.extras!!, getActivity()), true)
-                        .setLargeIcon(BitmapFactory.decodeResource(resources, getIcon()))
-                    startForeground(getServiceId(), notificationBuilder.build())
-                    logger.i { "(${getTitle(intent)}) playing..." }
-                    previousTitle = getTitle(intent)
-                }
-                ACTION_STOP_FOREGROUND -> stopForeground(true)
-                else -> throw IllegalStateException()
+                val notificationBuilder = NotificationCompat.Builder(this, getChannelId())
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setSmallIcon(getIcon())
+                    .setContentText(getTitle(intent))
+                    .addAction(getCancelAction())
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setCategory(NotificationCompat.CATEGORY_ALARM)
+                    .setFullScreenIntent(getFullscreenIntent(intent.extras!!, getActivity()), true)
+                    .setLargeIcon(BitmapFactory.decodeResource(resources, getIcon()))
+                startForeground(getServiceId(), notificationBuilder.build())
+                logger.i { "(${getTitle(intent)}) playing..." }
+                previousTitle = getTitle(intent)
             }
+            ACTION_TERMINATE -> stopSelf()
+            ACTION_STOP_FOREGROUND -> stopForeground(true)
+            else -> throw IllegalStateException()
         }
+        return START_NOT_STICKY
     }
 
     private fun showMissedAlarmNotification(title: String) {

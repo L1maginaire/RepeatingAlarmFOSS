@@ -20,8 +20,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AlarmActivity : NotifyingActivity() {
-    @Inject
-    lateinit var logger: FlightRecorder
+    @Inject lateinit var logger: FlightRecorder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

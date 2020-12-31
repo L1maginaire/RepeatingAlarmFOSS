@@ -26,7 +26,7 @@ const val DATE_PATTERN_FOR_LOGGING2 = "dd MMM yyyy HH:mm"
 const val DATE_PATTERN_DAY_MONTH_YEAR = "dd MMM yyyy"
 
 
-fun String.toLowerCase() = this.toLowerCase(java.util.Locale.getDefault())
+fun String.toLowerCase() = this.toLowerCase(Locale.getDefault())
 fun String.yellow() = this.toColorfulString(33)
 
 fun String.red() = this.toColorfulString(31)

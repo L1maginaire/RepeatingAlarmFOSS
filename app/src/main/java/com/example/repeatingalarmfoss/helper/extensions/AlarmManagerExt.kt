@@ -10,7 +10,7 @@ import android.os.Build
 import com.example.repeatingalarmfoss.helper.extensions.LongExt.minutesToMilliseconds
 import com.example.repeatingalarmfoss.receivers.LowBatteryTracker
 
-const val BATTERY_CHECKER_ID = 999
+const val BATTERY_CHECKER_ID = 99999
 
 fun AlarmManager.set(startTime: Long, pendingIntent: PendingIntent) = if (Build.VERSION.SDK_INT < 23) {
     if (Build.VERSION.SDK_INT >= 19) {
