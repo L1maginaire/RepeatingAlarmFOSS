@@ -2,6 +2,7 @@ package com.example.repeatingalarmfoss.base
 
 import android.app.Service
 import android.content.Intent
+import android.os.IBinder
 import androidx.annotation.CallSuper
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.FlightRecorder
@@ -33,4 +34,6 @@ abstract class BaseService: Service() {
         logger.i { "${this.javaClass.simpleName} destroyed" }
         subscriptions.clear()
     }
+
+    override fun onBind(intent: Intent?): IBinder? = null
 }

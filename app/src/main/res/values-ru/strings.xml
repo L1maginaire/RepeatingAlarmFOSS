@@ -34,7 +34,7 @@
     <string name="time_unit_hour">Часы</string>
     <string name="time_unit_minute">Минуты</string>
     <string name="time_unit_day">Дни</string>
-    <string name="title_you_have_missed_alarm">Вы пропустили уведомление о %s</string>
+    <string name="title_you_have_missed_alarm">Вы пропустили уведомление о %s (%d раз)</string>
     <string name="missed_alarms">У Вас есть пропущенные уведомления</string>
     <string name="erase_logs">Стереть логи</string>
     <string name="title_language">Язык</string>
@@ -53,5 +53,6 @@
     <string name="title_do_not_disturb_at_night_on_battery_low">Не беспокоить уведомлениями о низком заряде батареи ночью (00:00 – 09:00)</string>
     <string name="title_got_it">Понятно!</string>
     <string name="title_channel_notifications">Уведомления о запланированных событиях</string>
+    <string name="title_channel_missed_notifications">Уведомления о пропущенных уведомлениях</string>
     <string name="title_channel_low_battery">Уведомления о низком заряде батаери</string>
 </resources>
