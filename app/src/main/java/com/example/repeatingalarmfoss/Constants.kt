@@ -2,7 +2,7 @@ package com.example.repeatingalarmfoss
 
 /* NOTIFICATIONS -- begin */
 
-const val CHANNEL_ALARM = "CHANNEL_MISSED_ALARM"
+const val CHANNEL_MISSED_ALARM = "CHANNEL_MISSED_ALARM"
 const val CHANNEL_BATTERY_LOW_ID = "CHANNEL_BATTERY_LOW_ID"
 const val MISSED_ALARM_NOTIFICATION_ID = 10001
 
@@ -10,7 +10,9 @@ const val MISSED_ALARM_NOTIFICATION_ID = 10001
 
 /* SHARED ARGUMENTS -- begin*/
 
-/** Shared between:
+/** Argument object :
+ *  @see com.example.repeatingalarmfoss.db.Task
+ * Shared between:
  * @see com.example.repeatingalarmfoss.receivers.AlarmReceiver
  * @see com.example.repeatingalarmfoss.services.AlarmNotifierService
  * @see com.example.repeatingalarmfoss.screens.alarm.AlarmActivity

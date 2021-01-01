@@ -62,7 +62,7 @@ class AlarmActivity : NotifyingActivity() {
     }
 
     private fun showMissedAlarmNotification() {
-        val builder = NotificationCompat.Builder(this, CHANNEL_ALARM)
+        val builder = NotificationCompat.Builder(this, CHANNEL_MISSED_ALARM)
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setContentTitle(String.format(getString(R.string.title_you_have_missed_alarm), intent.getStringExtra(ALARM_ARG_TITLE)))
             .setPriority(NotificationCompat.PRIORITY_MAX)
