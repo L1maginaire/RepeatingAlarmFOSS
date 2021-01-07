@@ -7,9 +7,9 @@ import io.reactivex.Single
 import io.reactivex.SingleSource
 import io.reactivex.functions.Function
 
-fun createEntityIfAbsent(missedAlarmsCountersDao: MissedAlarmsCountersDao, taskId: Long): Function<Throwable, SingleSource<MissedAlarmsCounter>> = Function {
+fun <T> createEntityIfAbsent(createAction: Single<T>): Function<Throwable, SingleSource<T>> = Function {
     if (it is EmptyResultSetException) {
-        missedAlarmsCountersDao.insert(MissedAlarmsCounter(taskId, 1)).flatMap { missedAlarmsCountersDao.findByTaskId(taskId) }
+        createAction
     } else {
         Single.error(UnknownError())
     }

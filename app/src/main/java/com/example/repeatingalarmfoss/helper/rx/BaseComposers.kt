@@ -11,51 +11,51 @@ class BaseComposers @Inject constructor(private val schedulers: SchedulersProvid
         SingleTransformer {
             it.subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
+                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
         }
 
     fun <T> applyMaybeSchedulers(): MaybeTransformer<T, T> =
         MaybeTransformer {
             it.subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
+                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
         }
 
     fun <T> applyObservableSchedulers(): ObservableTransformer<T, T> =
         ObservableTransformer {
             it.subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
+                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
         }
 
     fun applyCompletableSchedulers(): CompletableTransformer =
         CompletableTransformer {
             it.subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
+                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
         }
 
     fun <T> commonSingleFetchTransformer(): SingleTransformer<T, T> =
         SingleTransformer {
             it.retry(RxHttpErrorHandler())
                 .compose(applySingleSchedulers())
-                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
         }
 
     fun commonCompletableFetchTransformer(): CompletableTransformer =
         CompletableTransformer {
             it.retry(RxHttpErrorHandler())
                 .compose(applyCompletableSchedulers())
-                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
         }
 
     fun <T> commonMaybeFetchTransformer(): MaybeTransformer<T, T> =
         MaybeTransformer {
             it.retry(RxHttpErrorHandler())
                 .compose(applyMaybeSchedulers())
-                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
         }
 
     fun <T> commonObservableFetchTransformer(): ObservableTransformer<T, T> =
         ObservableTransformer {
             it.retry(RxHttpErrorHandler())
                 .compose(applyObservableSchedulers())
-                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
         }
 }

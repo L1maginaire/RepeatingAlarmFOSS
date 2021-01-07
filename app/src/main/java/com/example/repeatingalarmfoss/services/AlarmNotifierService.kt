@@ -14,7 +14,10 @@ import com.example.repeatingalarmfoss.helper.extensions.showNotification
 import com.example.repeatingalarmfoss.repositories.GetMissedAlarmCounterResult
 import com.example.repeatingalarmfoss.repositories.MissedAlarmCounterPreferencesRepository
 import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 const val ALARM_ARG_TASK_ID = "com.example.repeatingalarmfoss.services.ALARM_ARG_TASK_ID"
@@ -44,22 +47,11 @@ class AlarmNotifierService : ForegroundService() {
 
                 if (subscriptions.size() > 0) {
                     subscriptions.clear()
-                    val counter = (missedAlarmCounterRepo.getMissedAlarmsCounter(previousID).blockingGet() as GetMissedAlarmCounterResult.Success).counter
-                    require(counter > 0)
+                    showMissedAlarmNotification(previousTitle, previousID)
                     Log.d("a", "zzz $previousID $previousTitle")
-                    showMissedAlarmNotification(previousTitle, previousID, counter)
-                    missedAlarmCounterRepo.updateMissedAlarmsCounter(previousID).blockingGet()
                 }
                 subscriptions += timer.subscribe {
-                    var counter = 0
-                    with (missedAlarmCounterRepo.getMissedAlarmsCounter(taskID).blockingGet()) {
-                        if (this is GetMissedAlarmCounterResult.Success) {
-                            counter = this.counter
-                        }
-                    }
-                    require(counter > 0)
-                    showMissedAlarmNotification(title, taskID, counter)
-                    missedAlarmCounterRepo.updateMissedAlarmsCounter(taskID).blockingGet()
+                    showMissedAlarmNotification(title, taskID)
                     stopSelf()
                 }
 
@@ -84,13 +76,20 @@ class AlarmNotifierService : ForegroundService() {
         return START_NOT_STICKY
     }
 
-    private fun showMissedAlarmNotification(title: String, taskId: Long, counter: Int) {
-        val notificationMessage = when (counter) {
-            1 -> String.format(getString(R.string.title_you_have_single_missed_alarm), title)
-            else -> String.format(getString(R.string.title_you_have_missed_alarms), title, counter)
-        }
-        logger.i { "missed notification: $notificationMessage" }
-        val notification = constructNotification(CHANNEL_MISSED_ALARM, notificationMessage, R.drawable.ic_launcher_background)
-        showNotification(notification, taskId)
+    private fun showMissedAlarmNotification(title: String, taskId: Long) {
+        subscriptions += missedAlarmCounterRepo.getAndUpdateMissedAlarmsCounter(previousID)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(Consumer {
+                if (it is GetMissedAlarmCounterResult.Success) {
+                    val notificationMessage = when (it.counter) {
+                        1 -> String.format(getString(R.string.title_you_have_single_missed_alarm), title)
+                        else -> String.format(getString(R.string.title_you_have_missed_alarms), title, it.counter)
+                    }
+                    logger.i { "missed notification: $notificationMessage" }
+                    val notification = constructNotification(CHANNEL_MISSED_ALARM, notificationMessage, R.drawable.ic_launcher_background)
+                    showNotification(notification, taskId)
+                }
+            })
     }
 }

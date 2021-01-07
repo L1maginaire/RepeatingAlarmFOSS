@@ -3,6 +3,8 @@ package com.example.repeatingalarmfoss.screens.alarm
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import com.example.repeatingalarmfoss.ALARM_ARG_TASK_TITLE
 import com.example.repeatingalarmfoss.CHANNEL_MISSED_ALARM
 import com.example.repeatingalarmfoss.R
@@ -13,8 +15,8 @@ import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.constructNotification
 import com.example.repeatingalarmfoss.helper.extensions.showNotification
 import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
+import com.example.repeatingalarmfoss.helper.extensions.toast
 import com.example.repeatingalarmfoss.repositories.GetMissedAlarmCounterResult
-import com.example.repeatingalarmfoss.repositories.MissedAlarmCounterPreferencesRepository
 import com.example.repeatingalarmfoss.services.ALARM_ARG_TASK_ID
 import com.example.repeatingalarmfoss.services.AlarmNotifierService
 import com.jakewharton.rxbinding3.view.clicks
@@ -27,8 +29,8 @@ import javax.inject.Inject
 
 /*TODO rethink how to handle multiple activities overlapping*/
 class AlarmActivity : NotifyingActivity() {
+    private val viewModel by viewModels<AlarmActivityViewModel> { viewModelFactory }
     @Inject lateinit var logger: FlightRecorder
-    @Inject lateinit var missedAlarmCounterRepo: MissedAlarmCounterPreferencesRepository
     private var taskId: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +46,18 @@ class AlarmActivity : NotifyingActivity() {
             tvTaskTitle.text = this
             logger.i { "($this) playing..." }
         }
+        setupViewModelSubscriptions()
+    }
+
+    private fun setupViewModelSubscriptions() {
+        viewModel.errorEvent.observe(this, Observer { toast(getString(it)) })
+        viewModel.getMissedAlarmsCounterEvent.observe(this, Observer { counter ->
+            showMissedAlarmNotification(intent.getStringExtra(ALARM_ARG_TASK_TITLE)!!, taskId, counter)
+            finish()
+            startService(Intent(this, AlarmNotifierService::class.java).apply {
+                action = ACTION_TERMINATE
+            })
+        })
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean =
@@ -65,20 +79,10 @@ class AlarmActivity : NotifyingActivity() {
                 finish()
             }
         subscriptions += Observable.timer(10, TimeUnit.MINUTES, AndroidSchedulers.mainThread())
-            .subscribe {
-                startService(Intent(this, AlarmNotifierService::class.java).apply {
-                    action = ACTION_TERMINATE
-                })
-                val counter = (missedAlarmCounterRepo.getMissedAlarmsCounter(taskId).blockingGet() as GetMissedAlarmCounterResult.Success).counter
-                require(counter > 0)
-                showMissedAlarmNotification(intent.getStringExtra(ALARM_ARG_TASK_TITLE)!!, taskId, counter)
-                missedAlarmCounterRepo.updateMissedAlarmsCounter(taskId).blockingGet()
-                finish()
-            }
+            .subscribe { viewModel.getMissedAlarmCounter(taskId) }
     }
 
     private fun showMissedAlarmNotification(title: String, id: Long, counter: Int) {
-        require(id > 1)
         logger.i { "$title missed notification" }
         val notification = constructNotification(CHANNEL_MISSED_ALARM, String.format(getString(R.string.title_you_have_missed_alarms), title, counter), R.drawable.ic_launcher_background)
         showNotification(notification, id)
