@@ -21,4 +21,4 @@ fun Context.constructNotification(
     .setPriority(priority)
     .build()
 
-fun Context.showNotification(notification: Notification, notificationId: Int) = NotificationManagerCompat.from(this).notify(notificationId, notification)
+fun Context.showNotification(notification: Notification, notificationId: Long) = NotificationManagerCompat.from(this).notify(notificationId.toInt(), notification)

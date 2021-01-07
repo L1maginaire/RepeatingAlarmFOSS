@@ -34,8 +34,8 @@
     <string name="time_unit_hour">Часы</string>
     <string name="time_unit_minute">Минуты</string>
     <string name="time_unit_day">Дни</string>
-    <string name="title_you_have_missed_alarm">Вы пропустили уведомление о %s (%d раз)</string>
-    <string name="missed_alarms">У Вас есть пропущенные уведомления</string>
+    <string name="title_you_have_missed_alarms">Вы пропустили уведомление о %s (%d раз)</string>
+    <string name="title_you_have_single_missed_alarm">У Вас есть пропущенное уведомление (%s)</string>
     <string name="erase_logs">Стереть логи</string>
     <string name="title_language">Язык</string>
     <string name="title_settings">Настройки</string>

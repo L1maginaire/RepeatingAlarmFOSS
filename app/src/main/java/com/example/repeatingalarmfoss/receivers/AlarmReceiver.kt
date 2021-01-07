@@ -6,8 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.extensions.activityImplicitLaunch
-import com.example.repeatingalarmfoss.ALARM_ARG_TITLE
+import com.example.repeatingalarmfoss.ALARM_ARG_TASK_TITLE
 import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
+import com.example.repeatingalarmfoss.services.ALARM_ARG_TASK_ID
 import com.example.repeatingalarmfoss.services.AlarmNotifierService
 import com.example.repeatingalarmfoss.services.NextLaunchPreparingService
 
@@ -29,7 +30,8 @@ class AlarmReceiver : BroadcastReceiver() {
             NextLaunchPreparingService.enqueueWork(context, NextLaunchPreparingService::class.java, task)
 
             val bundle = Bundle().apply {
-                putString(ALARM_ARG_TITLE, task.description)
+                putString(ALARM_ARG_TASK_TITLE, task.description)
+                putLong(ALARM_ARG_TASK_ID, task.id)
             }
             context.activityImplicitLaunch(AlarmNotifierService::class.java, AlarmActivity::class.java, bundle)
         }
