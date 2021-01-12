@@ -26,7 +26,8 @@ private const val RUSSIAN_LOCALE = "ru"
 class BaseActivitySettingsInteractorTest {
     private val context = InstrumentationRegistry.getInstrumentation().context
     private val sharedPrefs = context.getDefaultSharedPreferences()
-    private val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefs, BaseComposers(TestSchedulers(), FlightRecorder(createTempFile())))
+    private val logger = FlightRecorder(createTempFile())
+    private val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefs, BaseComposers(TestSchedulers(), logger), logger)
 
     @Test
     fun `if no value persisted, write default -- AppCompatDelegate # getDefaultNightMode() -- and recreate`() {
@@ -47,7 +48,7 @@ class BaseActivitySettingsInteractorTest {
     fun `if something is wrong with SharedPreferences, return NightModePreferencesResult # SharedPreferencesCorruptionError`() {
         val sharedPrefMock = mock(SharedPreferences::class.java)
         `when`(sharedPrefMock.getStringOf(PREF_APP_THEME)).thenThrow(RuntimeException::class.java)
-        val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefMock, BaseComposers(TestSchedulers(), FlightRecorder(createTempFile())))
+        val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefMock, BaseComposers(TestSchedulers(), logger), logger)
         nightModePreferenceInteractor.handleThemeChanges(YES).test().assertNoErrors().assertComplete().assertResult(NightModeChangesResult.SharedChangesCorruptionError)
     }
 
@@ -55,7 +56,7 @@ class BaseActivitySettingsInteractorTest {
     fun `if something is wrong with SharedPreferences, return LocaleChangedResult # SharedPreferencesCorruptionError`() {
         val sharedPrefMock = mock(SharedPreferences::class.java)
         `when`(sharedPrefMock.getStringOf(PREF_APP_LANG)).thenThrow(RuntimeException::class.java)
-        val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefMock, BaseComposers(TestSchedulers(), FlightRecorder(createTempFile())))
+        val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefMock, BaseComposers(TestSchedulers(), logger), logger)
         nightModePreferenceInteractor.checkLocaleChanged(RUSSIAN_LOCALE).test().assertNoErrors().assertComplete().assertResult(LocaleChangedResult.SharedPreferencesCorruptionError)
     }
 

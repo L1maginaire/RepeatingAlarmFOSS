@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss.screens.added_tasks
+package com.example.repeatingalarmfoss.screens.added_tasks.viewmodels
 
 import androidx.lifecycle.LiveData
 import com.example.repeatingalarmfoss.R
@@ -6,6 +6,11 @@ import com.example.repeatingalarmfoss.base.BaseViewModel
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.SingleLiveEvent
+import com.example.repeatingalarmfoss.screens.added_tasks.*
+import com.example.repeatingalarmfoss.usecases.AddTaskResult
+import com.example.repeatingalarmfoss.usecases.DeleteTaskResult
+import com.example.repeatingalarmfoss.usecases.FetchTasksResult
+import com.example.repeatingalarmfoss.usecases.TaskInteractor
 import io.reactivex.functions.Consumer
 import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject

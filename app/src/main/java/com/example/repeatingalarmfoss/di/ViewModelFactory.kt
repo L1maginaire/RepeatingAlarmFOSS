@@ -3,7 +3,6 @@ package com.example.repeatingalarmfoss.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.repeatingalarmfoss.base.BaseActivityViewModel
-import com.example.repeatingalarmfoss.screens.added_tasks.AddingTasksViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -20,8 +19,7 @@ class ViewModelFactory @Inject constructor(private val creators: @JvmSuppressWil
             modelClass.isAssignableFrom(it.key)
         }?.value ?: throw IllegalArgumentException("unknown model class $modelClass")
         try {
-            @Suppress("UNCHECKED_CAST")
-            return creator.get() as T
+            @Suppress("UNCHECKED_CAST") return creator.get() as T
         } catch (e: Exception) {
             throw RuntimeException(e)
         }

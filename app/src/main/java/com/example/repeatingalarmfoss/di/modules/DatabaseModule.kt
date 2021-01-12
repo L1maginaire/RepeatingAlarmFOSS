@@ -6,11 +6,14 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.db.TasksDb
+import com.example.repeatingalarmfoss.db.missed_alarms_counter.MissedAlarmsCountersDao
+import com.example.repeatingalarmfoss.db.missed_alarms_counter.MissedAlarmsCountersDb
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-private const val MOCK_DB_NAME = "database-name"
+private const val DATABASE_NAME_TASKS = "database-tasks"
+private const val DATABASE_NAME_MISSED_COUNTERS = "database-missed-counters"
 
 @Module
 class DatabaseModule {
@@ -25,7 +28,7 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(context: Context): TasksDb = Room.databaseBuilder(context, TasksDb::class.java, MOCK_DB_NAME)
+    fun provideTasksDatabase(context: Context): TasksDb = Room.databaseBuilder(context, TasksDb::class.java, DATABASE_NAME_TASKS)
         .addMigrations(migration1to2)
         .addMigrations(migration2to3)
         .build()
@@ -33,4 +36,14 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideTaskRepository(db: TasksDb): TaskLocalDataSource = db.taskDao()
+
+    @Provides
+    @Singleton
+    fun provideMissedAlarmsCountersDatabase(context: Context): MissedAlarmsCountersDb = Room.databaseBuilder(context, MissedAlarmsCountersDb::class.java, DATABASE_NAME_MISSED_COUNTERS)
+        .allowMainThreadQueries()
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideMissedAlarmsCountersDao(db: MissedAlarmsCountersDb): MissedAlarmsCountersDao = db.getCountersDao()
 }

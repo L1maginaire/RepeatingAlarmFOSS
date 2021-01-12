@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
+import com.example.repeatingalarmfoss.screens.added_tasks.viewmodels.MainActivityViewModel
 import com.example.repeatingalarmfoss.screens.logs.LogActivity
 import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
 import com.squareup.seismic.ShakeDetector

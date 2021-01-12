@@ -2,70 +2,61 @@ package com.example.repeatingalarmfoss.base
 
 import android.app.Activity
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import android.os.IBinder
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
-import androidx.annotation.CallSuper
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.RepeatingAlarmApp
+import com.example.repeatingalarmfoss.helper.Notifier
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-abstract class ForegroundService : Service() {
+abstract class ForegroundService : BaseService() {
     companion object {
-        private const val TERMINATE = "ACTION_TERMINATE"
+        const val ACTION_TERMINATE = "ACTION_TERMINATE"
+        const val ACTION_STOP_FOREGROUND = "STOP_FOREGROUND"
+        const val ACTION_SHOW_NOTIFICATION = "show_notification!"
     }
 
-    override fun onBind(intent: Intent?): IBinder? = null
-    abstract fun getBundle(intent: Intent?): Bundle?
+    @Inject lateinit var notifier: Notifier
+    protected val timer: Observable<Long> = Observable.timer(10, TimeUnit.MINUTES, AndroidSchedulers.mainThread())
+
     abstract fun getActivity(): Class<out Activity>
-    abstract fun getServiceId(): Int
     abstract fun getTitle(intent: Intent?): String
-    abstract fun getChannelId(): String
+    abstract fun getServiceId(): Int
     @DrawableRes abstract fun getIcon(): Int
 
-    @CallSuper
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_NOT_STICKY.also {
-        if (intent?.action == TERMINATE) {
-            stopSelf()
-        } else {
-            val notificationBuilder = NotificationCompat.Builder(this, getChannelId())
-                .setSmallIcon(getIcon())
-                .setOngoing(true)
-                .setContentText(getTitle(intent))
-                .addAction(getCancelAction())
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setFullScreenIntent(getFullscreenIntent(getBundle(intent), getActivity()), true)
-                .setLargeIcon(BitmapFactory.decodeResource(resources, getIcon()))
-            startForeground(getServiceId(), notificationBuilder.build())
-        }
+    override fun onCreate() {
+        super.onCreate()
+        (application as RepeatingAlarmApp).appComponent.inject(this)
+        notifier.start()
     }
 
-    private fun getCancelAction(): NotificationCompat.Action = NotificationCompat.Action(
+    protected fun getCancelAction(): NotificationCompat.Action = NotificationCompat.Action(
         0,
         SpannableString(getString(R.string.dismiss)).apply { setSpan(ForegroundColorSpan(Color.RED), 0, getString(R.string.dismiss).length, 0) },
-        PendingIntent.getService(this, 0, Intent(this, this::class.java).apply { this.action = TERMINATE }, PendingIntent.FLAG_UPDATE_CURRENT)
+        PendingIntent.getService(this, 0, Intent(this, this::class.java).apply { this.action = ACTION_TERMINATE }, PendingIntent.FLAG_UPDATE_CURRENT)
     )
 
-    private fun getFullscreenIntent(bundle: Bundle?, activity: Class<out Activity>): PendingIntent = PendingIntent.getActivity(
+    protected fun getFullscreenIntent(bundle: Bundle, activity: Class<out Activity>): PendingIntent = PendingIntent.getActivity(
         this,
         0,
         Intent(this, activity)
             .apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                bundle?.also { putExtras(it) }
+                putExtras(bundle)
             },
         0
     )
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("a", "aaa ${this::javaClass} is destroyed")
+        notifier.stop()
     }
 }

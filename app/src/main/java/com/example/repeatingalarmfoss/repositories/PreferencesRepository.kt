@@ -11,7 +11,6 @@ import javax.inject.Singleton
 
 private const val LAUNCH_COUNTER_THRESHOLD = 5
 
-@Singleton /*TODO rethink*/
 class PreferencesRepository @Inject constructor(private val sharedPreferences: SharedPreferences) {
     fun isForbiddenToNotifyLowBatteryAtNight(time: String = now()): Single<PermissionToNotifyAboutLowBatteryResult> = Single.just(PREF_LOW_BATTERY_DND_AT_NIGHT)
         /** DO NOT DISTURB == NOT PERMITTED TO NOTIFY!*/
@@ -46,3 +45,4 @@ sealed class PermissionToNotifyAboutLowBatteryResult {
     data class Success(var permitted: Boolean) : PermissionToNotifyAboutLowBatteryResult()
     object Failure : PermissionToNotifyAboutLowBatteryResult()
 }
+

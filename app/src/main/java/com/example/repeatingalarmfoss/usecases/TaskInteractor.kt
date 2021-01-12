@@ -1,10 +1,10 @@
-package com.example.repeatingalarmfoss.screens.added_tasks
+package com.example.repeatingalarmfoss.usecases
 
 import com.example.repeatingalarmfoss.db.RepeatingClassifier
 import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.helper.extensions.toReadableDate
 import com.example.repeatingalarmfoss.helper.rx.BaseComposers
-import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
+import com.example.repeatingalarmfoss.screens.added_tasks.TaskUi
 import io.reactivex.Single
 import javax.inject.Inject
 

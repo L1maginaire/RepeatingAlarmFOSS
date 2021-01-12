@@ -2,7 +2,6 @@ package com.example.repeatingalarmfoss.helper.extensions
 
 import android.app.Activity
 import android.content.Context
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.example.repeatingalarmfoss.screens.added_tasks.TimePickerFragment
 import es.dmoral.toasty.Toasty
 
 fun ViewGroup.inflate(layoutId: Int): View = LayoutInflater.from(context).inflate(layoutId, this, false)

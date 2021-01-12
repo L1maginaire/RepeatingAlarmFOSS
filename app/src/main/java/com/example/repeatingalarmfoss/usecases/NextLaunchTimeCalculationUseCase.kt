@@ -46,6 +46,7 @@ class NextLaunchTimeCalculationUseCase @Inject constructor(private val appContex
         val interval = Integer.parseInt(repeatingClassifierValue.replace("[^0-9]".toRegex(), ""))
         val classifier = repeatingClassifierValue.replace("\\d+".toRegex(), "")
         return when (classifier) {
+            /*FIXME bullshit wont work on changing locale!!!*/
             appContext.resources.getString(R.string.time_unit_minute) -> launchTime + minutesToMilliseconds(interval.toLong())
             appContext.resources.getString(R.string.time_unit_hour) -> launchTime + hoursToMilliseconds(interval.toLong())
             appContext.resources.getString(R.string.time_unit_day) -> launchTime + daysToMilliseconds(interval.toLong())

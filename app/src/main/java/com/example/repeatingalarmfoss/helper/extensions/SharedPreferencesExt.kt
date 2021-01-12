@@ -2,6 +2,7 @@ package com.example.repeatingalarmfoss.helper.extensions
 
 import android.content.SharedPreferences
 
+const val PREF_MISSED_ALARM_COUNTER = "PREF_MISSED_ALARM_COUNTER"
 const val PREF_LOW_BATTERY_DND_AT_NIGHT = "PREF_LOW_BATTERY_DND_AT_NIGHT"
 const val PREF_APP_LANG = "PREF_APP_LANG"
 const val PREF_APP_THEME = "PREF_APP_THEME"

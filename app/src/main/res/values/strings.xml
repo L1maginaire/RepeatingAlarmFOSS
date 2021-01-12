@@ -34,8 +34,8 @@
     <string name="time_unit_hour">Hours</string>
     <string name="time_unit_minute">Minutes</string>
     <string name="time_unit_day">Days</string>
-    <string name="title_you_have_missed_alarm">You have missed alarm %s</string>
-    <string name="missed_alarms">You have missed alarms</string>
+    <string name="title_you_have_missed_alarms">You have missed alarm %s (%d times)</string>
+    <string name="title_you_have_single_missed_alarm">You have missed alarm</string>
     <string name="erase_logs">Erase logs</string>
     <string name="title_language">Language</string>
     <string name="title_settings">Settings</string>
@@ -52,6 +52,7 @@
     <string name="title_dont_ask_againg">Don\'t ask again</string>
     <string name="title_do_not_disturb_at_night_on_battery_low">Do not disturb at night (00:00 – 09:00)  when battery low</string>
     <string name="title_got_it">Got it!</string>
+    <string name="title_channel_missed_notifications">Missed Alarm Notifications</string>
     <string name="title_channel_notifications">Alarm Notifications</string>
     <string name="title_channel_low_battery">Low Battery Notifications</string>
 </resources>

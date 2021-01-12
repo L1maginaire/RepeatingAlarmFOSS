@@ -1,6 +1,7 @@
 package com.example.repeatingalarmfoss.base
 
 import android.content.SharedPreferences
+import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_LANG
 import com.example.repeatingalarmfoss.helper.extensions.PREF_APP_THEME
 import com.example.repeatingalarmfoss.helper.extensions.getStringOf
@@ -10,7 +11,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
-class BaseActivitySettingsInteractor @Inject constructor(private val sharedPreferences: SharedPreferences, private val baseComposers: BaseComposers) {
+class BaseActivitySettingsInteractor @Inject constructor(private val sharedPreferences: SharedPreferences, private val baseComposers: BaseComposers, private val logger: FlightRecorder) {
     fun handleThemeChanges(toBeCompared: Int): Maybe<NightModeChangesResult> = Single.fromCallable { kotlin.runCatching { sharedPreferences.getStringOf(PREF_APP_THEME) }.getOrNull() }
         .filter { it != toBeCompared.toString() }
         .map { it.toInt() }
@@ -27,13 +28,20 @@ class BaseActivitySettingsInteractor @Inject constructor(private val sharedPrefe
                 NightModeChangesResult.SharedChangesCorruptionError
             }
         }.onErrorReturn { NightModeChangesResult.SharedChangesCorruptionError }
-        .doOnError { it.printStackTrace() }
+        .doOnError {
+            logger.wtf { "Problem with changing theme!" }
+            logger.e(stackTrace = it.stackTrace)
+        }
         .compose(baseComposers.commonMaybeFetchTransformer())
 
     fun checkLocaleChanged(currentLocale: String): Maybe<LocaleChangedResult> = Single.just(currentLocale)
         .filter { sharedPreferences.getStringOf(PREF_APP_LANG).equals(it).not() }
         .map<LocaleChangedResult> { LocaleChangedResult.Success }
         .onErrorReturn { LocaleChangedResult.SharedPreferencesCorruptionError }
+        .doOnError {
+            logger.wtf { "Problem with locale changes handling!" }
+            logger.e(stackTrace = it.stackTrace)
+        }
 }
 
 sealed class NightModeChangesResult {
