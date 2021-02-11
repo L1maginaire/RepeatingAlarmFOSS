@@ -1,8 +1,6 @@
 package com.example.repeatingalarmfoss.base
 
 import androidx.lifecycle.LiveData
-import com.example.repeatingalarmfoss.R
-import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.SingleLiveEvent
 import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
@@ -17,7 +15,7 @@ class BaseActivityViewModel @Inject constructor(private val prefInteractor: Base
     fun checkNightModeState(toBeCompared: Int) {
         disposable += prefInteractor.handleThemeChanges(toBeCompared).subscribe {
             if (it is NightModeChangesResult.Success) {
-                 _setNightModeValueAndRecreateEvent.value = it.code
+                _setNightModeValueAndRecreateEvent.value = it.code
             }
         }
     }

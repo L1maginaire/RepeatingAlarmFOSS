@@ -32,8 +32,8 @@
         <item>@string/title_dark_theme</item>
     </string-array>
     <string-array name="theme_values">
-        <item>"-1"</item>
-        <item>"1"</item>
-        <item>"2"</item>
+        <item>-1</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
 </resources>
