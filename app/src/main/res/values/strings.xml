@@ -1,5 +1,9 @@
 <resources>
-    <string name="app_name">Repeating Alarm</string>
+    <!--prefs-->
+    <string name="pref_theme" translatable="false">PREF_APP_THEME</string>
+    <string name="pref_lang" translatable="false">PREF_APP_LANG</string>
+
+    <string name="app_name" translatable="false">Repeating Alarm</string>
     <string name="add_new_task">Add new task</string>
     <string name="db_error">Something wrong with database!</string>
     <string name="title_every">Every</string>

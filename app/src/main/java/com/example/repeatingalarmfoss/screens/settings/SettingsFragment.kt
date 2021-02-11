@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.example.repeatingalarmfoss.R
-import com.example.repeatingalarmfoss.helper.extensions.*
+import com.example.repeatingalarmfoss.helper.extensions.getStringOf
 import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -21,14 +21,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
-            PREF_APP_LANG -> {
+            getString(R.string.pref_lang) -> {
                 val newLocale = Locale(sharedPreferences.getStringOf(key)!!)
                 Locale.setDefault(newLocale)
                 @Suppress("DEPRECATION") requireActivity().resources.updateConfiguration(resources.configuration.apply { setLocale(newLocale) }, resources.displayMetrics)
                 requireActivity().recreate()
             }
-            PREF_APP_THEME -> {
-                AppCompatDelegate.setDefaultNightMode(sharedPreferences.getStringOf(PREF_APP_THEME)!!.toInt())
+            getString(R.string.pref_theme) -> {
+                AppCompatDelegate.setDefaultNightMode(sharedPreferences.getStringOf(key)!!.toInt())
                 requireActivity().recreate()
             }
         }

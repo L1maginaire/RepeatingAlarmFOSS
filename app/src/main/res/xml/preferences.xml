@@ -4,17 +4,16 @@
     <ListPreference
         android:entries="@array/supported_languages"
         android:entryValues="@array/supported_locales"
-        android:key="PREF_APP_LANG"
+        android:key="@string/pref_lang"
         android:title="@string/title_language"
-        app:iconSpaceReserved="false" />
+        app:iconSpaceReserved="false"/>
     <ListPreference
         android:entries="@array/themes"
         android:entryValues="@array/theme_values"
-        android:key="PREF_APP_THEME"
+        android:key="@string/pref_theme"
         android:title="@string/title_themes"
         app:iconSpaceReserved="false" />
     <CheckBoxPreference
-        android:defaultValue="true"
         android:key="PREF_LOW_BATTERY_DND_AT_NIGHT"
         android:title="@string/title_do_not_disturb_at_night_on_battery_low" />
 </PreferenceScreen>

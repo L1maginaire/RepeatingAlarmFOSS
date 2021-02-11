@@ -1,6 +1,5 @@
 package com.example.repeatingalarmfoss.receivers
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,9 +12,7 @@ class LowBatteryTracker : BroadcastReceiver() {
     lateinit var batteryStateHandlingUseCase: BatteryStateHandlingUseCase
 
     override fun onReceive(context: Context, intent: Intent) {
-        (context.applicationContext as RepeatingAlarmApp).apply {
-            appComponent.inject(this@LowBatteryTracker)
-        }
+        (context.applicationContext as RepeatingAlarmApp).appComponent.inject(this)
         batteryStateHandlingUseCase.execute()
     }
 }

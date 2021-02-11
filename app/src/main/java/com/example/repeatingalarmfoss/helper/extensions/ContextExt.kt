@@ -17,12 +17,12 @@ import com.example.repeatingalarmfoss.base.ForegroundService.Companion.ACTION_ST
 import java.util.*
 
 fun Context.provideUpdatedContextWithNewLocale(
-    persistedLanguage: String? = kotlin.runCatching { getDefaultSharedPreferences().getStringOf(PREF_APP_LANG) }.getOrNull(),
+    persistedLanguage: String? = kotlin.runCatching { getDefaultSharedPreferences().getStringOf(applicationContext.getString(R.string.pref_lang)) }.getOrNull(),
     defaultLocale: String? = null
 ): Context { /*TODO RTL*/
     val locales = resources.getStringArray(R.array.supported_locales)
     val newLocale = Locale(locales.firstOrNull { it == persistedLanguage } ?: locales.firstOrNull { it == defaultLocale } ?: Locale.UK.language)
-    getDefaultSharedPreferences().writeStringOf(PREF_APP_LANG, newLocale.language)
+    getDefaultSharedPreferences().writeStringOf(getString(R.string.pref_lang), newLocale.language)
     Locale.setDefault(newLocale)
     return createConfigurationContext(Configuration().apply { setLocale(newLocale) })
 }

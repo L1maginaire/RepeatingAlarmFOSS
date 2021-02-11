@@ -1,17 +1,16 @@
 package com.example.repeatingalarmfoss.repositories
 
+import android.content.Context
 import android.content.SharedPreferences
+import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.helper.extensions.*
-import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.toCompletable
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val LAUNCH_COUNTER_THRESHOLD = 5
 
-class PreferencesRepository @Inject constructor(private val sharedPreferences: SharedPreferences) {
+class PreferencesRepository @Inject constructor(private val sharedPreferences: SharedPreferences, private val context: Context) {
     fun isForbiddenToNotifyLowBatteryAtNight(time: String = now()): Single<PermissionToNotifyAboutLowBatteryResult> = Single.just(PREF_LOW_BATTERY_DND_AT_NIGHT)
         /** DO NOT DISTURB == NOT PERMITTED TO NOTIFY!*/
         .map { sharedPreferences.getBoolean(it, true).not() || (sharedPreferences.getBoolean(it, true) && isTimeBetweenTwoTime("00:00", "09:00", time).not()) }
@@ -20,8 +19,8 @@ class PreferencesRepository @Inject constructor(private val sharedPreferences: S
 
     fun incrementAppLaunchCounter() = sharedPreferences.incrementAppLaunchCounter()
 
-    fun getPersistedLocale(): Single<PersistedLocaleResult> = Single.just(PREF_APP_LANG)
-        .map { Locale(sharedPreferences.getStringOf(PREF_APP_LANG) ?: Locale.UK.language) }
+    fun getPersistedLocale(): Single<PersistedLocaleResult> = Single.just(context.getString(R.string.pref_lang))
+        .map { Locale(sharedPreferences.getStringOf(it) ?: Locale.UK.language) }
         .map<PersistedLocaleResult> { PersistedLocaleResult.Success(it) }
         .onErrorReturn { PersistedLocaleResult.Failure }
 
