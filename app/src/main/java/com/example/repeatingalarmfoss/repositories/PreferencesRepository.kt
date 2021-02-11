@@ -11,7 +11,7 @@ import javax.inject.Inject
 private const val LAUNCH_COUNTER_THRESHOLD = 5
 
 class PreferencesRepository @Inject constructor(private val sharedPreferences: SharedPreferences, private val context: Context) {
-    fun isForbiddenToNotifyLowBatteryAtNight(time: String = now()): Single<PermissionToNotifyAboutLowBatteryResult> = Single.just(PREF_LOW_BATTERY_DND_AT_NIGHT)
+    fun isForbiddenToNotifyLowBatteryAtNight(time: String = now()): Single<PermissionToNotifyAboutLowBatteryResult> = Single.just(context.getString(R.string.pref_low_battery_dnd_time))
         /** DO NOT DISTURB == NOT PERMITTED TO NOTIFY!*/
         .map { sharedPreferences.getBoolean(it, true).not() || (sharedPreferences.getBoolean(it, true) && isTimeBetweenTwoTime("00:00", "09:00", time).not()) }
         .map<PermissionToNotifyAboutLowBatteryResult> { PermissionToNotifyAboutLowBatteryResult.Success(it) }
