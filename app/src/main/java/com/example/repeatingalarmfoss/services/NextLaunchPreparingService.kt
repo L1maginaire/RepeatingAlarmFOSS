@@ -8,7 +8,7 @@ import android.os.Bundle
 import androidx.core.app.JobIntentService
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseJobIntentService
-import com.example.repeatingalarmfoss.base.ID_Job_NextLaunchPreparing
+import com.example.repeatingalarmfoss.base.ID_NEXT_LAUNCH_PREPARING_SERVICE
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.receivers.AlarmReceiver
@@ -43,7 +43,7 @@ class NextLaunchPreparingService : BaseJobIntentService() {
     }
 
     companion object {
-        fun enqueueWork(context: Context, serviceClass: Class<out JobIntentService>, task: Task) = enqueueWork(context, serviceClass, ID_Job_NextLaunchPreparing, Intent(context, serviceClass)
+        fun enqueueWork(context: Context, serviceClass: Class<out JobIntentService>, task: Task) = enqueueWork(context, serviceClass, ID_NEXT_LAUNCH_PREPARING_SERVICE, Intent(context, serviceClass)
                 .apply { putExtra(ARG_TASK_BUNDLE, Bundle().apply { putParcelable(ARG_TASK, task) }) })
     }
 }

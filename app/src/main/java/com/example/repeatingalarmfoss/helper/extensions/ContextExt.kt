@@ -19,7 +19,7 @@ import java.util.*
 fun Context.provideUpdatedContextWithNewLocale(
     persistedLanguage: String? = kotlin.runCatching { getDefaultSharedPreferences().getStringOf(applicationContext.getString(R.string.pref_lang)) }.getOrNull(),
     defaultLocale: String? = null
-): Context { /*TODO RTL*/
+): Context { /*TODO: RTL*/
     val locales = resources.getStringArray(R.array.supported_locales)
     val newLocale = Locale(locales.firstOrNull { it == persistedLanguage } ?: locales.firstOrNull { it == defaultLocale } ?: Locale.UK.language)
     getDefaultSharedPreferences().writeStringOf(getString(R.string.pref_lang), newLocale.language)

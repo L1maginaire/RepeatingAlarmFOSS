@@ -7,7 +7,7 @@ import android.content.Intent
 import androidx.core.app.JobIntentService
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseJobIntentService
-import com.example.repeatingalarmfoss.base.ID_ReschedulingAlarmsOnBootService
+import com.example.repeatingalarmfoss.base.ID_RESCHEDULING_ALARMS_ON_BOOT_SERVICE
 import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.receivers.AlarmReceiver
@@ -35,6 +35,6 @@ class ReschedulingAlarmsOnBootService: BaseJobIntentService() {
     }
 
     companion object {
-        fun enqueueWork(context: Context, serviceClass: Class<out JobIntentService>) = enqueueWork(context, serviceClass, ID_ReschedulingAlarmsOnBootService, Intent(context, serviceClass))
+        fun enqueueWork(context: Context, serviceClass: Class<out JobIntentService>) = enqueueWork(context, serviceClass, ID_RESCHEDULING_ALARMS_ON_BOOT_SERVICE, Intent(context, serviceClass))
     }
 }

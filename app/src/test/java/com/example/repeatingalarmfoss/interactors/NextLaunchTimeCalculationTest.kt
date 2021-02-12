@@ -3,8 +3,10 @@ package com.example.repeatingalarmfoss.interactors
 import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.repeatingalarmfoss.R
-import com.example.repeatingalarmfoss.helper.extensions.LongExt
+import com.example.repeatingalarmfoss.helper.extensions.daysToMilliseconds
 import com.example.repeatingalarmfoss.helper.extensions.getHoursAndMinutes
+import com.example.repeatingalarmfoss.helper.extensions.hoursToMilliseconds
+import com.example.repeatingalarmfoss.helper.extensions.minutesToMilliseconds
 import com.example.repeatingalarmfoss.usecases.NextLaunchTimeCalculationUseCase
 import junit.framework.Assert.assertEquals
 import org.junit.Test
@@ -25,21 +27,21 @@ class NextLaunchTimeCalculationWeekdaysSetTest {
     @Test
     fun `same day, greater time`() {
         assert(calendar.get(DAY_OF_WEEK) == WEDNESDAY)
-        val alarmsTime = currentTime + LongExt.minutesToMilliseconds(1)
+        val alarmsTime = currentTime + minutesToMilliseconds(1)
         assertEquals(alarmsTime, nextLaunchTimeCalculationUseCase.getNextLaunchTime(alarmsTime.getHoursAndMinutes(), WEDNESDAY_CHOSEN, calendar))
     }
 
     @Test
     fun `same day, lesser time`() {
         assert(calendar.get(DAY_OF_WEEK) == WEDNESDAY)
-        val alarmsTime = currentTime - LongExt.minutesToMilliseconds(1)
-        assertEquals(alarmsTime + LongExt.daysToMilliseconds(7), nextLaunchTimeCalculationUseCase.getNextLaunchTime(alarmsTime.getHoursAndMinutes(), WEDNESDAY_CHOSEN, calendar))
+        val alarmsTime = currentTime - minutesToMilliseconds(1)
+        assertEquals(alarmsTime + daysToMilliseconds(7), nextLaunchTimeCalculationUseCase.getNextLaunchTime(alarmsTime.getHoursAndMinutes(), WEDNESDAY_CHOSEN, calendar))
     }
 
     @Test
     fun `same day, equal time`() {
         assert(calendar.get(DAY_OF_WEEK) == WEDNESDAY)
-        assertEquals(currentTime + LongExt.daysToMilliseconds(7), nextLaunchTimeCalculationUseCase.getNextLaunchTime(currentTime.getHoursAndMinutes(), WEDNESDAY_CHOSEN, calendar))
+        assertEquals(currentTime + daysToMilliseconds(7), nextLaunchTimeCalculationUseCase.getNextLaunchTime(currentTime.getHoursAndMinutes(), WEDNESDAY_CHOSEN, calendar))
     }
 }
 
@@ -52,8 +54,8 @@ class NextLaunchTimeCalculationIntervalSetTest {
 
     /*todo improve after reBoot*/
     @Test
-    fun `every hour`() = assertEquals(alarmsTime + LongExt.hoursToMilliseconds(1), nextLaunchTimeCalculationUseCaseTest.getNextLaunchTime(alarmsTime, "1${context.getString(R.string.time_unit_hour)}"))
+    fun `every hour`() = assertEquals(alarmsTime + hoursToMilliseconds(1), nextLaunchTimeCalculationUseCaseTest.getNextLaunchTime(alarmsTime, "1${context.getString(R.string.time_unit_hour)}"))
 
     @Test
-    fun `once a week`() = assertEquals(alarmsTime + LongExt.daysToMilliseconds(7), nextLaunchTimeCalculationUseCaseTest.getNextLaunchTime(alarmsTime, "7${context.getString(R.string.time_unit_day)}"))
+    fun `once a week`() = assertEquals(alarmsTime + daysToMilliseconds(7), nextLaunchTimeCalculationUseCaseTest.getNextLaunchTime(alarmsTime, "7${context.getString(R.string.time_unit_day)}"))
 }

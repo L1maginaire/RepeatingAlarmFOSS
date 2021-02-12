@@ -20,6 +20,7 @@ import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseFragment
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.FlightRecorder
+import com.example.repeatingalarmfoss.helper.extensions.inflate
 import com.example.repeatingalarmfoss.helper.extensions.set
 import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
 import com.example.repeatingalarmfoss.helper.extensions.toast
@@ -53,7 +54,7 @@ class TaskListFragment : BaseFragment() {
     private val tasksAdapter = AddedTasksAdapter(::removeTask)
     private fun removeTask(id: Long) = addingTasksViewModel.removeTask(id)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_task_list, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = container?.inflate(R.layout.fragment_task_list)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (requireActivity().application as RepeatingAlarmApp).appComponent.apply {

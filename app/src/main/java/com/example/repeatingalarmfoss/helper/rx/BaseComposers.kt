@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate", "unused")
+
 package com.example.repeatingalarmfoss.helper.rx
 
 import com.example.repeatingalarmfoss.helper.FlightRecorder

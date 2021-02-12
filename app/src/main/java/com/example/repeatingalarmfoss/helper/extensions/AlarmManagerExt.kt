@@ -3,11 +3,9 @@ package com.example.repeatingalarmfoss.helper.extensions
 import android.app.AlarmManager
 import android.app.AlarmManager.INTERVAL_HOUR
 import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import com.example.repeatingalarmfoss.helper.extensions.LongExt.minutesToMilliseconds
 import com.example.repeatingalarmfoss.receivers.LowBatteryTracker
 
 const val BATTERY_CHECKER_ID = 99999

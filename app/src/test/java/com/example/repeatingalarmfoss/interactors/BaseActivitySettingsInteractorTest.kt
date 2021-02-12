@@ -5,13 +5,13 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.repeatingalarmfoss.R
-import com.example.repeatingalarmfoss.base.LocaleChangedResult
-import com.example.repeatingalarmfoss.base.BaseActivitySettingsInteractor
-import com.example.repeatingalarmfoss.base.NightModeChangesResult
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.*
 import com.example.repeatingalarmfoss.helper.rx.BaseComposers
 import com.example.repeatingalarmfoss.helper.rx.TestSchedulers
+import com.example.repeatingalarmfoss.usecases.BaseActivitySettingsInteractor
+import com.example.repeatingalarmfoss.usecases.LocaleChangedResult
+import com.example.repeatingalarmfoss.usecases.NightModeChangesResult
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`

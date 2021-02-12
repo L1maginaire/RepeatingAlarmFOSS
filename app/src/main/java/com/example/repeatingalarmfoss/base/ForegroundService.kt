@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.Notifier
+import com.example.repeatingalarmfoss.helper.extensions.toColorfulString
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
@@ -19,9 +20,9 @@ import javax.inject.Inject
 
 abstract class ForegroundService : BaseService() {
     companion object {
-        const val ACTION_TERMINATE = "ACTION_TERMINATE"
-        const val ACTION_STOP_FOREGROUND = "STOP_FOREGROUND"
-        const val ACTION_SHOW_NOTIFICATION = "show_notification!"
+        const val ACTION_TERMINATE = "ForegroundService.ACTION_TERMINATE"
+        const val ACTION_STOP_FOREGROUND = "ForegroundService.STOP_FOREGROUND"
+        const val ACTION_SHOW_NOTIFICATION = "ForegroundService.SHOW_NOTIFICATION"
     }
 
     @Inject lateinit var notifier: Notifier
@@ -40,7 +41,7 @@ abstract class ForegroundService : BaseService() {
 
     protected fun getCancelAction(): NotificationCompat.Action = NotificationCompat.Action(
         0,
-        SpannableString(getString(R.string.dismiss)).apply { setSpan(ForegroundColorSpan(Color.RED), 0, getString(R.string.dismiss).length, 0) },
+        getString(R.string.dismiss).toColorfulString(Color.RED),
         PendingIntent.getService(this, 0, Intent(this, this::class.java).apply { this.action = ACTION_TERMINATE }, PendingIntent.FLAG_UPDATE_CURRENT)
     )
 

@@ -3,9 +3,9 @@ package com.example.repeatingalarmfoss.usecases
 import android.content.Context
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.helper.FixedSizeBitSet
-import com.example.repeatingalarmfoss.helper.extensions.LongExt.daysToMilliseconds
-import com.example.repeatingalarmfoss.helper.extensions.LongExt.hoursToMilliseconds
-import com.example.repeatingalarmfoss.helper.extensions.LongExt.minutesToMilliseconds
+import com.example.repeatingalarmfoss.helper.extensions.daysToMilliseconds
+import com.example.repeatingalarmfoss.helper.extensions.hoursToMilliseconds
+import com.example.repeatingalarmfoss.helper.extensions.minutesToMilliseconds
 import com.example.repeatingalarmfoss.screens.added_tasks.AMOUNT_DAYS_IN_WEEK
 import java.util.*
 import javax.inject.Inject

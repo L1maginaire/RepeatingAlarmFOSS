@@ -1,5 +1,8 @@
 package com.example.repeatingalarmfoss.helper.extensions
 
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import androidx.annotation.ColorInt
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,11 +30,8 @@ const val DATE_PATTERN_DAY_MONTH_YEAR = "dd MMM yyyy"
 
 
 fun String.toLowerCase() = this.toLowerCase(Locale.getDefault())
-fun String.yellow() = this.toColorfulString(33)
-
-fun String.red() = this.toColorfulString(31)
-
-private fun String.toColorfulString(colorCode: Int): String = 27.toChar() + "[${colorCode}m$this" + 27.toChar() + "[0m"
+fun String.yellow() = 27.toChar() + "[33m$this" + 27.toChar() + "[0m"
+fun String.red() = 27.toChar() + "[31m$this" + 27.toChar() + "[0m"
 
 /** String representing current hours in 24 format and minutes, with `:` delimiter. For example:
  * 00:52
@@ -40,3 +40,5 @@ private fun String.toColorfulString(colorCode: Int): String = 27.toChar() + "[${
 fun now(): String = SimpleDateFormat(TIME_PATTERN_HOURS_24_MINUTES, Locale.getDefault()).format(Date())
 
 fun today(): String = SimpleDateFormat(DATE_PATTERN_DAY_MONTH_YEAR, Locale.getDefault()).format(Date())
+
+fun String.toColorfulString(@ColorInt color: Int) = SpannableString(this).apply { setSpan(ForegroundColorSpan(color), 0, length, 0) }

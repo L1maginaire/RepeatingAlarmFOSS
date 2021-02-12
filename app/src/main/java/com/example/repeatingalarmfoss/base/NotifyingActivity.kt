@@ -7,8 +7,7 @@ import android.os.PowerManager
 import android.view.WindowManager
 import androidx.annotation.CallSuper
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
-import com.example.repeatingalarmfoss.helper.Notifier
-import com.example.repeatingalarmfoss.helper.extensions.LongExt.minutesToMilliseconds
+import com.example.repeatingalarmfoss.helper.extensions.minutesToMilliseconds
 import javax.inject.Inject
 
 open class NotifyingActivity : BaseActivity() {

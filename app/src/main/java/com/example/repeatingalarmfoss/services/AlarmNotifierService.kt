@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.repeatingalarmfoss.*
 import com.example.repeatingalarmfoss.base.ForegroundService
-import com.example.repeatingalarmfoss.base.ID_AlarmNotifierService
+import com.example.repeatingalarmfoss.base.ID_ALARM_NOTIFIER_SERVICE
 import com.example.repeatingalarmfoss.helper.extensions.constructNotification
 import com.example.repeatingalarmfoss.helper.extensions.showNotification
 import com.example.repeatingalarmfoss.repositories.GetMissedAlarmCounterResult
@@ -30,7 +30,7 @@ class AlarmNotifierService : ForegroundService() {
     override fun getActivity(): Class<out Activity> = AlarmActivity::class.java
     override fun getTitle(intent: Intent?): String = intent?.getStringExtra(ALARM_ARG_TASK_TITLE)!!
     override fun getIcon(): Int = R.drawable.ic_notification_ringing
-    override fun getServiceId(): Int = ID_AlarmNotifierService
+    override fun getServiceId(): Int = ID_ALARM_NOTIFIER_SERVICE
 
     override fun onCreate() {
         super.onCreate()

@@ -50,8 +50,8 @@ class AlarmActivity : NotifyingActivity() {
     }
 
     private fun setupViewModelSubscriptions() {
-        viewModel.errorEvent.observe(this, Observer { toast(getString(it)) })
-        viewModel.getMissedAlarmsCounterEvent.observe(this, Observer { counter ->
+        viewModel.errorEvent.observe(this, { toast(getString(it)) })
+        viewModel.getMissedAlarmsCounterEvent.observe(this, { counter ->
             showMissedAlarmNotification(intent.getStringExtra(ALARM_ARG_TASK_TITLE)!!, taskId, counter)
             finish()
             startService(Intent(this, AlarmNotifierService::class.java).apply {
