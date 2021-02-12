@@ -13,7 +13,7 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class BaseActivitySettingsInteractor @Inject constructor(private val sharedPreferences: SharedPreferences, private val baseComposers: BaseComposers, private val logger: FlightRecorder, private val context: Context) {
-    fun handleThemeChanges(toBeCompared: Int): Maybe<NightModeChangesResult> = Single.fromCallable { kotlin.runCatching { sharedPreferences.getStringOf(context.getString(R.string.pref_theme)) }.getOrNull() }
+    fun handleThemeChanges(toBeCompared: Int): Maybe<NightModeChangesResult> = Single.fromCallable { sharedPreferences.getStringOf(context.getString(R.string.pref_theme)) }
         .map { it.toInt() }
         .filter { it != toBeCompared }
         .map<NightModeChangesResult> { if (it == MODE_NIGHT_FOLLOW_SYSTEM || it == MODE_NIGHT_NO  || it == MODE_NIGHT_YES) NightModeChangesResult.Success(it) else NightModeChangesResult.Success(MODE_NIGHT_FOLLOW_SYSTEM) }
@@ -29,20 +29,14 @@ class BaseActivitySettingsInteractor @Inject constructor(private val sharedPrefe
                 NightModeChangesResult.SharedChangesCorruptionError
             }
         }.onErrorReturn { NightModeChangesResult.SharedChangesCorruptionError }
-        .doOnError {
-            logger.wtf { "Problem with changing theme!" }
-            logger.e(stackTrace = it.stackTrace)
-        }
+        .doOnError { logger.e(label = "Problem with changing theme!", stackTrace = it.stackTrace) }
         .compose(baseComposers.commonMaybeFetchTransformer())
 
     fun checkLocaleChanged(currentLocale: String): Maybe<LocaleChangedResult> = Single.just(currentLocale)
         .filter { sharedPreferences.getStringOf(context.getString(R.string.pref_lang)).equals(it).not() }
         .map<LocaleChangedResult> { LocaleChangedResult.Success }
         .onErrorReturn { LocaleChangedResult.SharedPreferencesCorruptionError }
-        .doOnError {
-            logger.wtf { "Problem with locale changes handling!" }
-            logger.e(stackTrace = it.stackTrace)
-        }
+        .doOnError { logger.e(label = "Problem with locale changes handling!", stackTrace = it.stackTrace) }
 }
 
 sealed class NightModeChangesResult {

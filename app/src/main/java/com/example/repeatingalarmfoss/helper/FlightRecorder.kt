@@ -4,16 +4,19 @@ package com.example.repeatingalarmfoss.helper
 
 import android.util.Log
 import com.example.repeatingalarmfoss.BuildConfig
-import com.example.repeatingalarmfoss.helper.extensions.DATE_PATTERN_FOR_LOGGING
 import java.io.File
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Singleton
 
-/*TODO: current thread mark, encryption*/
-@Singleton
-class FlightRecorder constructor(private val logStorage: File) {
+/** Represents date and in such format: "day_of_month concise_month_name year 24_format_hours:minutes"
+ *  For example:
+ *  23 Dec 2014 00:12
+ *  01 May 2020 05:55
+ *  */
+private const val DATE_PATTERN_FOR_LOGGING = "dd EEE MMM yyyy HH:mm"
+
+class FlightRecorder (private val logStorage: File) {
     private val isDebug = BuildConfig.DEBUG
     var TAPE_VOLUME = 10 * 1024 * 1024 /** 10 MB **/
 
@@ -39,9 +42,10 @@ class FlightRecorder constructor(private val logStorage: File) {
         .also { logStorage.appendText("} W { ${what.invoke()}\n\n") }
         .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, what.invoke())} }
 
-    fun e(toPrintInLogcat: Boolean = true, stackTrace: Array<StackTraceElement>) {
+    fun e(label: String, toPrintInLogcat: Boolean = true, stackTrace: Array<StackTraceElement>) {
         val readableStackTrace = stackTrace.joinToString(separator = "\n\n") { it.toString() }
         clearBeginningIfNeeded("} E {") { readableStackTrace }
+            .also { logStorage.appendText("} E { label: $label") }
             .also { logStorage.appendText("} E { $readableStackTrace\n\n") }
             .also { if(toPrintInLogcat && isDebug) { Log.i(this::class.java.simpleName, readableStackTrace)} }
     }
@@ -54,8 +58,8 @@ class FlightRecorder constructor(private val logStorage: File) {
         logStorage.createNewFile()
         logStorage.readText()
     }
-    
-    fun clear() = logStorage.writeText("")
+
+    fun clear() = kotlin.runCatching { logStorage.writeText("") }.isSuccess
 
     private fun clearBeginningIfNeeded(meta: String, what: () -> String) {
         val newDataSize = "$meta ${what.invoke()}\n\n".toByteArray().size

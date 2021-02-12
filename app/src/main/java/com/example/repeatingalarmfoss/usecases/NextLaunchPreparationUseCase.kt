@@ -24,7 +24,7 @@ class NextLaunchPreparationUseCase
                 throw IllegalStateException(this)
             }
         }.doOnError {
-            logger.e(stackTrace = it.stackTrace)
+            logger.e(label = javaClass.simpleName, stackTrace = it.stackTrace)
         }.map {
             task.copy(time = it.toString())
         }.flatMap { taskWithUpdatedLaunchTime ->

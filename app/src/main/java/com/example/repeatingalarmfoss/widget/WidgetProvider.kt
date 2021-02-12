@@ -50,7 +50,7 @@ class WidgetProvider : AppWidgetProvider() {
                         appWidgetManager?.updateAppWidget(it, this)
                     }
                 }
-            }, { logger.e(stackTrace = it.stackTrace) })
+            }, { logger.e(label = javaClass.simpleName, stackTrace = it.stackTrace) })
     }
 
     /*todo: another view if size of tasks == 0*/

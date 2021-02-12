@@ -97,9 +97,9 @@ class Notifier @Inject constructor(
                             logger.w { "Ringtone is already playing." }
                         }
                     } catch (e: IllegalStateException) {
-                        logger.e(stackTrace = e.stackTrace)
+                        logger.e(label = "Notifier.ring()", stackTrace = e.stackTrace)
                     } catch (e: IOException) {
-                        logger.e(stackTrace = e.stackTrace)
+                        logger.e(label = "Notifier.ring(), IOE", stackTrace = e.stackTrace)
                     }
                 }
                 if (audioManager?.ringerMode != AudioManager.RINGER_MODE_SILENT) {

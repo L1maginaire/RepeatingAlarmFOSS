@@ -26,13 +26,12 @@ class ReschedulingAlarmsOnBootService: BaseJobIntentService() {
     override fun onHandleWork(intent: Intent) {
         super.onHandleWork(intent)
         subscriptions += taskLocalDataSource.getAll()
-            .doOnError { logger.e(stackTrace = it.stackTrace) }
             .subscribe({ list -> /*TODO calculate missed and show N notifications*/
                 list.forEachIndexed { index, task ->
                     logger.logScheduledEvent(what = { "Rescheduling ($index) of ${list.size}: " }, `when` = task.time.toLong())
                     alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(applicationContext, task.id.toInt(), AlarmReceiver.createIntent(task, applicationContext), 0))
                 }
-            }, { logger.e(stackTrace = it.stackTrace) })
+            }, { logger.e(label = javaClass.simpleName, stackTrace = it.stackTrace) })
     }
 
     companion object {

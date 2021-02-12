@@ -1,9 +1,10 @@
 package com.example.repeatingalarmfoss.helper.rx
 
 import com.example.repeatingalarmfoss.helper.FlightRecorder
-import io.reactivex.*
-import io.reactivex.android.schedulers.AndroidSchedulers
-import java.util.concurrent.TimeUnit
+import io.reactivex.CompletableTransformer
+import io.reactivex.MaybeTransformer
+import io.reactivex.ObservableTransformer
+import io.reactivex.SingleTransformer
 import javax.inject.Inject
 
 class BaseComposers @Inject constructor(private val schedulers: SchedulersProvider, private val logger: FlightRecorder) {
@@ -11,28 +12,28 @@ class BaseComposers @Inject constructor(private val schedulers: SchedulersProvid
         SingleTransformer {
             it.subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
-                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
+                .doOnError { error -> logger.e(label = "rx", stackTrace = error.stackTrace) }
         }
 
     fun <T> applyMaybeSchedulers(): MaybeTransformer<T, T> =
         MaybeTransformer {
             it.subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
-                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
+                .doOnError { error -> logger.e(label = "rx", stackTrace = error.stackTrace) }
         }
 
     fun <T> applyObservableSchedulers(): ObservableTransformer<T, T> =
         ObservableTransformer {
             it.subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
-                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
+                .doOnError { error -> logger.e(label = "rx", stackTrace = error.stackTrace) }
         }
 
     fun applyCompletableSchedulers(): CompletableTransformer =
         CompletableTransformer {
             it.subscribeOn(schedulers.io())
                 .observeOn(schedulers.ui())
-                .doOnError { error -> logger.e(stackTrace = error.stackTrace) }
+                .doOnError { error -> logger.e(label = "rx", stackTrace = error.stackTrace) }
         }
 
     fun <T> commonSingleFetchTransformer(): SingleTransformer<T, T> =
