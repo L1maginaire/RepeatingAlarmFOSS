@@ -32,7 +32,7 @@ class BatteryStateHandlingUseCase @Inject constructor(private val context: Conte
                         level * 100 / scale.toFloat()
                     }
                 }?.toInt())?.also {
-                    logger.i { "${System.currentTimeMillis().toReadableDate() /*todo must be logic of logger*/} Battery level is $it" }
+                    logger.i { "Battery level is $it" }
                     if (it < BATTERY_THRESHOLD_PERCENTAGE) {
                         context.activityImplicitLaunch(LowBatteryNotificationService::class.java, LowBatteryNotifierActivity::class.java)
                     }
