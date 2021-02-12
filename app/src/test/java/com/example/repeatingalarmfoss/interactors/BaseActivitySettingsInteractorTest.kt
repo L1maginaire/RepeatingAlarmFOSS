@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.base.LocaleChangedResult
 import com.example.repeatingalarmfoss.base.BaseActivitySettingsInteractor
 import com.example.repeatingalarmfoss.base.NightModeChangesResult
@@ -25,47 +26,62 @@ private const val RUSSIAN_LOCALE = "ru"
 @RunWith(RobolectricTestRunner::class)
 class BaseActivitySettingsInteractorTest {
     private val context = InstrumentationRegistry.getInstrumentation().context
+    private val themePrefId = context.getString(R.string.pref_theme)
+    private val langPrefId = context.getString(R.string.pref_lang)
     private val sharedPrefs = context.getDefaultSharedPreferences()
     private val logger = FlightRecorder(createTempFile())
-    private val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefs, BaseComposers(TestSchedulers(), logger), logger)
+    private val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefs, BaseComposers(TestSchedulers(), logger), logger, context)
 
     @Test
-    fun `if no value persisted, write default -- AppCompatDelegate # getDefaultNightMode() -- and recreate`() {
-        assert(sharedPrefs.getStringOf(PREF_APP_THEME) == null)
-        nightModePreferenceInteractor.handleThemeChanges(YES).test().assertComplete().assertNoErrors().assertResult(NightModeChangesResult.Success(YES))
-        assert(sharedPrefs.getStringOf(PREF_APP_THEME) == YES.toString())
+    fun `if no value persisted, write default -- MODE_NIGHT_FOLLOW_SYSTEM -- and recreate`() {
+        assert(sharedPrefs.getStringOf(themePrefId) == null)
+        nightModePreferenceInteractor.handleThemeChanges(YES).test()
+            .assertComplete()
+            .assertNoErrors()
+            .assertResult(NightModeChangesResult.Success(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM))
+        assert(sharedPrefs.getStringOf(themePrefId) == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())
     }
 
     @Test
     fun `NightModeValue -- if the same value persisted, return no result`() {
-        sharedPrefs.writeStringOf(PREF_APP_THEME, YES.toString())
-        assert(sharedPrefs.getStringOf(PREF_APP_THEME)!!.toInt() == YES)
-        nightModePreferenceInteractor.handleThemeChanges(YES).test().assertNoErrors().assertComplete().assertNoValues()
-        assert(sharedPrefs.getStringOf(PREF_APP_THEME) == YES.toString())
+        sharedPrefs.writeStringOf(themePrefId, YES.toString())
+        assert(sharedPrefs.getStringOf(themePrefId)!!.toInt() == YES)
+        nightModePreferenceInteractor.handleThemeChanges(YES).test()
+            .assertNoErrors().assertComplete()
+            .assertNoValues()
+        assert(sharedPrefs.getStringOf(themePrefId) == YES.toString())
     }
 
     @Test
     fun `if something is wrong with SharedPreferences, return NightModePreferencesResult # SharedPreferencesCorruptionError`() {
         val sharedPrefMock = mock(SharedPreferences::class.java)
-        `when`(sharedPrefMock.getStringOf(PREF_APP_THEME)).thenThrow(RuntimeException::class.java)
-        val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefMock, BaseComposers(TestSchedulers(), logger), logger)
-        nightModePreferenceInteractor.handleThemeChanges(YES).test().assertNoErrors().assertComplete().assertResult(NightModeChangesResult.SharedChangesCorruptionError)
+        `when`(sharedPrefMock.getStringOf(themePrefId)).thenThrow(RuntimeException::class.java)
+        val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefMock, BaseComposers(TestSchedulers(), logger), logger, context)
+        nightModePreferenceInteractor.handleThemeChanges(YES).test()
+            .assertNoErrors()
+            .assertComplete()
+            .assertResult(NightModeChangesResult.SharedChangesCorruptionError)
     }
 
     @Test
     fun `if something is wrong with SharedPreferences, return LocaleChangedResult # SharedPreferencesCorruptionError`() {
         val sharedPrefMock = mock(SharedPreferences::class.java)
-        `when`(sharedPrefMock.getStringOf(PREF_APP_LANG)).thenThrow(RuntimeException::class.java)
-        val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefMock, BaseComposers(TestSchedulers(), logger), logger)
-        nightModePreferenceInteractor.checkLocaleChanged(RUSSIAN_LOCALE).test().assertNoErrors().assertComplete().assertResult(LocaleChangedResult.SharedPreferencesCorruptionError)
+        `when`(sharedPrefMock.getStringOf(langPrefId)).thenThrow(RuntimeException::class.java)
+        val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefMock, BaseComposers(TestSchedulers(), logger), logger, context)
+        nightModePreferenceInteractor.checkLocaleChanged(RUSSIAN_LOCALE).test()
+            .assertNoErrors()
+            .assertComplete()
+            .assertResult(LocaleChangedResult.SharedPreferencesCorruptionError)
     }
 
     @Test
     fun `Language -- if the same value persisted, return no result`() {
-        sharedPrefs.writeStringOf(PREF_APP_LANG, RUSSIAN_LOCALE)
-        assert(sharedPrefs.getStringOf(PREF_APP_LANG) == RUSSIAN_LOCALE)
-        nightModePreferenceInteractor.checkLocaleChanged(RUSSIAN_LOCALE).test().assertNoErrors().assertComplete().assertNoValues()
-        assert(sharedPrefs.getStringOf(PREF_APP_LANG) == RUSSIAN_LOCALE)
+        sharedPrefs.writeStringOf(langPrefId, RUSSIAN_LOCALE)
+        assert(sharedPrefs.getStringOf(langPrefId) == RUSSIAN_LOCALE)
+        nightModePreferenceInteractor.checkLocaleChanged(RUSSIAN_LOCALE).test()
+            .assertNoErrors()
+            .assertComplete()
+            .assertNoValues()
+        assert(sharedPrefs.getStringOf(langPrefId) == RUSSIAN_LOCALE)
     }
-
 }

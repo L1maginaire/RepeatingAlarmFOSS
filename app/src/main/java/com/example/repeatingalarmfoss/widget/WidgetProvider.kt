@@ -36,7 +36,7 @@ class WidgetProvider : AppWidgetProvider() {
         database.clear()
         if (::taskDao.isInitialized.not()) (context.applicationContext as RepeatingAlarmApp).appComponent.inject(this)
 
-        database += taskDao.getAll() /*todo repository*/
+        database += taskDao.getAll() /*todo: to service and it's repository*/
             .timeout(3, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
