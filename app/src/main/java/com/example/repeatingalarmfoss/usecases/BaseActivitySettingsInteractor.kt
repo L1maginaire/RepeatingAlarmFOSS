@@ -1,4 +1,4 @@
-package com.example.repeatingalarmfoss.base
+package com.example.repeatingalarmfoss.interactors
 
 import android.content.Context
 import android.content.SharedPreferences
