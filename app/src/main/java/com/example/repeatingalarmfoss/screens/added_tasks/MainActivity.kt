@@ -20,8 +20,7 @@ import javax.inject.Inject
 
 /*TODO subcomponent with Fragment, Adapter, etc. dependencies*/
 class MainActivity : BaseActivity(), TaskAddedCallback, ShakeDetector.Listener {
-    @Inject
-    lateinit var sensorManager: SensorManager
+    @Inject lateinit var sensorManager: SensorManager
 
     private val viewModel by viewModels<MainActivityViewModel> { viewModelFactory }
 
