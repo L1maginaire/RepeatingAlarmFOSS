@@ -17,13 +17,12 @@ Otherwise, if you want to ignore system dark mode changes, you can inherit from 
 ```    <style name="Theme.MyApplication" parent="Theme.MaterialComponents.Light.DarkActionBar">```
 
 or, programmatically:
-    * disable for the whole application:
+* disable for the whole application:
+    ```AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)```
 
-        ```AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)```
-
-    * disable for a single Activity:
-        ```delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        After calling this you probably need to call recreate() for this to take effect```
+* disable for a single Activity:
+    ```delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO)```
+    (*After calling this you probably need to call recreate() for this to take effect*)
 
 To override colors in dark mode you should create directory named **values-night** inside **res** directory with **colors.xml** file inside with dark mode colors specified inside.
 
