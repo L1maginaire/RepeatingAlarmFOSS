@@ -10,6 +10,7 @@ import com.example.repeatingalarmfoss.base.BaseJobIntentService
 import com.example.repeatingalarmfoss.base.ID_RESCHEDULING_ALARMS_ON_BOOT_SERVICE
 import com.example.repeatingalarmfoss.db.TaskLocalDataSource
 import com.example.repeatingalarmfoss.helper.extensions.set
+import com.example.repeatingalarmfoss.helper.extensions.toReadableDate
 import com.example.repeatingalarmfoss.receivers.AlarmReceiver
 import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
@@ -28,7 +29,7 @@ class ReschedulingAlarmsOnBootService: BaseJobIntentService() {
         subscriptions += taskLocalDataSource.getAll()
             .subscribe({ list -> /*TODO calculate missed and show N notifications*/
                 list.forEachIndexed { index, task ->
-                    logger.logScheduledEvent(what = { "Rescheduling ($index) of ${list.size}: " }, `when` = task.time.toLong())
+                    logger.i(what = { "Rescheduling ($index) of ${list.size}: ${task.time.toLong().toReadableDate()}" })
                     alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(applicationContext, task.id.toInt(), AlarmReceiver.createIntent(task, applicationContext), 0))
                 }
             }, { logger.e(label = javaClass.simpleName, stackTrace = it.stackTrace) })

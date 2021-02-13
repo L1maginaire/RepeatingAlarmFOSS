@@ -20,10 +20,7 @@ import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseFragment
 import com.example.repeatingalarmfoss.db.Task
 import com.example.repeatingalarmfoss.helper.FlightRecorder
-import com.example.repeatingalarmfoss.helper.extensions.inflate
-import com.example.repeatingalarmfoss.helper.extensions.set
-import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
-import com.example.repeatingalarmfoss.helper.extensions.toast
+import com.example.repeatingalarmfoss.helper.extensions.*
 import com.example.repeatingalarmfoss.receivers.AlarmReceiver
 import com.example.repeatingalarmfoss.screens.added_tasks.viewmodels.AddingTasksViewModel
 import com.jakewharton.rxbinding3.view.clicks
@@ -33,15 +30,11 @@ import kotlinx.android.synthetic.main.fragment_task_list.*
 import javax.inject.Inject
 
 class TaskListFragment : BaseFragment() {
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val addingTasksViewModel by activityViewModels<AddingTasksViewModel> { viewModelFactory }
 
-    @Inject
-    lateinit var logger: FlightRecorder
-
-    @Inject
-    lateinit var alarmManager: AlarmManager
+    @Inject lateinit var logger: FlightRecorder
+    @Inject lateinit var alarmManager: AlarmManager
     private var onTaskAddedCallback: TaskAddedCallback? = null
 
     companion object {
@@ -109,7 +102,7 @@ class TaskListFragment : BaseFragment() {
 
     private fun scheduleAlarmManager(task: Task) {
         val intent = AlarmReceiver.createIntent(task, requireActivity())
-        logger.logScheduledEvent(what = { "(${task.description}) First launch:" }, `when` = task.time.toLong())
+        logger.i(what = { "(${task.description}) First launch time: ${task.time.toLong().toReadableDate()}" })
         alarmManager.set(task.time.toLong(), PendingIntent.getBroadcast(requireActivity().applicationContext, task.id.toInt(), intent, 0))
     }
 }/*todo cancelling doesn't work!*/

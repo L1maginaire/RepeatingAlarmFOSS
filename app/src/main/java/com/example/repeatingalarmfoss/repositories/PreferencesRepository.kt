@@ -4,13 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.helper.extensions.*
+import com.example.repeatingalarmfoss.helper.rx.BaseComposers
 import io.reactivex.Single
 import java.util.*
 import javax.inject.Inject
 
 private const val LAUNCH_COUNTER_THRESHOLD = 5
 
-class PreferencesRepository @Inject constructor(private val sharedPreferences: SharedPreferences, private val context: Context) {
+class PreferencesRepository @Inject constructor(private val sharedPreferences: SharedPreferences, private val context: Context, private val baseComposers: BaseComposers) {
     fun isForbiddenToNotifyLowBatteryAtNight(time: String = now()): Single<PermissionToNotifyAboutLowBatteryResult> = Single.just(context.getString(R.string.pref_low_battery_dnd_time))
         /** DO NOT DISTURB == NOT PERMITTED TO NOTIFY!*/
         .map { sharedPreferences.getBoolean(it, true).not() || (sharedPreferences.getBoolean(it, true) && isTimeBetweenTwoTime("00:00", "09:00", time).not()) }
@@ -28,6 +29,7 @@ class PreferencesRepository @Inject constructor(private val sharedPreferences: S
         .map { sharedPreferences.getBooleanOf(it).not() && sharedPreferences.getAppLaunchCounter() % LAUNCH_COUNTER_THRESHOLD == 0 }
         .map<PermissionToShowRateDialogResult> { PermissionToShowRateDialogResult.Success(it) }
         .onErrorReturn { PermissionToShowRateDialogResult.Failure }
+        .compose(baseComposers.commonSingleFetchTransformer())
 }
 
 sealed class PermissionToShowRateDialogResult {

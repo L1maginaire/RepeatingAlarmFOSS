@@ -32,7 +32,7 @@ class NextLaunchPreparationUseCase
                 .map<NextLaunchPreparationResult> { NextLaunchPreparationResult.Success(taskWithUpdatedLaunchTime) }
                 .doOnError { logger.wtf { "${javaClass.simpleName} couldn't save Task into database" } }
                 .onErrorReturn { NextLaunchPreparationResult.DatabaseCorruptionError }
-                .doOnSuccess { logger.logScheduledEvent(what = { "(${task.description}) Next launch:" }, `when` = taskWithUpdatedLaunchTime.time.toLong()) }
+                .doOnSuccess { logger.i(what = { "(${task.description}) Next launch: ${taskWithUpdatedLaunchTime.time.toLong().toReadableDate()}" }) }
         }.onErrorReturn { NextLaunchPreparationResult.IncorrectNextLaunchTimeError }
 }
 

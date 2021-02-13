@@ -8,13 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.repeatingalarmfoss.databinding.ItemTaskBinding
 import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
 import com.example.repeatingalarmfoss.helper.extensions.toReadableDate
-import com.example.repeatingalarmfoss.helper.rx.DEFAULT_UI_SKIP_DURATION
 import com.jakewharton.rxbinding3.view.longClicks
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.extensions.LayoutContainer
-import java.util.concurrent.TimeUnit
 
 class AddedTasksAdapter(private val longClickCallback: (id: Long) -> Unit) : RecyclerView.Adapter<AddedTasksAdapter.ViewHolder>() {
     private val clicks = CompositeDisposable()
@@ -24,8 +21,11 @@ class AddedTasksAdapter(private val longClickCallback: (id: Long) -> Unit) : Rec
             notifyDataSetChanged()
         }
 
-    fun addNewTask(task: TaskUi) = tasks.add(task).also { notifyDataSetChanged() }
-    fun removeTask(id: Long) = tasks.remove(tasks.first { it.id == id }).also { notifyDataSetChanged() }
+    fun addNewTask(task: TaskUi) = tasks.add(task)
+        .also { notifyDataSetChanged() }
+
+    fun removeTask(id: Long) = tasks.remove(tasks.first { it.id == id })
+        .also { notifyDataSetChanged() }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) = clicks.clear()
     override fun getItemCount() = tasks.size

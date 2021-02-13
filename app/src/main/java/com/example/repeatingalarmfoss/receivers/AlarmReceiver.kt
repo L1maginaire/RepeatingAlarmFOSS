@@ -12,9 +12,9 @@ import com.example.repeatingalarmfoss.services.ALARM_ARG_TASK_ID
 import com.example.repeatingalarmfoss.services.AlarmNotifierService
 import com.example.repeatingalarmfoss.services.NextLaunchPreparingService
 
-private const val ACTION_RING = "action_ring"
-private const val ALARM_ARG_TASK = "arg_task"
-private const val ALARM_BUNDLE = "arg_bundle"
+private const val ACTION_RING = "AlarmReceiver.action_ring"
+private const val ALARM_ARG_TASK = "AlarmReceiver.arg_task"
+private const val ALARM_BUNDLE = "AlarmReceiver.arg_bundle"
 
 class AlarmReceiver : BroadcastReceiver() {
     companion object {

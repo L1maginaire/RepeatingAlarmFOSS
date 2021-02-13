@@ -8,8 +8,7 @@ import com.example.repeatingalarmfoss.usecases.BatteryStateHandlingUseCase
 import javax.inject.Inject
 
 class LowBatteryTracker : BroadcastReceiver() {
-    @Inject
-    lateinit var batteryStateHandlingUseCase: BatteryStateHandlingUseCase
+    @Inject lateinit var batteryStateHandlingUseCase: BatteryStateHandlingUseCase
 
     override fun onReceive(context: Context, intent: Intent) {
         (context.applicationContext as RepeatingAlarmApp).appComponent.inject(this)
