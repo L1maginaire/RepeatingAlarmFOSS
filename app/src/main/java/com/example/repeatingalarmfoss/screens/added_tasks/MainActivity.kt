@@ -5,9 +5,11 @@ package com.example.repeatingalarmfoss.screens.added_tasks
 import android.content.Intent
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
@@ -28,9 +30,17 @@ class MainActivity : BaseActivity(), TaskAddedCallback, ShakeDetector.Listener {
     private lateinit var setupAddingTaskFragment: SetupAddingTaskFragment
     private var isTablet = false
     private val shakeDetector: ShakeDetector by lazy { ShakeDetector(this) }
+    private var bottomTabIndex = 0
 
     override fun onResume() = super.onResume().also { shakeDetector.start(sensorManager) }
     override fun onPause() = super.onPause().also { shakeDetector.stop() }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if (isTablet.not()) {
+            bottomBar.selectTabAt(bottomTabIndex)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as RepeatingAlarmApp).appComponent.apply {
@@ -62,6 +72,13 @@ class MainActivity : BaseActivity(), TaskAddedCallback, ShakeDetector.Listener {
                 }
             }
         } else {
+            pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
+                override fun onPageScrollStateChanged(state: Int) = Unit
+                override fun onPageSelected(position: Int) {
+                    bottomTabIndex = position
+                }
+            })
             pager.adapter = MainScreenViewPagerAdapter(supportFragmentManager)
             bottomBar.setupWithViewPager(pager)
         }
