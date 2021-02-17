@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /*TODO rethink how to handle multiple activities overlapping*/
-class AlarmActivity : NotifyingActivity() {
+class AlarmActivity : NotifyingActivity(R.layout.activity_alarm) {
     private val viewModel by viewModels<AlarmActivityViewModel> { viewModelFactory }
     @Inject lateinit var logger: FlightRecorder
     private var taskId: Long = 0L
@@ -36,7 +36,6 @@ class AlarmActivity : NotifyingActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (applicationContext as RepeatingAlarmApp).appComponent.inject(this)
-        setContentView(R.layout.activity_alarm)
         setupClicks()
 
         taskId = intent.extras!!.getLong(ALARM_ARG_TASK_ID)
@@ -49,7 +48,8 @@ class AlarmActivity : NotifyingActivity() {
         setupViewModelSubscriptions()
     }
 
-    private fun setupViewModelSubscriptions() {
+    override fun setupViewModelSubscriptions() {
+        super.setupViewModelSubscriptions()
         viewModel.errorEvent.observe(this, { toast(getString(it)) })
         viewModel.getMissedAlarmsCounterEvent.observe(this, { counter ->
             showMissedAlarmNotification(intent.getStringExtra(ALARM_ARG_TASK_TITLE)!!, taskId, counter)
@@ -69,7 +69,8 @@ class AlarmActivity : NotifyingActivity() {
             true
         } else super.dispatchKeyEvent(event)
 
-    private fun setupClicks() {
+    override fun setupClicks() {
+        super.setupClicks()
         subscriptions += gotInButton.clicks()
             .throttleFirst()
             .subscribe {

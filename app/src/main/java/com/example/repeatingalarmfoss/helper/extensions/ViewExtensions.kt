@@ -13,7 +13,11 @@ import es.dmoral.toasty.Toasty
 
 fun ViewGroup.inflate(layoutId: Int): View = LayoutInflater.from(context).inflate(layoutId, this, false)
 
-fun Context.toast(message: String) = Toasty.error(this, message, Toast.LENGTH_LONG, true).show();
+fun Context.errorToast(message: String) = Toasty.error(this, message, Toast.LENGTH_LONG, true).show()
+fun Fragment.errorToast(message: String) = context?.errorToast(message)
+fun Activity.errorToast(message: String) = applicationContext.errorToast(message)
+
+fun Context.toast(message: String) = Toasty.info(this, message, Toast.LENGTH_LONG, true).show()
 fun Fragment.toast(message: String) = context?.toast(message)
 fun Activity.toast(message: String) = applicationContext.toast(message)
 

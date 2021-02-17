@@ -55,4 +55,7 @@
     <string name="title_channel_notifications">Уведомления о запланированных событиях</string>
     <string name="title_channel_missed_notifications">Уведомления о пропущенных уведомлениях</string>
     <string name="title_channel_low_battery">Уведомления о низком заряде батаери</string>
+    <string name="io_error">Что-то не так с файловой системой!</string>
+    <string name="title_send_logs">Отправить логи разработчику</string>
+    <string name="title_erase_logs">Стереть логи</string>
 </resources>

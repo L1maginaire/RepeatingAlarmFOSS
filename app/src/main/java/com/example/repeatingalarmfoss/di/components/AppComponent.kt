@@ -4,13 +4,12 @@ import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.*
 import com.example.repeatingalarmfoss.di.ViewModelBuilderModule
 import com.example.repeatingalarmfoss.di.modules.*
-import com.example.repeatingalarmfoss.receivers.BootReceiver
 import com.example.repeatingalarmfoss.receivers.LowBatteryTracker
 import com.example.repeatingalarmfoss.screens.added_tasks.MainActivity
 import com.example.repeatingalarmfoss.screens.added_tasks.SetupAddingTaskFragment
 import com.example.repeatingalarmfoss.screens.added_tasks.TaskListFragment
 import com.example.repeatingalarmfoss.screens.alarm.AlarmActivity
-import com.example.repeatingalarmfoss.screens.logs.LogActivity
+import com.example.repeatingalarmfoss.screens.logs.LogsActivity
 import com.example.repeatingalarmfoss.services.AlarmNotifierService
 import com.example.repeatingalarmfoss.services.NextLaunchPreparingService
 import com.example.repeatingalarmfoss.services.ReschedulingAlarmsOnBootService
@@ -43,5 +42,5 @@ interface AppComponent {
     fun inject(app: RepeatingAlarmApp)
     fun inject(receiver: LowBatteryTracker)
     fun inject(fragment: SetupAddingTaskFragment)
-    fun inject(activity: LogActivity)
+    fun inject(activity: LogsActivity)
 }

@@ -14,14 +14,14 @@ import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
 import com.example.repeatingalarmfoss.screens.added_tasks.viewmodels.MainActivityViewModel
-import com.example.repeatingalarmfoss.screens.logs.LogActivity
+import com.example.repeatingalarmfoss.screens.logs.LogsActivity
 import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 /*TODO subcomponent with Fragment, Adapter, etc. dependencies*/
-class MainActivity : BaseActivity(), TaskAddedCallback, ShakeDetector.Listener {
+class MainActivity : BaseActivity(R.layout.activity_main), TaskAddedCallback, ShakeDetector.Listener {
     @Inject lateinit var sensorManager: SensorManager
 
     private val viewModel by viewModels<MainActivityViewModel> { viewModelFactory }
@@ -48,7 +48,6 @@ class MainActivity : BaseActivity(), TaskAddedCallback, ShakeDetector.Listener {
         }
         isTablet = resources.getBoolean(R.bool.isTablet)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         if (isTablet) {
             val settingsFragment = SettingsFragment()
@@ -88,5 +87,5 @@ class MainActivity : BaseActivity(), TaskAddedCallback, ShakeDetector.Listener {
     }
 
     override fun onSuccessfulScheduling() = if (isTablet) setupAddingTaskFragment.setFieldsDefault() else Unit
-    override fun hearShake() = startActivity(Intent(this, LogActivity::class.java))
+    override fun hearShake() = startActivity(Intent(this, LogsActivity::class.java))
 }

@@ -5,10 +5,11 @@ package com.example.repeatingalarmfoss.base
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.annotation.CallSuper
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.SingleLiveEvent
@@ -21,29 +22,37 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
 
-open class BaseActivity : AppCompatActivity() {
+open class BaseActivity(@LayoutRes layout: Int) : AppCompatActivity(layout) {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<BaseActivityViewModel> { viewModelFactory }
+    private lateinit var currentLocale: String
 
     protected val subscriptions = CompositeDisposable()
     override fun onDestroy() = super.onDestroy().also { subscriptions.clear() }
-
-    private lateinit var currentLocale: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as RepeatingAlarmApp).appComponent.inject(this)
 
         super.onCreate(savedInstanceState)
+        setupViewModelSubscriptions()
+        setupClicks()
+
         currentLocale = resources.configuration.getLocalesLanguage()
 
-        viewModel.recreateEvent.observe(this, Observer {
+        viewModel.checkNightModeState(AppCompatDelegate.getDefaultNightMode())
+    }
+
+    protected open fun setupClicks() = Unit
+
+    @CallSuper
+    protected open fun setupViewModelSubscriptions(){
+        viewModel.recreateEvent.observe(this, {
             recreate()
         })
-        viewModel.nightModeChangedEvent.observe(this, Observer {
+        viewModel.nightModeChangedEvent.observe(this, {
             AppCompatDelegate.setDefaultNightMode(it)
             recreate()
         })
-        viewModel.checkNightModeState(AppCompatDelegate.getDefaultNightMode())
     }
 
     override fun onRestart() = super.onRestart().also { viewModel.checkLocaleChanged(currentLocale) }

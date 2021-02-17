@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".screens.low_battery.LowBatteryNotifierActivity" />
-        <activity android:name=".screens.logs.LogActivity" />
+        <activity android:name=".screens.logs.LogsActivity" />
 
         <service
             android:name=".services.NextLaunchPreparingService"
@@ -65,6 +65,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <receiver
             android:name=".receivers.AlarmReceiver"

@@ -3,6 +3,7 @@ package com.example.repeatingalarmfoss.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.repeatingalarmfoss.base.BaseActivity
+import com.example.repeatingalarmfoss.screens.logs.LogsActivityViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -32,6 +33,11 @@ abstract class ViewModelBuilderModule {
     @IntoMap
     @ViewModelKey(BaseActivity.BaseActivityViewModel::class)
     abstract fun bindBaseViewModel(viewModel: BaseActivity.BaseActivityViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LogsActivityViewModel::class)
+    abstract fun logsViewModel(viewModel: LogsActivityViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

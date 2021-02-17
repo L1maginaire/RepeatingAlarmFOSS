@@ -6,11 +6,12 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.view.WindowManager
 import androidx.annotation.CallSuper
+import androidx.annotation.LayoutRes
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.extensions.minutesToMilliseconds
 import javax.inject.Inject
 
-open class NotifyingActivity : BaseActivity() {
+open class NotifyingActivity(@LayoutRes layout: Int) : BaseActivity(layout) {
     @Inject lateinit var wakeLock: PowerManager.WakeLock
     @Inject lateinit var keyguardManager: KeyguardManager
     override fun onDestroy() = super.onDestroy().also { dimScreen() }

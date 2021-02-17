@@ -60,4 +60,7 @@
     <string name="title_channel_missed_notifications">Missed Alarm Notifications</string>
     <string name="title_channel_notifications">Alarm Notifications</string>
     <string name="title_channel_low_battery">Low Battery Notifications</string>
+    <string name="io_error">Something wrong with file system!</string>
+    <string name="title_erase_logs">Erase logs</string>
+    <string name="title_send_logs">Send logs to developer</string>
 </resources>

@@ -14,9 +14,8 @@ import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_low_battery_notifier.*
 import java.util.concurrent.TimeUnit
 
-class LowBatteryNotifierActivity : NotifyingActivity() {
+class LowBatteryNotifierActivity : NotifyingActivity(R.layout.activity_low_battery_notifier) {
     override fun onCreate(savedInstanceState: Bundle?) = super.onCreate(savedInstanceState).apply {
-        setContentView(R.layout.activity_low_battery_notifier)
         subscriptions += Observable.timer(10, TimeUnit.MINUTES, AndroidSchedulers.mainThread())
             .subscribe { shutdownNotifiers() }
         subscriptions += buttonGotIt.clicks()
