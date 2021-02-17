@@ -2,6 +2,7 @@ package com.example.repeatingalarmfoss
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -24,7 +25,7 @@ import io.reactivex.plugins.RxJavaPlugins
 import java.util.*
 import javax.inject.Inject
 
-class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
+class RepeatingAlarmApp : Application(), LifecycleObserver {
     @Inject @JvmField var notificationManager: NotificationManager? = null
     @Inject lateinit var preferencesRepository: PreferencesRepository
     @Inject lateinit var logger: FlightRecorder
