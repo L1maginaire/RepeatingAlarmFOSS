@@ -9,11 +9,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.multidex.MultiDexApplication
 import com.example.repeatingalarmfoss.di.components.AppComponent
 import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
 import com.example.repeatingalarmfoss.helper.FlightRecorder
