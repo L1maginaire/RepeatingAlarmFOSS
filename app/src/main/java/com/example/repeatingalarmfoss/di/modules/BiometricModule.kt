@@ -31,11 +31,10 @@ private const val KEY_NAME = "keyName"
 private const val BIOMETRIC_DIALOG_TITLE = "BIOMETRIC_DIALOG_TITLE"
 private const val BIOMETRIC_DIALOG_DESCRIPTION = "BIOMETRIC_DIALOG_DESCRIPTION"
 
-
 /*TODO investigate DaggerLazy*/
 @Module
 @TargetApi(Build.VERSION_CODES.M)
-class BiometricModule {
+class BiometricModule(private val onSuccessfulAuth: () -> Unit) {
     @BiometricScope
     @Provides
     fun provideCipher(@Named(KEY_NAME) keyName: String, keyStore: KeyStore?): Cipher? = kotlin.runCatching {
@@ -135,7 +134,6 @@ class BiometricModule {
         .setNegativeButton(context.getString(android.R.string.cancel), context.mainExecutor) { _, _ -> biometricCallback.onAuthenticationCancelled() }
         .build()
 
-
     @BiometricScope
     @Provides
     @Named(BIOMETRIC_DIALOG_TITLE)
@@ -189,7 +187,7 @@ class BiometricModule {
         override fun onBiometricAuthenticationPermissionNotGranted() = logger.i { "biometric auth: permission not granted" }
         override fun onAuthenticationFailed() = logger.i { "biometric auth failed" }
         override fun onAuthenticationCancelled() = logger.i { "biometric auth cancelled" }
-        override fun onAuthenticationSuccessful() = logger.i { "biometric auth succeed" }
+        override fun onAuthenticationSuccessful() = onSuccessfulAuth.invoke().also { logger.i { "biometric auth succeed" } }
         override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence) = logger.i { "biometric auth: onAuthenticationHelp(). helpCode: $helpCode, helpString: $helpString" }
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence) = logger.i { "biometric auth error. errorCode: $errorCode, errString: $errString" }
     }

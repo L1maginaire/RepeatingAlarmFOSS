@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <SwitchPreferenceCompat
+        android:key="@string/pref_enable_biometric_protection"
+        app:iconSpaceReserved="false"
+        android:title="@string/title_lock_records"
+        android:summary="@string/summary_lock_explanation"/>
+
     <ListPreference
         android:entries="@array/supported_languages"
         android:entryValues="@array/supported_locales"

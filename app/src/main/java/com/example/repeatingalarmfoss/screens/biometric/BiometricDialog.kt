@@ -13,6 +13,7 @@ class BiometricDialog(context: Context, private val biometricCallback: Biometric
         setContentView(layoutInflater.inflate(R.layout.dialog_biometric, null))
         tvTitle.text = title
         tvDescription?.text = description
+        setCancelable(false)
     }
 
     fun updateStatus(status: String) {

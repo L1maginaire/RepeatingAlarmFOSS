@@ -1,8 +1,8 @@
 package com.example.repeatingalarmfoss.di.components
 
-import com.example.repeatingalarmfoss.MainActivity
 import com.example.repeatingalarmfoss.di.modules.BiometricModule
 import com.example.repeatingalarmfoss.di.modules.BiometricScope
+import com.example.repeatingalarmfoss.screens.added_tasks.MainActivity
 import dagger.Subcomponent
 
 @BiometricScope

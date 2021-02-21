@@ -28,12 +28,11 @@ interface AppComponent {
         fun build(): AppComponent
     }
 
-    fun biometricComponent(): BiometricComponent
+    fun biometricComponent(module: BiometricModule): BiometricComponent
 
     fun inject(activity: AlarmActivity)
     fun inject(activity: NotifyingActivity)
     fun inject(activity: BaseActivity)
-    fun inject(activity: MainActivity)
     fun inject(activity: TaskListFragment)
     fun inject(service: NextLaunchPreparingService)
     fun inject(service: BaseService)

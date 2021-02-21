@@ -3,26 +3,36 @@
 package com.example.repeatingalarmfoss.screens.added_tasks
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
+import com.example.repeatingalarmfoss.di.modules.BiometricModule
+import com.example.repeatingalarmfoss.di.modules.BiometricScope
+import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
 import com.example.repeatingalarmfoss.screens.added_tasks.viewmodels.MainActivityViewModel
+import com.example.repeatingalarmfoss.screens.biometric.Authenticator
 import com.example.repeatingalarmfoss.screens.logs.LogsActivity
 import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
+import com.jakewharton.rxbinding3.view.clicks
 import com.squareup.seismic.ShakeDetector
+import io.reactivex.rxkotlin.plusAssign
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 /*TODO subcomponent with Fragment, Adapter, etc. dependencies*/
+@BiometricScope
 class MainActivity : BaseActivity(R.layout.activity_main), TaskAddedCallback, ShakeDetector.Listener {
     @Inject lateinit var sensorManager: SensorManager
+    @Inject lateinit var authenticator: Authenticator
+    @Inject lateinit var sharedPreferences: SharedPreferences
 
     private val viewModel by viewModels<MainActivityViewModel> { viewModelFactory }
 
@@ -43,11 +53,31 @@ class MainActivity : BaseActivity(R.layout.activity_main), TaskAddedCallback, Sh
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (application as RepeatingAlarmApp).appComponent.apply {
-            inject(this@MainActivity)
-        }
+        (application as RepeatingAlarmApp)
+            .appComponent
+            .biometricComponent(BiometricModule { populateUi() })
+            .inject(this)
+
         isTablet = resources.getBoolean(R.bool.isTablet)
         super.onCreate(savedInstanceState)
+
+        if (sharedPreferences.getBoolean(getString(R.string.pref_enable_biometric_protection), false)) {
+            ivLock.isVisible = true
+            controlsUi.isVisible = false
+
+            authenticator.authenticate()
+
+            subscriptions += ivLock.clicks()
+                .throttleFirst()
+                .subscribe { authenticator.authenticate() }
+        } else {
+            populateUi()
+        }
+    }
+
+    private fun populateUi() {
+        ivLock.isVisible = false
+        controlsUi.isVisible = true
 
         if (isTablet) {
             val settingsFragment = SettingsFragment()
@@ -58,6 +88,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), TaskAddedCallback, Sh
                 replace(R.id.detailFragmentContainer, taskListFragment)
                 replace(R.id.fragmentContainer, setupAddingTaskFragment)
             }
+            bottomBar.isVisible = true
             bottomBar.onTabSelected = {
                 supportFragmentManager.commit {
                     replace(

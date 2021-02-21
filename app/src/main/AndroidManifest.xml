@@ -60,10 +60,10 @@
             android:name=".screens.alarm.AlarmActivity"
             android:label="@string/title_activity_alarm"
             android:showOnLockScreen="true" />
+
         <activity android:name=".screens.added_tasks.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

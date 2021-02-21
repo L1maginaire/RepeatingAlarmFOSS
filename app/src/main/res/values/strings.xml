@@ -2,6 +2,7 @@
     <!--prefs-->
     <string name="pref_theme" translatable="false">PREF_APP_THEME</string>
     <string name="pref_low_battery_dnd_time" translatable="false">PREF_LOW_BATTERY_DND_AT_NIGHT</string>
+    <string name="pref_enable_biometric_protection" translatable="false">pref_enable_biometric_protection</string>
     <string name="pref_lang" translatable="false">PREF_APP_LANG</string>
 
     <string name="app_name" translatable="false">Repeating Alarm</string>
@@ -66,4 +67,6 @@
     <string name="title_records_access">Records access</string>
     <string name="title_fingerprint_instruction">Touch your finger on the fingerprint sensor to reveal your records</string>
     <string name="title_not_recognized">Not recognized</string>
+    <string name="title_lock_records">Auto-lock records</string>
+    <string name="summary_lock_explanation">Turn this feature on to auto-lock your records and use a fingerprint to unlock it.</string>
 </resources>
