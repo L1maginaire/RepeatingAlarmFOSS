@@ -41,7 +41,7 @@ class NextLaunchTimeCalculationUseCase @Inject constructor(private val appContex
     }
 
     @Suppress("MoveVariableDeclarationIntoWhen")
-            /** @param repeatingClassifierValue must consist of number and one of 3 classifiers (Minutes, Hours, Days) without delimiter*/
+    /** @param repeatingClassifierValue must consist of number and one of 3 classifiers (Minutes, Hours, Days) without delimiter*/
     fun getNextLaunchTime(launchTime: Long, repeatingClassifierValue: String): Long {
         val interval = Integer.parseInt(repeatingClassifierValue.replace("[^0-9]".toRegex(), ""))
         val classifier = repeatingClassifierValue.replace("\\d+".toRegex(), "")

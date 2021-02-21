@@ -27,6 +27,9 @@ interface AppComponent {
         fun application(app: RepeatingAlarmApp): Builder
         fun build(): AppComponent
     }
+
+    fun biometricComponent(): BiometricComponent
+
     fun inject(activity: AlarmActivity)
     fun inject(activity: NotifyingActivity)
     fun inject(activity: BaseActivity)

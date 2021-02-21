@@ -58,4 +58,7 @@
     <string name="io_error">Что-то не так с файловой системой!</string>
     <string name="title_send_logs">Отправить логи разработчику</string>
     <string name="title_erase_logs">Стереть логи</string>
+    <string name="title_records_access">Доступ к записям</string>
+    <string name="title_fingerprint_instruction">Дотроньтесь пальцем до сенсора отпечатков пальцев для показа записей</string>
+    <string name="title_not_recognized">Не опознано</string>
 </resources>

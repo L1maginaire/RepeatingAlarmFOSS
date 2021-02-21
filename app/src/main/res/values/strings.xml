@@ -63,4 +63,7 @@
     <string name="io_error">Something wrong with file system!</string>
     <string name="title_erase_logs">Erase logs</string>
     <string name="title_send_logs">Send logs to developer</string>
+    <string name="title_records_access">Records access</string>
+    <string name="title_fingerprint_instruction">Touch your finger on the fingerprint sensor to reveal your records</string>
+    <string name="title_not_recognized">Not recognized</string>
 </resources>
