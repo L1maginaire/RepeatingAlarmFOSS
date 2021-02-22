@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.commit
@@ -55,7 +56,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), TaskAddedCallback, Sh
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as RepeatingAlarmApp)
             .appComponent
-            .biometricComponent(BiometricModule { populateUi() })
+            .biometricComponent(BiometricModule(this) { populateUi() })
             .inject(this)
 
         isTablet = resources.getBoolean(R.bool.isTablet)
