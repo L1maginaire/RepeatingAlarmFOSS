@@ -70,6 +70,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation "androidx.viewpager:viewpager:1.0.0"
     implementation 'androidx.lifecycle:lifecycle-process:2.3.0'
+    implementation "androidx.biometric:biometric:1.2.0-alpha02"
 
     /* TESTING */
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
