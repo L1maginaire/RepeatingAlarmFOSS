@@ -32,6 +32,7 @@ private const val BIOMETRIC_DIALOG_TITLE = "BIOMETRIC_DIALOG_TITLE"
 private const val BIOMETRIC_DIALOG_DESCRIPTION = "BIOMETRIC_DIALOG_DESCRIPTION"
 
 /*TODO investigate DaggerLazy*/
+/*TODO support PINs*/
 @Module
 @TargetApi(Build.VERSION_CODES.M)
 class BiometricModule(private val activity: FragmentActivity, private val onSuccessfulAuth: () -> Unit, private val onFailedAuth: () -> Unit = {}) {
