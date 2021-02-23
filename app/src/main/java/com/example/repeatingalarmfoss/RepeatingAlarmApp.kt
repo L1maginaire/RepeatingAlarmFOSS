@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.lifecycle.*
 import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.multidex.MultiDexApplication
 import com.example.repeatingalarmfoss.di.components.AppComponent
 import com.example.repeatingalarmfoss.di.components.DaggerAppComponent
 import com.example.repeatingalarmfoss.helper.FlightRecorder
@@ -22,7 +23,7 @@ import io.reactivex.plugins.RxJavaPlugins
 import java.util.*
 import javax.inject.Inject
 
-class RepeatingAlarmApp : Application(), LifecycleObserver {
+class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
     @Inject @JvmField var notificationManager: NotificationManager? = null
     @Inject lateinit var preferencesRepository: PreferencesRepository
     @Inject lateinit var logger: FlightRecorder

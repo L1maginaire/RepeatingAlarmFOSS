@@ -55,7 +55,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), TaskAddedCallback, Sh
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as RepeatingAlarmApp)
             .appComponent
-            .biometricComponent(BiometricModule { populateUi() })
+            .biometricComponent(BiometricModule(this) { populateUi() })
             .inject(this)
 
         isTablet = resources.getBoolean(R.bool.isTablet)

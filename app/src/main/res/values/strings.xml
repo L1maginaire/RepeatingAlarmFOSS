@@ -69,4 +69,8 @@
     <string name="title_not_recognized">Not recognized</string>
     <string name="title_lock_records">Auto-lock records</string>
     <string name="summary_lock_explanation">Turn this feature on to auto-lock your records and use a fingerprint to unlock it.</string>
+    <string name="summary_version_is_not_supported">Android version is not supported. Please, update your OS.</string>
+    <string name="summary_lack_of_fingerprint_permission">Fingerprint permission haven\'t been granted.</string>
+    <string name="summary_lack_of_fingerprint_sensor">You don\'t have fingerprint sensor!</string>
+    <string name="summary_you_dont_have_fingerprint_presented">You don\'t have any fingerprints presented. Please, provide at least one.</string>
 </resources>

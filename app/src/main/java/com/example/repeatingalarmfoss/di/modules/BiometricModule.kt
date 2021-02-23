@@ -4,19 +4,20 @@ import android.Manifest
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.pm.PackageManager
-import android.hardware.biometrics.BiometricPrompt
 import android.os.Build
-import android.os.CancellationSignal
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import androidx.annotation.RequiresApi
+import androidx.biometric.BiometricPrompt
 import androidx.core.app.ActivityCompat
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
+import androidx.core.os.CancellationSignal
+import androidx.fragment.app.FragmentActivity
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.screens.biometric.Authenticator
 import com.example.repeatingalarmfoss.screens.biometric.BiometricCallback
 import com.example.repeatingalarmfoss.screens.biometric.BiometricDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.Module
 import dagger.Provides
 import java.security.KeyStore
@@ -34,7 +35,7 @@ private const val BIOMETRIC_DIALOG_DESCRIPTION = "BIOMETRIC_DIALOG_DESCRIPTION"
 /*TODO investigate DaggerLazy*/
 @Module
 @TargetApi(Build.VERSION_CODES.M)
-class BiometricModule(private val onSuccessfulAuth: () -> Unit) {
+class BiometricModule(private val activity: FragmentActivity, private val onSuccessfulAuth: () -> Unit) {
     @BiometricScope
     @Provides
     fun provideCipher(@Named(KEY_NAME) keyName: String, keyStore: KeyStore?): Cipher? = kotlin.runCatching {
@@ -68,9 +69,9 @@ class BiometricModule(private val onSuccessfulAuth: () -> Unit) {
     fun provideAuthenticator(
         biometricCallback: BiometricCallback,
         context: Context,
-        authCallbackV28: BiometricPrompt.AuthenticationCallback,
-        biometricPrompt: BiometricPrompt,
+        promptInfo: BiometricPrompt.PromptInfo?,
         authCallbackV23to27: FingerprintManagerCompat.AuthenticationCallback,
+        authCallbackV28: BiometricPrompt.AuthenticationCallback?,
         dialogV23to27: BiometricDialog,
         cipher: Cipher?,
         keyStore: KeyStore?
@@ -95,10 +96,11 @@ class BiometricModule(private val onSuccessfulAuth: () -> Unit) {
                 }
                 else -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        biometricPrompt.authenticate(CancellationSignal(), context.mainExecutor, authCallbackV28)
+                        BiometricPrompt(activity, authCallbackV28!!).authenticate(promptInfo!!)
                     } else {
                         if (keyStore != null && cipher != null) {
-                            FingerprintManagerCompat.from(context).authenticate(FingerprintManagerCompat.CryptoObject(cipher), 0, androidx.core.os.CancellationSignal(), authCallbackV23to27, null)
+                            FingerprintManagerCompat.from(context)
+                                .authenticate(FingerprintManagerCompat.CryptoObject(cipher), 0, CancellationSignal(), authCallbackV23to27, null)
                             dialogV23to27.show()
                         }
                     }
@@ -117,22 +119,22 @@ class BiometricModule(private val onSuccessfulAuth: () -> Unit) {
     fun provideBiometricDialogV23to28(
         @Named(BIOMETRIC_DIALOG_TITLE) title: String,
         @Named(BIOMETRIC_DIALOG_DESCRIPTION) description: String,
-        context: Context, biometricCallback: BiometricCallback
-    ): BiometricDialog = BiometricDialog(context, biometricCallback, title, description)
+        biometricCallback: BiometricCallback
+    ): BiometricDialog = BiometricDialog(activity, biometricCallback, title, description)
 
-    @RequiresApi(Build.VERSION_CODES.P)
     @BiometricScope
     @Provides
     fun provideBiometricDialogForV28(
         @Named(BIOMETRIC_DIALOG_TITLE) title: String,
         @Named(BIOMETRIC_DIALOG_DESCRIPTION) description: String,
-        biometricCallback: BiometricCallback,
         context: Context
-    ): BiometricPrompt = BiometricPrompt.Builder(context)
-        .setTitle(title)
-        .setDescription(description)
-        .setNegativeButton(context.getString(android.R.string.cancel), context.mainExecutor) { _, _ -> biometricCallback.onAuthenticationCancelled() }
-        .build()
+    ): BiometricPrompt.PromptInfo? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        BiometricPrompt.PromptInfo.Builder()
+            .setTitle(title)
+            .setDescription(description)
+            .setNegativeButtonText(context.getString(android.R.string.cancel))
+            .build()
+    } else null
 
     @BiometricScope
     @Provides
@@ -144,15 +146,15 @@ class BiometricModule(private val onSuccessfulAuth: () -> Unit) {
     @Named(BIOMETRIC_DIALOG_DESCRIPTION)
     fun provideDialogDescription(context: Context): String = context.getString(R.string.title_fingerprint_instruction)
 
-    @RequiresApi(Build.VERSION_CODES.P)
     @BiometricScope
     @Provides
-    fun provideAuthCallbackV28(biometricCallback: BiometricCallback): BiometricPrompt.AuthenticationCallback = object : BiometricPrompt.AuthenticationCallback() {
-        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) = biometricCallback.onAuthenticationSuccessful()
-        override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence) = biometricCallback.onAuthenticationHelp(helpCode, helpString)
-        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) = biometricCallback.onAuthenticationError(errorCode, errString)
-        override fun onAuthenticationFailed() = biometricCallback.onAuthenticationFailed()
-    }
+    fun provideAuthCallbackV28(biometricCallback: BiometricCallback): BiometricPrompt.AuthenticationCallback? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        object : BiometricPrompt.AuthenticationCallback() {
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) = biometricCallback.onAuthenticationSuccessful()
+            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) = biometricCallback.onAuthenticationError(errorCode, errString)
+            override fun onAuthenticationFailed() = biometricCallback.onAuthenticationFailed()
+        }
+    } else null
 
     @BiometricScope
     @Provides
