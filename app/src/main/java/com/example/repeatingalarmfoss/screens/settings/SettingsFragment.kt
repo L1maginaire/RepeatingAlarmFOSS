@@ -1,6 +1,7 @@
 package com.example.repeatingalarmfoss.screens.settings
 
 import android.Manifest
+import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
@@ -15,10 +16,19 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreferenceCompat
 import com.example.repeatingalarmfoss.R
+import com.example.repeatingalarmfoss.RepeatingAlarmApp
+import com.example.repeatingalarmfoss.di.modules.BiometricModule
+import com.example.repeatingalarmfoss.di.modules.BiometricScope
+import com.example.repeatingalarmfoss.helper.extensions.getBooleanOf
 import com.example.repeatingalarmfoss.helper.extensions.getStringOf
+import com.example.repeatingalarmfoss.screens.biometric.Authenticator
 import java.util.*
+import javax.inject.Inject
 
+@BiometricScope
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+    @Inject lateinit var authenticator: Authenticator
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = super.onCreateView(inflater, container, savedInstanceState)
         .also { PreferenceManager.getDefaultSharedPreferences(requireContext()).registerOnSharedPreferenceChangeListener(this) }
         .also {
@@ -43,6 +53,18 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }
         }
 
+    override fun onAttach(context: Context) = super.onAttach(context).also {
+        (requireContext().applicationContext as RepeatingAlarmApp)
+            .appComponent
+            .biometricComponent(
+                BiometricModule(requireActivity(),
+                    onSuccessfulAuth =  { findPreference<SwitchPreferenceCompat>(getString(R.string.pref_enable_biometric_protection))!!.isChecked = false },
+                    onFailedAuth = { findPreference<SwitchPreferenceCompat>(getString(R.string.pref_enable_biometric_protection))!!.isChecked = true }
+                )
+            )
+            .inject(this)
+    }
+
     override fun onDestroyView() = super.onDestroyView().also { PreferenceManager.getDefaultSharedPreferences(requireContext()).unregisterOnSharedPreferenceChangeListener(this) }
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) = setPreferencesFromResource(R.xml.preferences, rootKey)
 
@@ -57,6 +79,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             getString(R.string.pref_theme) -> {
                 AppCompatDelegate.setDefaultNightMode(sharedPreferences.getStringOf(key)!!.toInt())
                 requireActivity().recreate()
+            }
+            getString(R.string.pref_enable_biometric_protection) -> {
+                if (sharedPreferences.getBooleanOf(key).not()) {
+                    authenticator.authenticate()
+                }
             }
         }
     }
