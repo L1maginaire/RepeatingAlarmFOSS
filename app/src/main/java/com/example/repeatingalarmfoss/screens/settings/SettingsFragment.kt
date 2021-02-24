@@ -1,27 +1,24 @@
 package com.example.repeatingalarmfoss.screens.settings
 
-import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.ActivityCompat
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat
+import androidx.biometric.BiometricManager
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreferenceCompat
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
+import com.example.repeatingalarmfoss.di.modules.Authenticator
 import com.example.repeatingalarmfoss.di.modules.BiometricModule
-import com.example.repeatingalarmfoss.di.modules.BiometricScope
+import com.example.repeatingalarmfoss.di.scopes.BiometricScope
 import com.example.repeatingalarmfoss.helper.extensions.getBooleanOf
 import com.example.repeatingalarmfoss.helper.extensions.getStringOf
-import com.example.repeatingalarmfoss.screens.biometric.Authenticator
 import java.util.*
 import javax.inject.Inject
 
@@ -38,15 +35,24 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                     biometricPref.isEnabled = false
                     biometricPref.summary = getString(R.string.summary_version_is_not_supported)
                 }
-                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED -> {
-                    biometricPref.isEnabled = false
-                    biometricPref.summary = getString(R.string.summary_lack_of_fingerprint_permission)
+                BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ||
+                        BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
+                            biometricPref.isEnabled = false
+                            biometricPref.summary = getString(R.string.summary_lack_of_fingerprint_sensor)
                 }
-                FingerprintManagerCompat.from(requireContext()).isHardwareDetected.not() -> {
+                BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
                     biometricPref.isEnabled = false
-                    biometricPref.summary = getString(R.string.summary_lack_of_fingerprint_sensor)
+                    biometricPref.summary = getString(R.string.summary_sensor_unavailable)
                 }
-                FingerprintManagerCompat.from(requireContext()).hasEnrolledFingerprints().not() -> {
+                BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
+                    biometricPref.isEnabled = false
+                    biometricPref.summary = getString(R.string.summary_security_vulnerability)
+                }
+                BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> {
+                    biometricPref.isEnabled = false
+                    biometricPref.summary = getString(R.string.unknown_error)
+                }
+                BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                     biometricPref.isEnabled = false
                     biometricPref.summary = getString(R.string.summary_you_dont_have_fingerprint_presented)
                 }

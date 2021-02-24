@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.commit
@@ -15,11 +14,11 @@ import androidx.viewpager.widget.ViewPager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
+import com.example.repeatingalarmfoss.di.modules.Authenticator
 import com.example.repeatingalarmfoss.di.modules.BiometricModule
-import com.example.repeatingalarmfoss.di.modules.BiometricScope
+import com.example.repeatingalarmfoss.di.scopes.BiometricScope
 import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
 import com.example.repeatingalarmfoss.screens.added_tasks.viewmodels.MainActivityViewModel
-import com.example.repeatingalarmfoss.screens.biometric.Authenticator
 import com.example.repeatingalarmfoss.screens.logs.LogsActivity
 import com.example.repeatingalarmfoss.screens.settings.SettingsFragment
 import com.jakewharton.rxbinding3.view.clicks

@@ -8,6 +8,7 @@
     <string name="app_name" translatable="false">Repeating Alarm</string>
     <string name="add_new_task">Add new task</string>
     <string name="db_error">Something wrong with database!</string>
+    <string name="unknown_error">Unknown error</string>
     <string name="title_every">Every</string>
     <string name="hint_task_description">Task description</string>
     <string name="title_activity_alarm">AlarmActivity</string>
@@ -73,4 +74,6 @@
     <string name="summary_lack_of_fingerprint_permission">Fingerprint permission haven\'t been granted.</string>
     <string name="summary_lack_of_fingerprint_sensor">You don\'t have fingerprint sensor!</string>
     <string name="summary_you_dont_have_fingerprint_presented">You don\'t have any fingerprints presented. Please, provide at least one.</string>
+    <string name="summary_sensor_unavailable">The hardware is unavailable. Try again later.</string>
+    <string name="summary_security_vulnerability">A security vulnerability has been discovered with one or more hardware sensors. Try to apply security patch.</string>
 </resources>
