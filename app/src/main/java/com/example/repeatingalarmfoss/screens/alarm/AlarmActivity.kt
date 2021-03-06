@@ -4,19 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import com.example.repeatingalarmfoss.ALARM_ARG_TASK_TITLE
 import com.example.repeatingalarmfoss.CHANNEL_MISSED_ALARM
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.ForegroundService.Companion.ACTION_TERMINATE
 import com.example.repeatingalarmfoss.base.NotifyingActivity
+import com.example.repeatingalarmfoss.helper.CustomToast.errorToast
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.constructNotification
 import com.example.repeatingalarmfoss.helper.extensions.showNotification
 import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
-import com.example.repeatingalarmfoss.helper.extensions.toast
-import com.example.repeatingalarmfoss.repositories.GetMissedAlarmCounterResult
 import com.example.repeatingalarmfoss.services.ALARM_ARG_TASK_ID
 import com.example.repeatingalarmfoss.services.AlarmNotifierService
 import com.jakewharton.rxbinding3.view.clicks
@@ -50,7 +48,7 @@ class AlarmActivity : NotifyingActivity(R.layout.activity_alarm) {
 
     override fun setupViewModelSubscriptions() {
         super.setupViewModelSubscriptions()
-        viewModel.errorEvent.observe(this, { toast(getString(it)) })
+        viewModel.errorEvent.observe(this, { errorToast(getString(it)) })
         viewModel.getMissedAlarmsCounterEvent.observe(this, { counter ->
             showMissedAlarmNotification(intent.getStringExtra(ALARM_ARG_TASK_TITLE)!!, taskId, counter)
             finish()

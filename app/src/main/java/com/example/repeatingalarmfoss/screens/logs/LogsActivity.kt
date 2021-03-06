@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseActivity
-import com.example.repeatingalarmfoss.helper.extensions.errorToast
+import com.example.repeatingalarmfoss.helper.CustomToast.errorToast
 import com.example.repeatingalarmfoss.helper.extensions.throttleFirst
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.rxkotlin.plusAssign

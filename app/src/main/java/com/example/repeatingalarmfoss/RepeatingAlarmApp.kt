@@ -18,7 +18,6 @@ import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.*
 import com.example.repeatingalarmfoss.repositories.PersistedLocaleResult
 import com.example.repeatingalarmfoss.repositories.PreferencesRepository
-import es.dmoral.toasty.Toasty
 import io.reactivex.plugins.RxJavaPlugins
 import java.util.*
 import javax.inject.Inject
@@ -38,7 +37,6 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
         preferencesRepository.incrementAppLaunchCounter()
         createNotificationChannels()
         cancelLowBatteryChecker().also { scheduleLowBatteryChecker() }
-        Toasty.Config.getInstance().apply()
         RxJavaPlugins.setErrorHandler { logger.e(label = "GLOBAL", stackTrace = it.stackTrace) }
     }
 

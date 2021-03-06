@@ -19,6 +19,7 @@ import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.base.BaseFragment
 import com.example.repeatingalarmfoss.db.Task
+import com.example.repeatingalarmfoss.helper.CustomToast.infoToast
 import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.*
 import com.example.repeatingalarmfoss.receivers.AlarmReceiver
@@ -94,7 +95,7 @@ class TaskListFragment : BaseFragment() {
             scheduleAlarmManager(it)
         })
         addingTasksViewModel.errorEvent.observe(viewLifecycleOwner, Observer { errorMessage ->
-            toast(getString(errorMessage))
+            infoToast(getString(errorMessage))
         })
     }
 

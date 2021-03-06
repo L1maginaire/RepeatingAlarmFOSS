@@ -39,7 +39,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            minifyEnabled false
+            minifyEnabled false /*fixme*/
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -71,7 +71,7 @@ dependencies {
     implementation "androidx.viewpager:viewpager:1.0.0"
     implementation 'androidx.lifecycle:lifecycle-process:2.3.0'
     implementation "androidx.multidex:multidex:2.0.1"
-    implementation "androidx.biometric:biometric:1.2.0-alpha02"
+    implementation "androidx.biometric:biometric:1.2.0-alpha03"
 
     /* TESTING */
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -123,6 +123,5 @@ dependencies {
     /* MISC */
     implementation 'com.squareup:seismic:1.0.2'
     implementation 'nl.joery.animatedbottombar:library:1.0.9'
-    implementation 'com.github.GrenderG:Toasty:1.5.0'
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
 }
