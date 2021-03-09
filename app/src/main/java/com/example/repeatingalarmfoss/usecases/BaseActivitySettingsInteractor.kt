@@ -16,8 +16,12 @@ class BaseActivitySettingsInteractor @Inject constructor(private val sharedPrefe
     fun handleThemeChanges(toBeCompared: Int): Maybe<NightModeChangesResult> = Single.fromCallable { sharedPreferences.getStringOf(context.getString(R.string.pref_theme))!! }
         .map { it.toInt() }
         .filter { it != toBeCompared }
-        .map<NightModeChangesResult> { if (it == MODE_NIGHT_FOLLOW_SYSTEM || it == MODE_NIGHT_NO  || it == MODE_NIGHT_YES) NightModeChangesResult.Success(it) else NightModeChangesResult.Success(MODE_NIGHT_FOLLOW_SYSTEM) }
-        .onErrorReturn {
+        .map<NightModeChangesResult> {
+            if (it == MODE_NIGHT_FOLLOW_SYSTEM || it == MODE_NIGHT_NO || it == MODE_NIGHT_YES) {
+                sharedPreferences.writeStringOf(context.getString(R.string.pref_theme), toBeCompared.toString())
+                NightModeChangesResult.Success(toBeCompared)
+            } else NightModeChangesResult.Success(MODE_NIGHT_FOLLOW_SYSTEM)
+        }.onErrorReturn {
             if (it is NullPointerException) { /**pref_theme contains null: doing initial setup... */
                 try {
                     with (MODE_NIGHT_FOLLOW_SYSTEM) {
