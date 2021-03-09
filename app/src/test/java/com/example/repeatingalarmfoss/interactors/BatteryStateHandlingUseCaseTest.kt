@@ -13,6 +13,8 @@ import com.example.repeatingalarmfoss.helper.extensions.activityImplicitLaunch
 import com.example.repeatingalarmfoss.helper.extensions.getDefaultSharedPreferences
 import com.example.repeatingalarmfoss.helper.extensions.writeBooleanOf
 import com.example.repeatingalarmfoss.helper.extensions.writeStringOf
+import com.example.repeatingalarmfoss.helper.rx.BaseComposers
+import com.example.repeatingalarmfoss.helper.rx.TestSchedulers
 import com.example.repeatingalarmfoss.repositories.PermissionToNotifyAboutLowBatteryResult
 import com.example.repeatingalarmfoss.repositories.PreferencesRepository
 import com.example.repeatingalarmfoss.screens.low_battery.LowBatteryNotifierActivity
@@ -34,6 +36,7 @@ class BatteryStateHandlingUseCaseTest {
     private val batteryManager = mock(BatteryManager::class.java)
     private val repo = mock(PreferencesRepository::class.java)
     private val logger = mock(FlightRecorder::class.java)
+    private val baseComposers = BaseComposers(TestSchedulers(), logger)
     private val batteryStateHandlingUseCase = BatteryStateHandlingUseCase(context, batteryManager, logger, repo)
 
     @Test
@@ -99,7 +102,7 @@ class BatteryStateHandlingUseCaseTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val prefs = context.getDefaultSharedPreferences()
         prefs.writeBooleanOf(context.getString(R.string.pref_low_battery_dnd_time), false)
-        PreferencesRepository(prefs, context)
+        PreferencesRepository(prefs, context, baseComposers)
             .isForbiddenToNotifyLowBatteryAtNight("00:00" /** ANY time can be placed here*/).test()
             .assertNoErrors()
             .assertComplete()
@@ -111,7 +114,7 @@ class BatteryStateHandlingUseCaseTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val prefs = context.getDefaultSharedPreferences()
         prefs.writeBooleanOf(context.getString(R.string.pref_low_battery_dnd_time), true)
-        PreferencesRepository(prefs, context)
+        PreferencesRepository(prefs, context, baseComposers)
             .isForbiddenToNotifyLowBatteryAtNight("00:00").test()
             .assertNoErrors()
             .assertComplete()
@@ -123,7 +126,7 @@ class BatteryStateHandlingUseCaseTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val prefs = context.getDefaultSharedPreferences()
         prefs.writeBooleanOf(context.getString(R.string.pref_low_battery_dnd_time), true)
-        PreferencesRepository(prefs, InstrumentationRegistry.getInstrumentation().context)
+        PreferencesRepository(prefs, InstrumentationRegistry.getInstrumentation().context, baseComposers)
             .isForbiddenToNotifyLowBatteryAtNight("23:59").test()
             .assertNoErrors()
             .assertComplete()
