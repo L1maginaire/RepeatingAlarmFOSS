@@ -12,7 +12,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
-class BaseActivitySettingsInteractor @Inject constructor(private val sharedPreferences: SharedPreferences, private val baseComposers: BaseComposers, private val logger: FlightRecorder, private val context: Context) {
+class DarkThemeInteractor @Inject constructor(private val sharedPreferences: SharedPreferences, private val baseComposers: BaseComposers, private val logger: FlightRecorder, private val context: Context) {
     fun handleThemeChanges(toBeCompared: Int): Maybe<NightModeChangesResult> = Single.fromCallable { sharedPreferences.getStringOf(context.getString(R.string.pref_theme))!! }
         .map { it.toInt() }
         .filter { it != toBeCompared }
@@ -37,20 +37,9 @@ class BaseActivitySettingsInteractor @Inject constructor(private val sharedPrefe
         }.onErrorReturn { NightModeChangesResult.SharedChangesCorruptionError }
         .doOnError { logger.e(label = "Problem with changing theme!", stackTrace = it.stackTrace) }
         .compose(baseComposers.commonMaybeFetchTransformer())
-
-    fun checkLocaleChanged(currentLocale: String): Maybe<LocaleChangedResult> = Single.just(currentLocale)
-        .filter { sharedPreferences.getStringOf(context.getString(R.string.pref_lang)).equals(it).not() }
-        .map<LocaleChangedResult> { LocaleChangedResult.Success }
-        .onErrorReturn { LocaleChangedResult.SharedPreferencesCorruptionError }
-        .doOnError { logger.e(label = "Problem with locale changes handling!", stackTrace = it.stackTrace) }
 }
 
 sealed class NightModeChangesResult {
     data class Success(val code: Int) : NightModeChangesResult()
     object SharedChangesCorruptionError : NightModeChangesResult()
-}
-
-sealed class LocaleChangedResult {
-    object Success : LocaleChangedResult()
-    object SharedPreferencesCorruptionError : LocaleChangedResult()
 }

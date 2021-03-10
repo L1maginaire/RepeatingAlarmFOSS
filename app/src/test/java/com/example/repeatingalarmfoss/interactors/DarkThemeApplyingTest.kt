@@ -13,7 +13,7 @@ import com.example.repeatingalarmfoss.helper.extensions.getStringOf
 import com.example.repeatingalarmfoss.helper.extensions.writeStringOf
 import com.example.repeatingalarmfoss.helper.rx.BaseComposers
 import com.example.repeatingalarmfoss.helper.rx.TestSchedulers
-import com.example.repeatingalarmfoss.usecases.BaseActivitySettingsInteractor
+import com.example.repeatingalarmfoss.usecases.DarkThemeInteractor
 import com.example.repeatingalarmfoss.usecases.NightModeChangesResult
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,7 +28,7 @@ class DarkThemeApplyingTest {
     private val themePrefId = context.getString(R.string.pref_theme)
     private val sharedPrefs = context.getDefaultSharedPreferences()
     private val logger = FlightRecorder(createTempFile())
-    private val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefs, BaseComposers(TestSchedulers(), logger), logger, context)
+    private val nightModePreferenceInteractor = DarkThemeInteractor(sharedPrefs, BaseComposers(TestSchedulers(), logger), logger, context)
 
     @Test
     fun `if no value persisted, write default -- MODE_NIGHT_FOLLOW_SYSTEM -- and recreate`() {
@@ -72,7 +72,7 @@ class DarkThemeApplyingTest {
     fun `if something is wrong with SharedPreferences, return NightModePreferencesResult # SharedPreferencesCorruptionError`() {
         val sharedPrefMock = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPrefMock.getStringOf(themePrefId)).thenThrow(RuntimeException::class.java)
-        val nightModePreferenceInteractor = BaseActivitySettingsInteractor(sharedPrefMock, BaseComposers(TestSchedulers(), logger), logger, context)
+        val nightModePreferenceInteractor = DarkThemeInteractor(sharedPrefMock, BaseComposers(TestSchedulers(), logger), logger, context)
 
         nightModePreferenceInteractor.handleThemeChanges(MODE_NIGHT_YES).test()
             .assertNoErrors()

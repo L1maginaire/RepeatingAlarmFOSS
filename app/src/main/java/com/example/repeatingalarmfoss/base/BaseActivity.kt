@@ -13,10 +13,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
 import com.example.repeatingalarmfoss.helper.SingleLiveEvent
-import com.example.repeatingalarmfoss.helper.extensions.getLocalesLanguage
 import com.example.repeatingalarmfoss.helper.extensions.provideUpdatedContextWithNewLocale
-import com.example.repeatingalarmfoss.usecases.BaseActivitySettingsInteractor
-import com.example.repeatingalarmfoss.usecases.LocaleChangedResult
+import com.example.repeatingalarmfoss.usecases.DarkThemeInteractor
 import com.example.repeatingalarmfoss.usecases.NightModeChangesResult
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
@@ -25,7 +23,6 @@ import javax.inject.Inject
 open class BaseActivity(@LayoutRes layout: Int) : AppCompatActivity(layout) {
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<BaseActivityViewModel> { viewModelFactory }
-    private lateinit var currentLocale: String
 
     protected val subscriptions = CompositeDisposable()
     override fun onDestroy() = super.onDestroy().also { subscriptions.clear() }
@@ -37,46 +34,29 @@ open class BaseActivity(@LayoutRes layout: Int) : AppCompatActivity(layout) {
         setupViewModelSubscriptions()
         setupClicks()
 
-        currentLocale = resources.configuration.getLocalesLanguage()
-
         viewModel.checkNightModeState(AppCompatDelegate.getDefaultNightMode())
     }
 
     protected open fun setupClicks() = Unit
 
     @CallSuper
-    protected open fun setupViewModelSubscriptions(){
-        viewModel.recreateEvent.observe(this, {
-            recreate()
-        })
+    protected open fun setupViewModelSubscriptions() {
         viewModel.nightModeChangedEvent.observe(this, {
             AppCompatDelegate.setDefaultNightMode(it)
             recreate()
         })
     }
 
-    override fun onRestart() = super.onRestart().also { viewModel.checkLocaleChanged(currentLocale) }
     override fun attachBaseContext(base: Context) = super.attachBaseContext(base.provideUpdatedContextWithNewLocale())
 
-    class BaseActivityViewModel @Inject constructor(private val prefInteractor: BaseActivitySettingsInteractor): BaseViewModel() {
+    class BaseActivityViewModel @Inject constructor(private val prefInteractor: DarkThemeInteractor) : BaseViewModel() {
         private val _setNightModeValueAndRecreateEvent = SingleLiveEvent<Int>()
         val nightModeChangedEvent: LiveData<Int> get() = _setNightModeValueAndRecreateEvent
-
-        private val _recreateEvent = SingleLiveEvent<Any>()
-        val recreateEvent: LiveData<Any> get() = _recreateEvent
 
         fun checkNightModeState(toBeCompared: Int) {
             disposable += prefInteractor.handleThemeChanges(toBeCompared).subscribe {
                 if (it is NightModeChangesResult.Success) {
                     _setNightModeValueAndRecreateEvent.value = it.code
-                }
-            }
-        }
-
-        fun checkLocaleChanged(currentLocale: String) {
-            disposable += prefInteractor.checkLocaleChanged(currentLocale).subscribe {
-                if (it is LocaleChangedResult.Success) {
-                    _recreateEvent.call()
                 }
             }
         }
