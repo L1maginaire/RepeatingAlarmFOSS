@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.example.repeatingalarmfoss.R
 import com.example.repeatingalarmfoss.RepeatingAlarmApp
@@ -30,6 +31,7 @@ import javax.inject.Inject
 /*TODO subcomponent with Fragment, Adapter, etc. dependencies*/
 @BiometricScope
 class MainActivity : BaseActivity(R.layout.activity_main), TaskAddedCallback, ShakeDetector.Listener {
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var sensorManager: SensorManager
     @Inject lateinit var authenticator: Authenticator
     @Inject lateinit var sharedPreferences: SharedPreferences
