@@ -18,6 +18,7 @@ import com.example.repeatingalarmfoss.helper.FlightRecorder
 import com.example.repeatingalarmfoss.helper.extensions.*
 import com.example.repeatingalarmfoss.repositories.PersistedLocaleResult
 import com.example.repeatingalarmfoss.repositories.PreferencesRepository
+import com.github.anrwatchdog.ANRWatchDog
 import io.reactivex.plugins.RxJavaPlugins
 import java.util.*
 import javax.inject.Inject
@@ -27,6 +28,7 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
     @Inject lateinit var preferencesRepository: PreferencesRepository
     @Inject lateinit var logger: FlightRecorder
     lateinit var appComponent: AppComponent
+    private val anrWatchDog = ANRWatchDog(2000)
     var isAppInForeground = false
 
     override fun onCreate() {
@@ -36,9 +38,18 @@ class RepeatingAlarmApp : MultiDexApplication(), LifecycleObserver {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         preferencesRepository.incrementAppLaunchCounter()
         createNotificationChannels()
+        setupAnrWatchDog()
         cancelLowBatteryChecker().also { scheduleLowBatteryChecker() }
         RxJavaPlugins.setErrorHandler { logger.e(label = "GLOBAL", stackTrace = it.stackTrace) }
     }
+
+    private fun setupAnrWatchDog() = anrWatchDog
+        .setANRListener { error ->
+            logger.wtf { "ANR: $error" }
+            logger.e("ANR", stackTrace = error.cause?.stackTrace ?: emptyArray())
+        }.also {
+            it.start()
+        }
 
     private fun registerActivityStateLogger() {
         registerActivityLifecycleCallbacks(object: ActivityLifecycleCallbacks {
